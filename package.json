@@ -1,0 +1,66 @@
+{
+  "name": "node-express-starter",
+  "version": "1.0.0",
+  "description": "This is a basic node express boilerplate kit that comes with ES6, Mocha tests and test coverage reports.",
+  "scripts": {
+    "prebuild": "npm run lint && npm run clean && mkdirp dist/public && ncp public dist/public",
+    "build": "webpack -p --config=webpack.prod.config.babel.js",
+    "clean": "rimraf dist",
+    "dev": "nodemon server.js --exec babel-node",
+    "lint": "esw webpack.config.* src --color",
+    "lint:watch": "npm run lint -- --watch",
+    "preprod": "npm run build",
+    "prod": "NODE_ENV=production node dist/app.build.js",
+    "start": "npm-run-all --parallel dev lint:watch",
+    "test": "NODE_ENV=test babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha test/**/*.spec.js"
+  },
+  "author": {
+    "name": "Sanjay Singh",
+    "email": "sanjay_singh14@icloud.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express",
+    "es2015",
+    "eslint",
+    "webpack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sanjay1407/node-express-starter.git"
+  },
+  "private": true,
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-runtime": "^6.26.0",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "morgan": "^1.8.2",
+    "path": "^0.12.7",
+    "rotating-file-stream": "^1.2.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-istanbul": "^0.12.2",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
+    "eslint": "^3.19.0",
+    "eslint-loader": "^1.9.0",
+    "eslint-watch": "^3.1.2",
+    "mkdirp": "^0.5.1",
+    "mocha": "^3.5.0",
+    "ncp": "^2.0.0",
+    "nodemon": "^1.15.1",
+    "npm-run-all": "^4.0.2",
+    "rimraf": "^2.6.1",
+    "webpack": "^2.7.0"
+  }
+}
