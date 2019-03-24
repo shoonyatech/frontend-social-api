@@ -1,7 +1,7 @@
 {
-  "name": "node-express-starter",
+  "name": "frontend-social-api",
   "version": "1.0.0",
-  "description": "This is a basic node express boilerplate kit that comes with ES6, Mocha tests and test coverage reports.",
+  "description": "This is backend for frontend social",
   "scripts": {
     "prebuild": "npm run lint && npm run clean && mkdirp dist/public && ncp public dist/public",
     "build": "webpack -p --config=webpack.prod.config.babel.js",
@@ -16,7 +16,7 @@
   },
   "author": {
     "name": "Sanjay Singh",
-    "email": "sanjay_singh14@icloud.com"
+    "email": "singhsanjayrd@gmail.com"
   },
   "license": "MIT",
   "keywords": [
@@ -28,7 +28,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sanjay1407/node-express-starter.git"
+    "url": "https://github.com/shoonyatech/frontend-social-api.git"
   },
   "private": true,
   "dependencies": {
