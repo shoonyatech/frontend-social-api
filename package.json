@@ -1,15 +1,25 @@
 {
-  "name": "frontend-social-api",
-  "version": "1.0.0",
-  "description": "mock api server for frontend social",
-  "main": "index.js",
+  "name": "wildsights-api",
+  "version": "0.0.1",
+  "description": "API endpoint of Wild Sightings website",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "mb --configfile imposters.ejs --nologfile"
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Sanjay Singh",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:wildsightings/wildsights-api.git"
+  },
+  "author": "Wild Sightings team",
+  "license": "Copyright",
+  "homepage": "https://www.wildsights.club",
   "dependencies": {
-    "mountebank": "^2.0.0"
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "express-basic-auth": "^1.1.3",
+    "mongodb": "^2.2.33",
+    "mongoose": "^5.4.22"
   }
 }
