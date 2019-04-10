@@ -9,11 +9,8 @@ var app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const dbConfig =
-  "mongodb://heroku_3081l80l:3l7ktq47li2pf9qbf5rbjvfmg2@ds119969.mlab.com:19969/heroku_3081l80l";
-
 mongoose
-  .connect(process.env.MONGODB_URI || dbConfig, {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true
   })
   .then(() => {
