@@ -7,13 +7,14 @@ exports.create = (req, res) => {
     profilePic: req.body.profilePic,
     email: req.body.email,
     social: req.body.social,
-    skils: req.body.skils,
+    skills: req.body.skills,
     confAttended: req.body.confAttended,
     confUpcoming: req.body.confUpcoming,
     meetupAttended: req.body.meetupAttended,
     meetupUpcoming: req.body.meetupUpcoming
   });
 
+  console.log(profile);
   // Save profile in the database
   profile
     .save()
@@ -73,7 +74,7 @@ exports.update = (req, res) => {
       profilePic: req.body.profilePic,
       email: req.body.email,
       social: req.body.social,
-      skils: req.body.skils,
+      skills: req.body.skills,
       confAttended: req.body.confAttended,
       confUpcoming: req.body.confUpcoming,
       meetupAttended: req.body.meetupAttended,
