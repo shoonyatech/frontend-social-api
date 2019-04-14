@@ -10,13 +10,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 mongoose
-  .connect(
-    process.env.MONGODB_URI ||
-      "mongodb://heroku_gss6930f:gprsvs03focdoru4q5ev54rpab@ds259241.mlab.com:59241/heroku_gss6930f",
-    {
-      useNewUrlParser: true
-    }
-  )
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true
+  })
   .then(() => {
     console.log("Successfully connected to the database");
   })
