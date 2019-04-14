@@ -1,7 +1,7 @@
 {
-  "name": "wildsights-api",
+  "name": "frontend-social-api",
   "version": "0.0.1",
-  "description": "API endpoint of Wild Sightings website",
+  "description": "API endpoint of Frontend Social website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:wildsightings/wildsights-api.git"
+    "url": "git@github.com:shoonyatech/frontend-social-api.git"
   },
-  "author": "Wild Sightings team",
-  "license": "Copyright",
-  "homepage": "https://www.wildsights.club",
+  "author": "Frontend Social team",
+  "license": "MIT",
+  "homepage": "https://www.frontend.social",
   "dependencies": {
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
