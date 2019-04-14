@@ -6,8 +6,7 @@ const ConferenceSchema = mongoose.Schema(
     description: String,
     dateFrom: String,
     dateTo: String,
-    location: String,
-    relatedSkills: [Skill]
+    location: String
   },
   {
     timestamps: true

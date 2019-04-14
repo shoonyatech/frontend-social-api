@@ -9,8 +9,8 @@ const UserSchema = mongoose.Schema(
     name: String,
     profilePic: String,
     email: String,
-    social: [Link],
-    skills: [Skill],
+    social: [],
+    skills: [],
     confAttended: [String], // id of conference
     confUpcoming: [String],
     meetupAttended: [String],

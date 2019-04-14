@@ -7,7 +7,7 @@ const MeetupSchema = mongoose.Schema(
     dateFrom: String,
     dateTo: String,
     location: String,
-    relatedSkills: [Skill]
+    relatedSkills: []
   },
   {
     timestamps: true
