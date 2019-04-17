@@ -1,4 +1,75 @@
+const axios = require("axios");
+var jwt = require("jsonwebtoken");
 const Profile = require("../models/profile.model.js");
+
+const JWT_SECRET = process.env.JWT_SECRET || "verySecret$%#$%@#!#!$!!";
+
+// Create and Save a new user
+exports.fbSignin = (req, res) => {
+  axios
+    .post(
+      "https://graph.facebook.com/me?fields=id,name,email,picture.width(800).height(800)&access_token=" +
+        req.query.accessToken
+    )
+    .then(fbResponse => {
+      const fbUser = fbResponse.data;
+
+      // find user or create one
+      findUserinDB(fbUser, res);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the user."
+      });
+    });
+};
+
+function findUserinDB(fbUser, res) {
+  Profile.findOne({ fbId: fbUser.id })
+    .then(profile => {
+      if (profile == null || !profile.length) {
+        //profile not found. Create one
+        return createFBUser(fbUser, res);
+      }
+      res.send(profile);
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).send({
+        message: "Error retrieving user with fb id " + fbUser.id
+      });
+    });
+}
+
+function createFBUser(fbUser, res) {
+  var token = jwt.sign({ email: fbUser.email }, JWT_SECRET);
+
+  const profile = new Profile({
+    name: fbUser.name,
+    profilePic: fbUser.profilePic,
+    email: fbUser.email,
+    social: fbUser.social,
+    skills: fbUser.skills,
+    confAttended: fbUser.confAttended,
+    confUpcoming: fbUser.confUpcoming,
+    meetupAttended: fbUser.meetupAttended,
+    meetupUpcoming: fbUser.meetupUpcoming,
+    fbId: fbUser.id,
+    authToken: token
+  });
+
+  // Save profile in the database
+  return profile
+    .save()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the user."
+      });
+    });
+}
 
 // Create and Save a new profile
 exports.create = (req, res) => {
@@ -61,6 +132,29 @@ exports.findOne = (req, res) => {
       }
       return res.status(500).send({
         message: "Error retrieving profile with id " + req.params.id
+      });
+    });
+};
+
+exports.me = (req, res) => {
+  const email = req.user.email;
+  Profile.findOne({ email: email })
+    .then(profile => {
+      if (!profile) {
+        return res.status(404).send({
+          message: "profile not found with email " + email
+        });
+      }
+      res.send(profile);
+    })
+    .catch(err => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "profile not found with email " + email
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving profile with email " + email
       });
     });
 };

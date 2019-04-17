@@ -14,7 +14,9 @@ const UserSchema = mongoose.Schema(
     confAttended: [String], // id of conference
     confUpcoming: [String],
     meetupAttended: [String],
-    meetupUpcoming: [String]
+    meetupUpcoming: [String],
+    fbId: String,
+    authToken: String
   },
   {
     timestamps: true
