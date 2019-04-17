@@ -13,6 +13,6 @@ module.exports = app => {
   // Update my profile
   app.put("/me", profile.update);
 
-  // Delete a profile with id
-  // app.delete("/profile/:id", profile.delete);
+  // Delete my profile
+  app.delete("/me", profile.delete);
 };

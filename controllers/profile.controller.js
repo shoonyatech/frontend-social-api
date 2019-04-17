@@ -130,7 +130,7 @@ exports.me = (req, res) => {
     });
 };
 
-// Update a profile identified by the id in the request
+// Update profile of logged in user
 exports.update = (req, res) => {
   const email = req.user.email;
   Profile.findOne({ email: email })
@@ -187,25 +187,47 @@ exports.update = (req, res) => {
     });
 };
 
-// Delete a profile with the specified id in the request
+// Delete a profile for logged in user
 exports.delete = (req, res) => {
-  Profile.findByIdAndRemove(req.params.id)
+  const email = req.user.email;
+
+  Profile.findOne({ email: email })
     .then(profile => {
       if (!profile) {
         return res.status(404).send({
-          message: "profile not found with id " + req.params.id
+          message: "profile not found with email " + email
         });
       }
-      res.send({ message: "profile deleted successfully!" });
+      const profileId = profile.id;
+
+      Profile.findByIdAndRemove(profileId)
+        .then(profile => {
+          if (!profile) {
+            return res.status(404).send({
+              message: "profile not found with id " + profileId
+            });
+          }
+          res.send({ message: "profile deleted successfully!" });
+        })
+        .catch(err => {
+          if (err.kind === "ObjectId" || err.name === "NotFound") {
+            return res.status(404).send({
+              message: "profile not found with id " + profileId
+            });
+          }
+          return res.status(500).send({
+            message: "Could not delete profile with id " + profileId
+          });
+        });
     })
     .catch(err => {
-      if (err.kind === "ObjectId" || err.name === "NotFound") {
+      if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "profile not found with id " + req.params.id
+          message: "profile not found with email " + email
         });
       }
       return res.status(500).send({
-        message: "Could not delete profile with id " + req.params.id
+        message: "Error retrieving profile with email " + email
       });
     });
 };
