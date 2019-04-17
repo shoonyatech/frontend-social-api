@@ -46,14 +46,14 @@ function createFBUser(fbUser, res) {
 
   const profile = new Profile({
     name: fbUser.name,
-    profilePic: fbUser.profilePic,
+    profilePic: fbUser.picture.data.url,
     email: fbUser.email,
-    social: fbUser.social,
-    skills: fbUser.skills,
-    confAttended: fbUser.confAttended,
-    confUpcoming: fbUser.confUpcoming,
-    meetupAttended: fbUser.meetupAttended,
-    meetupUpcoming: fbUser.meetupUpcoming,
+    social: [],
+    skills: [],
+    confAttended: [],
+    confUpcoming: [],
+    meetupAttended: [],
+    meetupUpcoming: [],
     fbId: fbUser.id,
     authToken: token
   });
@@ -70,35 +70,6 @@ function createFBUser(fbUser, res) {
       });
     });
 }
-
-// Create and Save a new profile
-exports.create = (req, res) => {
-  const profile = new Profile({
-    name: req.body.name,
-    profilePic: req.body.profilePic,
-    email: req.body.email,
-    social: req.body.social,
-    skills: req.body.skills,
-    confAttended: req.body.confAttended,
-    confUpcoming: req.body.confUpcoming,
-    meetupAttended: req.body.meetupAttended,
-    meetupUpcoming: req.body.meetupUpcoming
-  });
-
-  console.log(profile);
-  // Save profile in the database
-  profile
-    .save()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the profile."
-      });
-    });
-};
 
 // Retrieve and return all profiles from the database.
 exports.findAll = (req, res) => {
@@ -161,37 +132,57 @@ exports.me = (req, res) => {
 
 // Update a profile identified by the id in the request
 exports.update = (req, res) => {
-  Profile.findByIdAndUpdate(
-    req.params.id,
-    {
-      name: req.body.name,
-      profilePic: req.body.profilePic,
-      email: req.body.email,
-      social: req.body.social,
-      skills: req.body.skills,
-      confAttended: req.body.confAttended,
-      confUpcoming: req.body.confUpcoming,
-      meetupAttended: req.body.meetupAttended,
-      meetupUpcoming: req.body.meetupUpcoming
-    },
-    { new: true }
-  )
+  const email = req.user.email;
+  Profile.findOne({ email: email })
     .then(profile => {
       if (!profile) {
         return res.status(404).send({
-          message: "profile not found with id " + req.params.id
+          message: "profile not found with email " + email
         });
       }
-      res.send(profile);
+      const profileId = profile.id;
+
+      Profile.findByIdAndUpdate(
+        profileId,
+        {
+          name: req.body.name,
+          profilePic: req.body.profilePic,
+          social: req.body.social,
+          skills: req.body.skills,
+          confAttended: req.body.confAttended,
+          confUpcoming: req.body.confUpcoming,
+          meetupAttended: req.body.meetupAttended,
+          meetupUpcoming: req.body.meetupUpcoming
+        },
+        { new: false }
+      )
+        .then(updatedProfile => {
+          if (!updatedProfile) {
+            return res.status(404).send({
+              message: "profile not found with id " + profileId
+            });
+          }
+          res.send(updatedProfile);
+        })
+        .catch(err => {
+          if (err.kind === "ObjectId") {
+            return res.status(404).send({
+              message: "profile not found with id " + profileId
+            });
+          }
+          return res.status(500).send({
+            message: "Error updating profile with id " + profileId
+          });
+        });
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "profile not found with id " + req.params.id
+          message: "profile not found with email " + email
         });
       }
       return res.status(500).send({
-        message: "Error updating profile with id " + req.params.id
+        message: "Error retrieving profile with email " + email
       });
     });
 };
