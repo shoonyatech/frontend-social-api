@@ -6,9 +6,15 @@ const JobSchema = mongoose.Schema(
     description: String,
     skils: [String],
     company: String,
-    duration: [String],
-    level: String,
-    tags: [String]
+    city: String,
+    isFullTime: Boolean,
+    isPartTime: Boolean,
+    isRemote: Boolean,
+    isPermanent: Boolean,
+    isContract: Boolean,
+    level: Number,
+    tags: [String],
+    link: String
   },
   {
     timestamps: true

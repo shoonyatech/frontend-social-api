@@ -7,9 +7,15 @@ exports.create = (req, res) => {
     description: req.body.description,
     skils: req.body.skils,
     company: req.body.company,
-    duration: req.body.duration,
+    city: req.body.city,
+    isFullTime: req.body.isFullTime,
+    isPartTime: req.body.isPartTime,
+    isRemote: req.body.isRemote,
+    isPermanent: req.body.isPermanent,
+    isContract: req.body.isContract,
     level: req.body.level,
-    tags: req.body.tags
+    tags: req.body.tags,
+    link: req.body.link
   });
 
   // Save job in the database
@@ -70,9 +76,15 @@ exports.update = (req, res) => {
       description: req.body.description,
       skils: req.body.skils,
       company: req.body.company,
-      duration: req.body.duration,
+      city: req.body.city,
+      isFullTime: req.body.isFullTime,
+      isPartTime: req.body.isPartTime,
+      isRemote: req.body.isRemote,
+      isPermanent: req.body.isPermanent,
+      isContract: req.body.isContract,
       level: req.body.level,
-      tags: req.body.tags
+      tags: req.body.tags,
+      link: req.body.link
     },
     { new: true }
   )
