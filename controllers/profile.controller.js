@@ -9,7 +9,7 @@ exports.fbSignin = (req, res) => {
   axios
     .post(
       "https://graph.facebook.com/me?fields=id,name,email,picture.width(800).height(800)&access_token=" +
-        req.query.accessToken
+        req.body.accessToken
     )
     .then(fbResponse => {
       const fbUser = fbResponse.data;
