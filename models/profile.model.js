@@ -17,7 +17,8 @@ const UserSchema = mongoose.Schema(
     meetupUpcoming: [String],
     fbId: String,
     authToken: String,
-    role: String
+    role: String,
+    city: String
   },
   {
     timestamps: true
