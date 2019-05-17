@@ -33,9 +33,31 @@ exports.create = (req, res) => {
 
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
+  console.log('req params ===>>>>', req.query)
   let pageNumber = parseInt(req.query.pageNo);
   let nPerPage = parseInt(req.query.itemsPerPage);
-  Job.find().sort({'createdAt': -1}).skip((pageNumber-1)*nPerPage).limit(nPerPage)
+
+  let filterObj = {};
+  if(req.query.skills){
+    let skills = req.query.skills.split(',');
+    filterObj.skils = { $in : skills };
+  }
+  if(req.query.isFullTime){
+    filterObj.isFullTime = req.query.isFullTime;
+  }
+  if(req.query.isPartTime){
+    filterObj.isPartTime = req.query.isPartTime;
+  }
+  if(req.query.isRemote){
+    filterObj.isRemote = req.query.isRemote;
+  }
+  if(req.query.isContract){
+    filterObj.isContract = req.query.isContract;
+  }
+  if(req.query.level){
+    filterObj.level = req.query.level;
+  }
+  Job.find(filterObj).sort({'createdAt': -1}).skip((pageNumber-1)*nPerPage).limit(nPerPage)
     .then(jobs => {
       res.send(jobs);
     })
