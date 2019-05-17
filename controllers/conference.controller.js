@@ -8,6 +8,7 @@ exports.create = (req, res) => {
     dateFrom: req.body.dateFrom,
     dateTo: req.body.dateTo,
     location: req.body.location,
+    conferenceOrMeetup: req.body.conferenceOrMeetup,
     relatedSkills: req.body.relatedSkills
   });
 
@@ -72,6 +73,7 @@ exports.update = (req, res) => {
       dateFrom: req.body.dateFrom,
       dateTo: req.body.dateTo,
       location: req.body.location,
+      conferenceOrMeetup: req.body.conferenceOrMeetup,
       relatedSkills: req.body.relatedSkills
     },
     { new: true }
