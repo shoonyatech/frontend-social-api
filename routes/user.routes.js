@@ -4,4 +4,6 @@ module.exports = app => {
     // retrieve current user profile
     app.get("/user", user.findAll);
 
+    app.post("/usercreate", user.create);
+
 };
