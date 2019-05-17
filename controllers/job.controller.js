@@ -33,7 +33,9 @@ exports.create = (req, res) => {
 
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
-  Job.find()
+  let pageNumber = parseInt(req.query.pageNo);
+  let nPerPage = parseInt(req.query.itemsPerPage);
+  Job.find().sort({'createdAt': -1}).skip((pageNumber-1)*nPerPage).limit(nPerPage)
     .then(jobs => {
       res.send(jobs);
     })

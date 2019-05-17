@@ -11,7 +11,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  // .connect(process.env.MONGODB_URI, {
+    .connect('mongodb://heroku_gss6930f:gprsvs03focdoru4q5ev54rpab@ds259241.mlab.com:59241/heroku_gss6930f?authSource=heroku_gss6930f', {
     useNewUrlParser: true
   })
   .then(() => {
