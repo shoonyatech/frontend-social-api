@@ -30,6 +30,8 @@ app.get("/", function(req, res) {
 
 require("./routes/auth.routes.js")(app);
 require("./routes/job.routes.js")(app);
+require("./routes/city.routes.js")(app);
+require("./routes/conference.routes.js")(app);
 
 // this will attach the logged in user to req.user
 const JWT_SECRET = process.env.JWT_SECRET || "verySecret$%#$%@#!#!$!!";
