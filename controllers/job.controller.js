@@ -33,11 +33,14 @@ exports.create = (req, res) => {
 
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
-  console.log('req params ===>>>>', req.query)
+  // console.log('req params ===>>>>', req.query)
   let pageNumber = parseInt(req.query.pageNo);
   let nPerPage = parseInt(req.query.itemsPerPage);
 
   let filterObj = {};
+  if(req.query.searchText){
+    filterObj.title = req.query.searchText;
+  }
   if(req.query.skills){
     let skills = req.query.skills.split(',');
     filterObj.skils = { $in : skills };
