@@ -29,7 +29,7 @@ exports.create = (req, res) => {
 
 // Retrieve and return all conferences from the database.
 exports.findAll = (req, res) => {
-  Conference.find()
+  Conference.find({city : req.query.city},['_id', 'name', 'dateFrom', 'conferenceOrMeetup'])
     .then(conferences => {
       res.send(conferences);
     })
