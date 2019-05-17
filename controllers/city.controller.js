@@ -5,6 +5,8 @@ exports.create = (req, res) => {
   const city = new City({
     name: req.body.name,
     description: req.body.description,
+    photo: req.body.photo,
+    country: req.body.country,
     lat: req.body.lat,
     lng: req.body.lng
   });
@@ -65,6 +67,8 @@ exports.update = (req, res) => {
     {
       name: req.body.name,
       description: req.body.description,
+      photo: req.body.photo,
+      country: req.body.country,
       lat: req.body.lat,
       lng: req.body.lng
     },

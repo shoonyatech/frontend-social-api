@@ -7,7 +7,9 @@ exports.create = (req, res) => {
     description: req.body.description,
     dateFrom: req.body.dateFrom,
     dateTo: req.body.dateTo,
-    location: req.body.location,
+    city: req.body.city,
+    country: req.body.country,
+    conferenceOrMeetup: req.body.conferenceOrMeetup,
     relatedSkills: req.body.relatedSkills
   });
 
@@ -71,7 +73,9 @@ exports.update = (req, res) => {
       description: req.body.description,
       dateFrom: req.body.dateFrom,
       dateTo: req.body.dateTo,
-      location: req.body.location,
+      city: req.body.city,
+      country: req.body.country,
+      conferenceOrMeetup: req.body.conferenceOrMeetup,
       relatedSkills: req.body.relatedSkills
     },
     { new: true }

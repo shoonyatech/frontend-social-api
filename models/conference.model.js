@@ -4,9 +4,10 @@ const ConferenceSchema = mongoose.Schema(
   {
     name: String,
     description: String,
-    dateFrom: String,
-    dateTo: String,
-    location: String,
+    dateFrom: Date,
+    dateTo: Date,
+    city: String,
+    country: String,
     conferenceOrMeetup: String,
     relatedSkills: []
   },
