@@ -10,7 +10,8 @@ exports.create = (req, res) => {
     city: req.body.city,
     country: req.body.country,
     conferenceOrMeetup: req.body.conferenceOrMeetup,
-    relatedSkills: req.body.relatedSkills
+    relatedSkills: req.body.relatedSkills,
+    link: req.body.link
   });
 
   // Save conference in the database
@@ -29,7 +30,22 @@ exports.create = (req, res) => {
 
 // Retrieve and return all conferences from the database.
 exports.findAll = (req, res) => {
-  Conference.find({city : req.query.city},['_id', 'name', 'dateFrom', 'conferenceOrMeetup'])
+  let pageNumber = parseInt(req.query.pageNo);
+  let nPerPage = parseInt(req.query.itemsPerPage);
+
+  let filterObj = {};
+  if(req.query.searchText){
+    filterObj.name = req.query.searchText;
+  }
+  if(req.query.relatedSkills){
+    let relatedSkills = req.query.relatedSkills.split(',');
+    filterObj.relatedSkills = { $in : relatedSkills };
+  }
+  if(req.query.city){
+    filterObj.city = req.query.city
+  }
+  Conference.find(filterObj,['_id', 'name', 'dateFrom', 'conferenceOrMeetup','description','link'])
+    .skip((pageNumber-1)*nPerPage).limit(nPerPage)
     .then(conferences => {
       res.send(conferences);
     })

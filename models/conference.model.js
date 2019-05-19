@@ -9,7 +9,8 @@ const ConferenceSchema = mongoose.Schema(
     city: String,
     country: String,
     conferenceOrMeetup: String,
-    relatedSkills: []
+    relatedSkills: [],
+    link: String
   },
   {
     timestamps: true
