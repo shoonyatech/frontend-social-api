@@ -35,7 +35,8 @@ exports.findAll = (req, res) => {
 
   let filterObj = {};
   if(req.query.searchText){
-    filterObj.name = req.query.searchText;
+    filterObj['$or'] = [{name:{$regex: req.query.searchText, $options: 'i'}},
+                        {description:{$regex: req.query.searchText, $options: 'i'}}];
   }
   if(req.query.relatedSkills){
     let relatedSkills = req.query.relatedSkills.split(',');
@@ -45,6 +46,7 @@ exports.findAll = (req, res) => {
     filterObj.city = req.query.city
   }
   Conference.find(filterObj,['_id', 'name', 'dateFrom', 'conferenceOrMeetup','description','link'])
+    .sort({'createdAt': 'descending'})
     .skip((pageNumber-1)*nPerPage).limit(nPerPage)
     .then(conferences => {
       res.send(conferences);
