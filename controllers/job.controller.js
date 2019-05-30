@@ -33,13 +33,13 @@ exports.create = (req, res) => {
 
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
-  // console.log('req params ===>>>>', req.query)
   let pageNumber = parseInt(req.query.pageNo);
   let nPerPage = parseInt(req.query.itemsPerPage);
 
   let filterObj = {};
   if(req.query.searchText){
-    filterObj.title = req.query.searchText;
+    filterObj['$or'] = [{title:{$regex: req.query.searchText, $options: 'i'}},
+                        {description:{$regex: req.query.searchText, $options: 'i'}}];
   }
   if(req.query.skills){
     let skills = req.query.skills.split(',');
@@ -60,7 +60,8 @@ exports.findAll = (req, res) => {
   if(req.query.level){
     filterObj.level = req.query.level;
   }
-  Job.find(filterObj).sort({'createdAt': -1}).skip((pageNumber-1)*nPerPage).limit(nPerPage)
+
+  Job.find(filterObj).sort({'createdAt': 'descending'}).skip((pageNumber-1)*nPerPage).limit(nPerPage)
     .then(jobs => {
       res.send(jobs);
     })

@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 var cors = require("cors");
 var jwt = require("express-jwt");
+require('dotenv').config()
 
 mongoose.Promise = global.Promise;
 
