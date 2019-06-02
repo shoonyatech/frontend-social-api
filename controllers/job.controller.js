@@ -37,30 +37,41 @@ exports.findAll = (req, res) => {
   let nPerPage = parseInt(req.query.itemsPerPage);
 
   let filterObj = {};
+  let reqArr = [];
+  let reqObj = {};
   if(req.query.searchText){
-    filterObj['$or'] = [{title:{$regex: req.query.searchText, $options: 'i'}},
-                        {description:{$regex: req.query.searchText, $options: 'i'}}];
+    reqObj = {title:{$regex: req.query.searchText, $options: 'i'}};
+    reqArr.push(reqObj);
+
+    reqObj = {description:{$regex: req.query.searchText, $options: 'i'}};
+    reqArr.push(reqObj);
   }
   if(req.query.skills){
     let skills = req.query.skills.split(',');
-    filterObj.skils = { $in : skills };
+    reqObj = {skils: { $in : skills }};
+    reqArr.push(reqObj);
   }
   if(req.query.isFullTime){
-    filterObj.isFullTime = req.query.isFullTime;
+    reqObj = {isFullTime: req.query.isFullTime};
+    reqArr.push(reqObj);
   }
   if(req.query.isPartTime){
-    filterObj.isPartTime = req.query.isPartTime;
+    reqObj = {isPartTime: req.query.isPartTime};
+    reqArr.push(reqObj);
   }
   if(req.query.isRemote){
-    filterObj.isRemote = req.query.isRemote;
+    reqObj = {isRemote: req.query.isRemote};
+    reqArr.push(reqObj);
   }
   if(req.query.isContract){
-    filterObj.isContract = req.query.isContract;
+    reqObj = {isContract: req.query.isContract};
+    reqArr.push(reqObj);
   }
   if(req.query.level){
-    filterObj.level = req.query.level;
+    reqObj = {level: req.query.level};
+    reqArr.push(reqObj);
   }
-
+  filterObj['$or'] = reqArr;
   Job.find(filterObj).sort({'createdAt': 'descending'}).skip((pageNumber-1)*nPerPage).limit(nPerPage)
     .then(jobs => {
       res.send(jobs);

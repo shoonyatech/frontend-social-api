@@ -34,17 +34,24 @@ exports.findAll = (req, res) => {
   let nPerPage = parseInt(req.query.itemsPerPage);
 
   let filterObj = {};
+  let reqArr = [];
+  let reqObj = {};
   if(req.query.searchText){
-    filterObj['$or'] = [{name:{$regex: req.query.searchText, $options: 'i'}},
-                        {description:{$regex: req.query.searchText, $options: 'i'}}];
+    reqObj = {name:{$regex: req.query.searchText, $options: 'i'}};
+    reqArr.push(reqObj);
+    reqObj = {description:{$regex: req.query.searchText, $options: 'i'}};
+    reqArr.push(reqObj);
   }
   if(req.query.relatedSkills){
     let relatedSkills = req.query.relatedSkills.split(',');
-    filterObj.relatedSkills = { $in : relatedSkills };
+    reqObj = {relatedSkills: { $in : relatedSkills }};
+    reqArr.push(reqObj);
   }
   if(req.query.city){
-    filterObj.city = req.query.city
+    reqObj = {city: {$regex: req.query.city, $options: 'i'}};
+    reqArr.push(reqObj);
   }
+  filterObj['$or'] = reqArr;
   Conference.find(filterObj,['_id', 'name', 'dateFrom', 'conferenceOrMeetup','description','link'])
     .sort({'createdAt': 'descending'})
     .skip((pageNumber-1)*nPerPage).limit(nPerPage)
