@@ -131,7 +131,7 @@ exports.me = (req, res) => {
 };
 
 // Update profile of logged in user
-exports.update = (req, res) => {
+  exports.update = (req, res) => {
   const email = req.user.email;
   Profile.findOne({ email: email })
     .then(profile => {
