@@ -24,11 +24,19 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve and return all citys from the database.
+// Retrieve and return all citys from the database that matches search result.
 exports.findAll = (req, res) => {
-  City.find()
-    .then(citys => {
-      res.send(citys);
+  let filterObj = {};
+  let reqArr = [];
+  if (req.query.searchText) {
+    reqObj = { name: { $regex: req.query.searchText, $options: "i" } };
+    reqArr.push(reqObj);
+    filterObj["$or"] = reqArr;
+  }
+
+  City.find(filterObj)
+    .then(cities => {
+      res.send(cities);
     })
     .catch(err => {
       res.status(500).send({
