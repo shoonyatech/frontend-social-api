@@ -8,7 +8,7 @@ module.exports = app => {
   app.get("/city", city.findAll);
 
   // Retrieve a single city with id
-  app.get("/city/:id", city.findOne);
+  app.get("/city/:cityName/:countryCode", city.findOne);
 
   // Update a city with id
   app.put("/city/:id", city.update);

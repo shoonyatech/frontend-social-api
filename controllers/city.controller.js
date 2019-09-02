@@ -47,11 +47,13 @@ exports.findAll = (req, res) => {
 
 // Find a single city with a id
 exports.findOne = (req, res) => {
-  City.findById(req.params.id)
+  const cityName = req.params.cityName;
+  const countryCode = req.params.countryCode;
+  City.findOne({ name: cityName, country: countryCode })
     .then(city => {
       if (!city) {
         return res.status(404).send({
-          message: "city not found with id " + req.params.id
+          message: `city not found with name ${cityName} and county code ${countryCode}`
         });
       }
       res.send(city);
