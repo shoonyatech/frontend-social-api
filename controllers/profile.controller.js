@@ -48,7 +48,14 @@ function createFBUser(fbUser, res) {
     name: fbUser.name,
     profilePic: fbUser.picture.data.url,
     email: fbUser.email,
-    social: [],
+    social: [
+      { label: "Github", value: "" },
+      { label: "Twitter", value: "" },
+      { label: "LinkedIn", value: "" },
+      { label: "Bitbucket", value: "" },
+      { label: "Medium", value: "" },
+      { label: "Website", value: "" }
+    ],
     skills: [],
     confAttended: [],
     confUpcoming: [],
@@ -131,7 +138,7 @@ exports.me = (req, res) => {
 };
 
 // Update profile of logged in user
-  exports.update = (req, res) => {
+exports.update = (req, res) => {
   const email = req.user.email;
   Profile.findOne({ email: email })
     .then(profile => {
