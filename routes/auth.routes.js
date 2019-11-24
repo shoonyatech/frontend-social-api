@@ -1,9 +1,9 @@
 module.exports = app => {
-  const profile = require("../controllers/profile.controller.js");
+  const auth = require("../controllers/auth.controller.js");
 
-  app.post("/auth/facebook", profile.fbSignin);
+  app.post("/auth/facebook", auth.fbSignin);
 
-  app.post("/auth/github", profile.githubSignin);
+  app.post("/auth/github", auth.githubSignin);
 
-  app.post("/auth/twitter", profile.twitterSignin);
+  app.post("/auth/twitter", auth.twitterSignin);
 };
