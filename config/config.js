@@ -1,7 +1,9 @@
 var keys = require("./keys").keys;
 
 exports.config = {
+  db: process.env.MONGODB_URI || keys.mongodb,
   auth: {
+    jwtSecret: process.env.JWT_SECRET || keys.jwtSecret,
     facebook: {
       clientId: process.env.FB_CLIENT_ID || keys.facebook.clientId,
       clientSecret: process.env.FB_CLIENT_SECRET || keys.facebook.clientSecret

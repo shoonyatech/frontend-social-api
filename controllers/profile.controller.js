@@ -1,12 +1,10 @@
 const axios = require("axios");
 var jwt = require("jsonwebtoken");
 const Profile = require("../models/profile.model.js");
-var config = require("../auth/config").config;
+var config = require("../config/config").config;
 var OAuth = require("oauth");
 var timestamp = require("unix-timestamp");
 var oauthSignature = require("oauth-signature");
-
-const JWT_SECRET = process.env.JWT_SECRET || "verySecret$%#$%@#!#!$!!";
 
 // Create and Save a new user
 exports.fbSignin = (req, res) => {
@@ -191,7 +189,7 @@ function findUserinDB(fbUser, res) {
 }
 
 function createFBUser(fbUser, res) {
-  var token = jwt.sign({ email: fbUser.email }, JWT_SECRET);
+  var token = jwt.sign({ email: fbUser.email }, config.auth.jwtSecret);
 
   const profile = new Profile({
     name: fbUser.name,
