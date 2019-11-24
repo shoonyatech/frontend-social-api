@@ -1,16 +1,19 @@
+var keys = require("./keys").keys;
+
 exports.config = {
   auth: {
     facebook: {
-      clientId: process.env.FB_CLIENT_ID,
-      clientSecret: process.env.FB_CLIENT_SECRET
+      clientId: process.env.FB_CLIENT_ID || keys.facebook.clientId,
+      clientSecret: process.env.FB_CLIENT_SECRET || keys.facebook.clientSecret
     },
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET
+      clientId: process.env.GITHUB_CLIENT_ID || keys.github.clientId,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || keys.github.clientSecret
     },
     twitter: {
-      clientId: process.env.TWITTER_CLIENT_ID,
-      clientSecret: process.env.TWITTER_CLIENT_SECRET
+      clientId: process.env.TWITTER_CLIENT_ID || keys.twitter.clientId,
+      clientSecret:
+        process.env.TWITTER_CLIENT_SECRET || keys.twitter.clientSecret
     },
     bitbucket: {
       clientId: "",
