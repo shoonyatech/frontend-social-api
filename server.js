@@ -35,6 +35,7 @@ require("./routes/job.routes.js")(app);
 require("./routes/user.routes.js")(app);
 require("./routes/city.routes.js")(app);
 require("./routes/conference.routes.js")(app);
+require("./routes/article.routes.js")(app);
 
 // this will attach the logged in user to req.user
 app.use(jwt({ secret: config.auth.jwtSecret }));
