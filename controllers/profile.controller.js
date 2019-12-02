@@ -3,17 +3,27 @@ const Profile = require("../models/profile.model.js");
 var config = require("../config/config").config;
 
 // Create and Save a new user
-exports.findSocialAuthUserinDB = (provider, user, res) => {
+exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
   Profile.findOne({ socialId: user.id })
     .then(profile => {
       if (profile == null || !profile.length) {
         //profile not found. Create one
         let name, profilePic, email;
 
+        console.log(user);
         if (provider === "facebook") {
           name = user.name;
           profilePic = user.picture.data.url;
           email = user.email;
+        } else if (provider === "github") {
+          name = user.name;
+          profilePic = user.avatar_url;
+          email = user.email;
+        } else if (provider === "twitter") {
+          console.log(user);
+          name = authResponse.profile.name;
+          profilePic = authResponse.profile.profile_image_url_https;
+          email = authResponse.profile.screen_name;
         }
 
         return createSocialAuthUser(
@@ -22,7 +32,8 @@ exports.findSocialAuthUserinDB = (provider, user, res) => {
           email,
           provider,
           user.id,
-          res
+          res,
+          authResponse
         );
       }
       res.send(profile);
@@ -41,7 +52,8 @@ function createSocialAuthUser(
   email,
   provider,
   socialId,
-  res
+  res,
+  authResponse
 ) {
   var token = jwt.sign({ email: email }, config.auth.jwtSecret);
 
@@ -71,7 +83,8 @@ function createSocialAuthUser(
   return profile
     .save()
     .then(data => {
-      res.send(data);
+      const account = { ...authResponse, ...data._doc };
+      res.send(account);
     })
     .catch(err => {
       res.status(500).send({

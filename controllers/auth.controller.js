@@ -30,7 +30,12 @@ exports.fbSignin = (req, res) => {
         )
         .then(function(response) {
           const user = response.data;
-          profileController.findSocialAuthUserinDB("facebook", user, res);
+          profileController.findSocialAuthUserinDB(
+            "facebook",
+            user,
+            res,
+            authResponse
+          );
         });
     })
     .catch(function(err) {
@@ -69,11 +74,23 @@ exports.githubSignin = (req, res) => {
       { "Content-Type": "application/json" }
     )
     .then(function(response) {
-      var responseJson = parseQueryString(response.data);
-      if (responseJson.error) {
-        res.status(500).json({ error: responseJson.error });
+      var authResponse = parseQueryString(response.data);
+      if (authResponse.error) {
+        res.status(500).json({ error: authResponse.error });
       } else {
-        res.json(responseJson);
+        axios
+          .get("https://api.github.com/user", {
+            headers: { Authorization: "Bearer " + authResponse.access_token }
+          })
+          .then(function(response) {
+            const user = response.data;
+            profileController.findSocialAuthUserinDB(
+              "github",
+              user,
+              res,
+              authResponse
+            );
+          });
       }
     })
     .catch(function(err) {
