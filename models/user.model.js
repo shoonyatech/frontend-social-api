@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const Link = require("./link.model");
-const Skill = require("./skill.model");
 const Conference = require("./conference.model");
 const Meetup = require("./meetup.model");
 
@@ -17,7 +15,7 @@ const UserSchema = mongoose.Schema(
     meetupUpcoming: [String],
     fbId: String,
     authToken: String,
-    role: String,
+    role: String, // <empty>/admin
     city: String
   },
   {
