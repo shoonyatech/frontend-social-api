@@ -1,34 +1,34 @@
 var jwt = require("jsonwebtoken");
-const Profile = require("../models/profile.model.js");
+const User = require("../models/user.model");
 var config = require("../config/config").config;
 
 // Create and Save a new user
 exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
-  Profile.findOne({ socialId: user.id })
-    .then(profile => {
-      if (profile == null || !profile.length) {
-        //profile not found. Create one
-        let name, profilePic, email;
+  User.findOne({ socialId: user.id })
+    .then(user => {
+      if (user == null || !user.length) {
+        //user not found. Create one
+        let name, userPic, email;
 
         console.log(user);
         if (provider === "facebook") {
           name = user.name;
-          profilePic = user.picture.data.url;
+          userPic = user.picture.data.url;
           email = user.email;
         } else if (provider === "github") {
           name = user.name;
-          profilePic = user.avatar_url;
+          userPic = user.avatar_url;
           email = user.email;
         } else if (provider === "twitter") {
           console.log(user);
-          name = authResponse.profile.name;
-          profilePic = authResponse.profile.profile_image_url_https;
-          email = authResponse.profile.screen_name;
+          name = authResponse.user.name;
+          userPic = authResponse.user.user_image_url_https;
+          email = authResponse.user.screen_name;
         }
 
         return createSocialAuthUser(
           name,
-          profilePic,
+          userPic,
           email,
           provider,
           user.id,
@@ -36,7 +36,7 @@ exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
           authResponse
         );
       }
-      res.send(profile);
+      res.send(user);
     })
     .catch(err => {
       console.log(err);
@@ -48,7 +48,7 @@ exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
 
 function createSocialAuthUser(
   name,
-  profilePic,
+  userPic,
   email,
   provider,
   socialId,
@@ -57,9 +57,9 @@ function createSocialAuthUser(
 ) {
   var token = jwt.sign({ email: email }, config.auth.jwtSecret);
 
-  const profile = new Profile({
+  const user = new User({
     name: name,
-    profilePic: profilePic,
+    userPic: userPic,
     email: email,
     social: [
       { label: "Github", value: "" },
@@ -79,8 +79,8 @@ function createSocialAuthUser(
     authToken: token
   });
 
-  // Save profile in the database
-  return profile
+  // Save user in the database
+  return user
     .save()
     .then(data => {
       const account = { ...authResponse, ...data._doc };
@@ -93,163 +93,164 @@ function createSocialAuthUser(
     });
 }
 
-// Retrieve and return all profiles from the database.
+// Retrieve and return all users from the database.
 exports.findAll = (req, res) => {
-  Profile.find()
-    .then(profiles => {
-      res.send(profiles);
+  User.find()
+    .then(users => {
+      res.send(users);
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving profiles."
+        message: err.message || "Some error occurred while retrieving users."
       });
     });
 };
 
-// Find a single profile with a id
+// Find a single user with a id
 exports.findOne = (req, res) => {
-  Profile.findById(req.params.id)
-    .then(profile => {
-      if (!profile) {
+  User.findById(req.params.id)
+    .then(user => {
+      if (!user) {
         return res.status(404).send({
-          message: "profile not found with id " + req.params.id
+          message: "user not found with id " + req.params.id
         });
       }
-      res.send(profile);
+      res.send(user);
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "profile not found with id " + req.params.id
+          message: "user not found with id " + req.params.id
         });
       }
       return res.status(500).send({
-        message: "Error retrieving profile with id " + req.params.id
+        message: "Error retrieving user with id " + req.params.id
       });
     });
 };
 
 exports.me = (req, res) => {
   const email = req.user.email;
-  Profile.findOne({ email: email })
-    .then(profile => {
-      if (!profile) {
+  User.findOne({ email: email })
+    .then(user => {
+      if (!user) {
         return res.status(404).send({
-          message: "profile not found with email " + email
+          message: "user not found with email " + email
         });
       }
-      res.send(profile);
+      res.send(user);
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "profile not found with email " + email
+          message: "user not found with email " + email
         });
       }
       return res.status(500).send({
-        message: "Error retrieving profile with email " + email
+        message: "Error retrieving user with email " + email
       });
     });
 };
 
-// Update profile of logged in user
+// Update user of logged in user
 exports.update = (req, res) => {
   const email = req.user.email;
-  Profile.findOne({ email: email })
-    .then(profile => {
-      if (!profile) {
+  User.findOne({ email: email })
+    .then(user => {
+      if (!user) {
         return res.status(404).send({
-          message: "profile not found with email " + email
+          message: "user not found with email " + email
         });
       }
-      const profileId = profile.id;
+      const userId = user.id;
 
-      Profile.findByIdAndUpdate(
-        profileId,
+      User.findByIdAndUpdate(
+        userId,
         {
           name: req.body.name,
-          profilePic: req.body.profilePic,
+          userPic: req.body.userPic,
           social: req.body.social,
           skills: req.body.skills,
           confAttended: req.body.confAttended,
           confUpcoming: req.body.confUpcoming,
           meetupAttended: req.body.meetupAttended,
-          meetupUpcoming: req.body.meetupUpcoming
+          meetupUpcoming: req.body.meetupUpcoming,
+          city: req.body.city
         },
         { new: false }
       )
-        .then(updatedProfile => {
-          if (!updatedProfile) {
+        .then(updatedUser => {
+          if (!updatedUser) {
             return res.status(404).send({
-              message: "profile not found with id " + profileId
+              message: "user not found with id " + userId
             });
           }
-          res.send(updatedProfile);
+          res.send(updatedUser);
         })
         .catch(err => {
           if (err.kind === "ObjectId") {
             return res.status(404).send({
-              message: "profile not found with id " + profileId
+              message: "user not found with id " + userId
             });
           }
           return res.status(500).send({
-            message: "Error updating profile with id " + profileId
+            message: "Error updating user with id " + userId
           });
         });
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "profile not found with email " + email
+          message: "user not found with email " + email
         });
       }
       return res.status(500).send({
-        message: "Error retrieving profile with email " + email
+        message: "Error retrieving user with email " + email
       });
     });
 };
 
-// Delete a profile for logged in user
+// Delete a user for logged in user
 exports.delete = (req, res) => {
   const email = req.user.email;
 
-  Profile.findOne({ email: email })
-    .then(profile => {
-      if (!profile) {
+  User.findOne({ email: email })
+    .then(user => {
+      if (!user) {
         return res.status(404).send({
-          message: "profile not found with email " + email
+          message: "user not found with email " + email
         });
       }
-      const profileId = profile.id;
+      const userId = user.id;
 
-      Profile.findByIdAndRemove(profileId)
-        .then(profile => {
-          if (!profile) {
+      User.findByIdAndRemove(userId)
+        .then(user => {
+          if (!user) {
             return res.status(404).send({
-              message: "profile not found with id " + profileId
+              message: "user not found with id " + userId
             });
           }
-          res.send({ message: "profile deleted successfully!" });
+          res.send({ message: "user deleted successfully!" });
         })
         .catch(err => {
           if (err.kind === "ObjectId" || err.name === "NotFound") {
             return res.status(404).send({
-              message: "profile not found with id " + profileId
+              message: "user not found with id " + userId
             });
           }
           return res.status(500).send({
-            message: "Could not delete profile with id " + profileId
+            message: "Could not delete user with id " + userId
           });
         });
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "profile not found with email " + email
+          message: "user not found with email " + email
         });
       }
       return res.status(500).send({
-        message: "Error retrieving profile with email " + email
+        message: "Error retrieving user with email " + email
       });
     });
 };
