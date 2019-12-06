@@ -5,30 +5,30 @@ var config = require("../config/config").config;
 // Create and Save a new user
 exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
   User.findOne({ socialId: user.id })
-    .then(user => {
-      if (user == null || !user.length) {
+    .then(existingUSer => {
+      if (existingUSer == null || !existingUSer.length) {
         //user not found. Create one
-        let name, userPic, email;
+        let name, profilePic, email;
 
         console.log(user);
         if (provider === "facebook") {
           name = user.name;
-          userPic = user.picture.data.url;
+          profilePic = user.picture.data.url;
           email = user.email;
         } else if (provider === "github") {
           name = user.name;
-          userPic = user.avatar_url;
+          profilePic = user.avatar_url;
           email = user.email;
         } else if (provider === "twitter") {
           console.log(user);
           name = authResponse.user.name;
-          userPic = authResponse.user.user_image_url_https;
+          profilePic = authResponse.user.user_image_url_https;
           email = authResponse.user.screen_name;
         }
 
         return createSocialAuthUser(
           name,
-          userPic,
+          profilePic,
           email,
           provider,
           user.id,
@@ -48,7 +48,7 @@ exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
 
 function createSocialAuthUser(
   name,
-  userPic,
+  profilePic,
   email,
   provider,
   socialId,
@@ -59,7 +59,7 @@ function createSocialAuthUser(
 
   const user = new User({
     name: name,
-    userPic: userPic,
+    profilePic: profilePic,
     email: email,
     social: [
       { label: "Github", value: "" },
@@ -168,7 +168,7 @@ exports.update = (req, res) => {
         userId,
         {
           name: req.body.name,
-          userPic: req.body.userPic,
+          profilePic: req.body.profilePic,
           social: req.body.social,
           skills: req.body.skills,
           confAttended: req.body.confAttended,
