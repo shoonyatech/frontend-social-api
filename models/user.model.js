@@ -16,7 +16,9 @@ const UserSchema = mongoose.Schema(
     fbId: String,
     authToken: String,
     role: String, // <empty>/admin
-    city: String
+    city: String,
+    socialId: String,
+    provider: String
   },
   {
     timestamps: true
