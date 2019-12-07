@@ -1,21 +1,29 @@
-let keys = require("./keys").keys;
+const {
+  MONGODB_URI,
+  JWT_SECRET,
+  FB_CLIENT_ID,
+  FB_CLIENT_SECRET,
+  GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET,
+  TWITTER_CLIENT_ID,
+  TWITTER_CLIENT_SECRET
+} = process.env;
 
 exports.config = {
-  db: process.env.MONGODB_URI || keys.mongodb,
+  db: MONGODB_URI,
   auth: {
-    jwtSecret: process.env.JWT_SECRET || keys.jwtSecret,
+    jwtSecret: JWT_SECRET,
     facebook: {
-      clientId: process.env.FB_CLIENT_ID || keys.facebook.clientId,
-      clientSecret: process.env.FB_CLIENT_SECRET || keys.facebook.clientSecret
+      clientId: FB_CLIENT_ID,
+      clientSecret: FB_CLIENT_SECRET
     },
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID || keys.github.clientId,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || keys.github.clientSecret
+      clientId: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET
     },
     twitter: {
-      clientId: process.env.TWITTER_CLIENT_ID || keys.twitter.clientId,
-      clientSecret:
-        process.env.TWITTER_CLIENT_SECRET || keys.twitter.clientSecret
+      clientId: TWITTER_CLIENT_ID,
+      clientSecret: TWITTER_CLIENT_SECRET
     },
     bitbucket: {
       clientId: "",
