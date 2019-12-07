@@ -4,9 +4,9 @@ var config = require("../config/config").config;
 
 // Create and Save a new user
 exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
-  User.findOne({ socialId: user.id })
-    .then(existingUSer => {
-      if (existingUSer == null || !existingUSer.length) {
+  User.findOne({ socialId: user.id, provider: provider })
+    .then(existingUser => {
+      if (existingUser == null || !existingUser.length) {
         //user not found. Create one
         let name, profilePic, email;
 
@@ -36,7 +36,8 @@ exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
           authResponse
         );
       }
-      res.send(user);
+      const account = { ...authResponse, ...existingUser._doc };
+      res.send(account);
     })
     .catch(err => {
       console.log(err);
@@ -58,9 +59,9 @@ function createSocialAuthUser(
   var token = jwt.sign({ email: email }, config.auth.jwtSecret);
 
   const user = new User({
-    name: name,
-    profilePic: profilePic,
-    email: email,
+    name,
+    profilePic,
+    email,
     social: [
       { label: "Github", value: "" },
       { label: "Twitter", value: "" },
@@ -74,8 +75,8 @@ function createSocialAuthUser(
     confUpcoming: [],
     meetupAttended: [],
     meetupUpcoming: [],
-    socialId: socialId,
-    provider: provider,
+    socialId,
+    provider,
     authToken: token
   });
 
