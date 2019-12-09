@@ -9,10 +9,8 @@ const UserSchema = mongoose.Schema(
     email: String,
     social: [],
     skills: [],
-    confAttended: [String], // id of conference
-    confUpcoming: [String],
-    meetupAttended: [String],
-    meetupUpcoming: [String],
+    conferences: [String], // name of conference
+    meetups: [String],
     fbId: String,
     authToken: String,
     role: String, // <empty>/admin
