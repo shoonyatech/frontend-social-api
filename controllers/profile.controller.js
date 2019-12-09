@@ -4,7 +4,7 @@ var config = require("../config/config").config;
 
 // Create and Save a new user
 exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
-  User.findOne({ socialId: user.id, provider: provider })
+  User.find({ socialId: user.id, provider: provider })
     .then(existingUser => {
       if (existingUser == null || !existingUser.length) {
         //user not found. Create one
@@ -36,7 +36,7 @@ exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
           authResponse
         );
       }
-      const account = { ...authResponse, ...existingUser._doc };
+      const account = { ...authResponse, ...existingUser[0]._doc };
       res.send(account);
     })
     .catch(err => {
