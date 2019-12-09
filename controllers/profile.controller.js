@@ -174,7 +174,7 @@ exports.update = (req, res) => {
           meetups: req.body.meetups,
           city: req.body.city
         },
-        { new: false }
+        { new: true }
       )
         .then(updatedUser => {
           if (!updatedUser) {
