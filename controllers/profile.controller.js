@@ -71,10 +71,8 @@ function createSocialAuthUser(
       { label: "Website", value: "" }
     ],
     skills: [],
-    confAttended: [],
-    confUpcoming: [],
-    meetupAttended: [],
-    meetupUpcoming: [],
+    conferences: [],
+    meetups: [],
     socialId,
     provider,
     authToken: token
@@ -172,10 +170,8 @@ exports.update = (req, res) => {
           profilePic: req.body.profilePic,
           social: req.body.social,
           skills: req.body.skills,
-          confAttended: req.body.confAttended,
-          confUpcoming: req.body.confUpcoming,
-          meetupAttended: req.body.meetupAttended,
-          meetupUpcoming: req.body.meetupUpcoming,
+          conferences: req.body.conferences,
+          meetups: req.body.meetups,
           city: req.body.city
         },
         { new: false }
