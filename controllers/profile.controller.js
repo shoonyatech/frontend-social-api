@@ -56,7 +56,7 @@ function createSocialAuthUser(
   res,
   authResponse
 ) {
-  var token = jwt.sign({ email: email }, config.auth.jwtSecret);
+  var authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
 
   const user = new User({
     name,
@@ -75,7 +75,7 @@ function createSocialAuthUser(
     meetups: [],
     socialId,
     provider,
-    authToken: token
+    authToken
   });
 
   // Save user in the database
