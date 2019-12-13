@@ -26,15 +26,13 @@ exports.create = (req, res) => {
 
 // Retrieve and return all citys from the database that matches search result.
 exports.findAll = (req, res) => {
-  let filterObj = {};
-  let reqArr = [];
-  if (req.query.searchText) {
-    reqObj = { name: { $regex: req.query.searchText, $options: "i" } };
-    reqArr.push(reqObj);
-    filterObj["$or"] = reqArr;
+  let reqObj = {};
+  const searchText = req.query.searchText;
+  if (searchText && searchText.length) {
+    reqObj = { name: { $regex: searchText, $options: "i" } };
   }
 
-  City.find(filterObj)
+  City.find(reqObj)
     .then(cities => {
       res.send(cities);
     })
