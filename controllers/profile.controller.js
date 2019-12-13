@@ -47,6 +47,10 @@ exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
     });
 };
 
+function createUniqueUsername(name) {
+  return name.replace(" ", "").toLowerCase();
+}
+
 function createSocialAuthUser(
   name,
   profilePic,
@@ -56,10 +60,12 @@ function createSocialAuthUser(
   res,
   authResponse
 ) {
-  let authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
+  const authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
+  const username = createUniqueUsername(name);
 
   const user = new User({
     name,
+    username,
     profilePic,
     email,
     social: [

@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
-const Conference = require("./conference.model");
-const Meetup = require("./meetup.model");
 
 const UserSchema = mongoose.Schema(
   {
     name: String,
+    username: String,
     profilePic: String,
     email: String,
     social: [],
