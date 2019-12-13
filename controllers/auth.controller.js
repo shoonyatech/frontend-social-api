@@ -1,9 +1,9 @@
 const axios = require("axios");
-var config = require("../config/config").config;
-var OAuth = require("oauth");
-var timestamp = require("unix-timestamp");
-var oauthSignature = require("oauth-signature");
-var profileController = require("./profile.controller");
+let config = require("../config/config").config;
+let OAuth = require("oauth");
+let timestamp = require("unix-timestamp");
+let oauthSignature = require("oauth-signature");
+let profileController = require("./profile.controller");
 
 // Create and Save a new user
 exports.fbSignin = (req, res) => {
@@ -20,7 +20,7 @@ exports.fbSignin = (req, res) => {
       { "Content-Type": "application/json" }
     )
     .then(function(response) {
-      var authResponse = response.data;
+      let authResponse = response.data;
       axios
         .get(
           "https://graph.facebook.com/v5.0/me?fields=id,name,email,picture.type(large)",
@@ -74,7 +74,7 @@ exports.githubSignin = (req, res) => {
       { "Content-Type": "application/json" }
     )
     .then(function(response) {
-      var authResponse = parseQueryString(response.data);
+      let authResponse = parseQueryString(response.data);
       if (authResponse.error) {
         res.status(500).json({ error: authResponse.error });
       } else {
@@ -134,9 +134,9 @@ exports.twitterSignin = (req, res) => {
         if (error) {
           res.status(500).json(error);
         } else {
-          var verifyCredentialsUrl =
+          let verifyCredentialsUrl =
             "https://api.twitter.com/1.1/account/verify_credentials.json";
-          var parameters = {
+          let parameters = {
             oauth_consumer_key: config.auth.twitter.clientId,
             oauth_token: oauthAccessToken,
             oauth_nonce: "vueauth-" + new Date().getTime(),
@@ -145,7 +145,7 @@ exports.twitterSignin = (req, res) => {
             oauth_version: "1.0"
           };
 
-          var signature = oauthSignature.generate(
+          let signature = oauthSignature.generate(
             "GET",
             verifyCredentialsUrl,
             parameters,

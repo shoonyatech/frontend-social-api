@@ -1,6 +1,6 @@
-var jwt = require("jsonwebtoken");
+let jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
-var config = require("../config/config").config;
+let config = require("../config/config").config;
 
 // Create and Save a new user
 exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
@@ -56,7 +56,7 @@ function createSocialAuthUser(
   res,
   authResponse
 ) {
-  var authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
+  let authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
 
   const user = new User({
     name,

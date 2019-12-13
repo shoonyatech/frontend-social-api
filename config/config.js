@@ -1,4 +1,4 @@
-var keys = require("./keys").keys;
+let keys = require("./keys").keys;
 
 exports.config = {
   db: process.env.MONGODB_URI || keys.mongodb,
