@@ -81,7 +81,9 @@ function createSocialAuthUser(
     meetups: [],
     socialId,
     provider,
-    authToken
+    authToken,
+    city: null,
+    country: null
   });
 
   // Save user in the database
@@ -178,7 +180,8 @@ exports.update = (req, res) => {
           skills: req.body.skills,
           conferences: req.body.conferences,
           meetups: req.body.meetups,
-          city: req.body.city
+          city: req.body.city,
+          country: req.body.country
         },
         { new: true }
       )

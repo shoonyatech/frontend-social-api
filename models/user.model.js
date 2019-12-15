@@ -14,6 +14,7 @@ const UserSchema = mongoose.Schema(
     authToken: String,
     role: String, // <empty>/admin
     city: String,
+    country: String,
     socialId: String,
     provider: String
   },
