@@ -1,27 +1,27 @@
 const City = require("../models/city.model.js");
 
 // Create and Save a new city
-exports.create = (req, res) => {
-  const city = new City({
-    name: req.body.name,
-    description: req.body.description,
-    photo: req.body.photo,
-    country: req.body.country,
-    lat: req.body.lat,
-    lng: req.body.lng
+exports.create = async (req, res) => {
+  const city = await this.createCityIfNotExists(req.body);
+  res.send(city);
+};
+
+exports.createCityIfNotExists = async cityDetails => {
+  const existingCity = await City.find({
+    name: cityDetails.city,
+    country: cityDetails.country
   });
 
+  if (existingCity.length) {
+    return existingCity[0];
+  }
+
   // Save city in the database
-  city
-    .save()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the city."
-      });
-    });
+  const cityModel = new City({
+    name: cityDetails.city,
+    country: cityDetails.country
+  });
+  return await cityModel.save();
 };
 
 // Retrieve and return all citys from the database that matches search result.
