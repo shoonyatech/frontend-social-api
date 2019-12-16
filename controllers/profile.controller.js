@@ -1,9 +1,10 @@
-let jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
-let config = require("../config/config").config;
+const config = require("../config/config").config;
+const cityController = require("./city.controller");
 
 // Create and Save a new user
-exports.findSocialAuthUserinDB = (provider, user, res, authResponse) => {
+exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
   User.find({ socialId: user.id, provider: provider })
     .then(existingUser => {
       if (existingUser == null || !existingUser.length) {
@@ -51,7 +52,7 @@ function createUniqueUsername(name) {
   return name.replace(" ", "").toLowerCase();
 }
 
-function createSocialAuthUser(
+async function createSocialAuthUser(
   name,
   profilePic,
   email,
@@ -87,17 +88,15 @@ function createSocialAuthUser(
   });
 
   // Save user in the database
-  return user
-    .save()
-    .then(data => {
-      const account = { ...authResponse, ...data._doc };
-      res.send(account);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the user."
-      });
+  try {
+    const userModel = await user.save();
+    const account = { ...authResponse, ...userModel._doc };
+    res.send(account);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the user."
     });
+  }
 }
 
 // Retrieve and return all users from the database.
@@ -160,18 +159,27 @@ exports.me = (req, res) => {
 };
 
 // Update user of logged in user
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   const email = req.user.email;
-  User.findOne({ email: email })
-    .then(user => {
-      if (!user) {
-        return res.status(404).send({
-          message: "user not found with email " + email
-        });
-      }
-      const userId = user.id;
 
-      User.findByIdAndUpdate(
+  try {
+    const existingUser = await User.findOne({ email: email });
+
+    if (!existingUser) {
+      return res.status(404).send({
+        message: "user not found with email " + email
+      });
+    }
+    const userId = existingUser.id;
+
+    //create city for the user
+    await cityController.createCityIfNotExists({
+      city: req.body.city,
+      country: req.body.country
+    });
+
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
           name: req.body.name,
@@ -184,36 +192,36 @@ exports.update = (req, res) => {
           country: req.body.country
         },
         { new: true }
-      )
-        .then(updatedUser => {
-          if (!updatedUser) {
-            return res.status(404).send({
-              message: "user not found with id " + userId
-            });
-          }
-          res.send(updatedUser);
-        })
-        .catch(err => {
-          if (err.kind === "ObjectId") {
-            return res.status(404).send({
-              message: "user not found with id " + userId
-            });
-          }
-          return res.status(500).send({
-            message: "Error updating user with id " + userId
-          });
+      );
+      if (!updatedUser) {
+        return res.status(404).send({
+          message: "user not found with id " + userId
         });
-    })
-    .catch(err => {
+      }
+
+      res.send(updatedUser);
+    } catch (err) {
+      console.log(err);
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with email " + email
+          message: "user not found with id " + userId
         });
       }
       return res.status(500).send({
-        message: "Error retrieving user with email " + email
+        message: "Error updating user with id " + userId
       });
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.kind === "ObjectId") {
+      return res.status(404).send({
+        message: "user not found with email " + email
+      });
+    }
+    return res.status(500).send({
+      message: "Error retrieving user with email " + email
     });
+  }
 };
 
 // Delete a user for logged in user
