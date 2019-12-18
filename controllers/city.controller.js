@@ -70,15 +70,11 @@ exports.findOne = (req, res) => {
 
 // Update a city identified by the id in the request
 exports.update = (req, res) => {
+  const reqBody = req.body;
   City.findByIdAndUpdate(
     req.params.id,
     {
-      name: req.body.name,
-      description: req.body.description,
-      photo: req.body.photo,
-      country: req.body.country,
-      lat: req.body.lat,
-      lng: req.body.lng
+      ...reqBody
     },
     { new: true }
   )
