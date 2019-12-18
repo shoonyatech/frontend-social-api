@@ -67,6 +67,7 @@ async function createSocialAuthUser(
   const user = new User({
     name,
     username,
+    category: "dev",
     profilePic,
     email,
     social: [
