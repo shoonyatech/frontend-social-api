@@ -36,25 +36,49 @@ exports.findAll = (req, res) => {
   let filterObj = {};
   let reqArr = [];
   let reqObj = {};
-  if(req.query.searchText){
-    reqObj = {name:{$regex: req.query.searchText, $options: 'i'}};
+  if (req.query.searchText) {
+    reqObj = { name: { $regex: req.query.searchText, $options: "i" } };
     reqArr.push(reqObj);
-    reqObj = {description:{$regex: req.query.searchText, $options: 'i'}};
-    reqArr.push(reqObj);
-  }
-  if(req.query.relatedSkills){
-    let relatedSkills = req.query.relatedSkills.split(',');
-    reqObj = {relatedSkills: { $in : relatedSkills }};
+    reqObj = { description: { $regex: req.query.searchText, $options: "i" } };
     reqArr.push(reqObj);
   }
-  if(req.query.city){
-    reqObj = {city: {$regex: req.query.city, $options: 'i'}};
+  if (req.query.relatedSkills) {
+    let relatedSkills = req.query.relatedSkills.split(",");
+    reqObj = { relatedSkills: { $in: relatedSkills } };
     reqArr.push(reqObj);
   }
-  filterObj['$or'] = reqArr;
-  Conference.find(filterObj,['_id', 'name', 'dateFrom', 'conferenceOrMeetup','description','link'])
-    .sort({'createdAt': 'descending'})
-    .skip((pageNumber-1)*nPerPage).limit(nPerPage)
+  if (req.query.city) {
+    reqObj = { city: { $regex: req.query.city, $options: "i" } };
+    reqArr.push(reqObj);
+  }
+  filterObj["$or"] = reqArr;
+  Conference.find(filterObj, [
+    "_id",
+    "name",
+    "dateFrom",
+    "conferenceOrMeetup",
+    "description",
+    "link"
+  ])
+    .sort({ createdAt: "descending" })
+    .skip((pageNumber - 1) * nPerPage)
+    .limit(nPerPage)
+    .then(conferences => {
+      res.send(conferences);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving conferences."
+      });
+    });
+};
+
+// Retrieve and return all conferences from the database.
+exports.findAllInCity = (req, res) => {
+  const cityName = req.params.cityName;
+  const countryCode = req.params.countryCode;
+  Conference.find({ city: cityName, country: countryCode })
     .then(conferences => {
       res.send(conferences);
     })
