@@ -7,6 +7,9 @@ module.exports = app => {
   // Retrieve all conference
   app.get("/conference", conference.findAll);
 
+  // Retrieve all conference in a city
+  app.get("/conference/city/:cityName/:countryCode", conference.findAllInCity);
+
   // Retrieve a single conference with id
   app.get("/conference/:id", conference.findOne);
 
