@@ -191,17 +191,11 @@ exports.update = async (req, res) => {
     });
 
     try {
+      const reqBody = req.body;
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
-          name: req.body.name,
-          profilePic: req.body.profilePic,
-          social: req.body.social,
-          skills: req.body.skills,
-          conferences: req.body.conferences,
-          meetups: req.body.meetups,
-          city: req.body.city,
-          country: req.body.country
+          ...reqBody
         },
         { new: true }
       );
