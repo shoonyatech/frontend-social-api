@@ -10,12 +10,9 @@ module.exports = app => {
   // Delete my profile
   app.delete("/me", profile.delete);
 
-  // retrieve current user profile
+  // retrieve user with a given username
   app.get("/user/:username", profile.findByUsername);
 
-  // Retrieve all profile
-  // app.get("/profile", profile.findAll);
-
-  // Retrieve a single profile with id
-  // app.get("/profile/:id", profile.findOne);
+  // get list of all users from a given city
+  app.get("/user/from/:cityName/:countryCode", profile.findUsersInCity);
 };

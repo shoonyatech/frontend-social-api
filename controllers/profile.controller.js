@@ -297,3 +297,17 @@ exports.findByUsername = (req, res) => {
       });
     });
 };
+
+exports.findUsersInCity = (req, res) => {
+  const cityName = req.params.cityName;
+  const countryCode = req.params.countryCode;
+  User.find({ city: cityName, country: countryCode })
+    .then(users => {
+      res.send(users);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving users."
+      });
+    });
+};
