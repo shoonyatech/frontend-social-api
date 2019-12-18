@@ -274,3 +274,26 @@ exports.delete = (req, res) => {
       });
     });
 };
+
+exports.findByUsername = (req, res) => {
+  const username = req.params.username;
+  User.findOne({ username: username })
+    .then(user => {
+      if (!user) {
+        return res.status(404).send({
+          message: "user not found with username " + username
+        });
+      }
+      res.send(user);
+    })
+    .catch(err => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "user not found with username " + username
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving user with username " + username
+      });
+    });
+};
