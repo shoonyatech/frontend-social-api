@@ -77,7 +77,18 @@ async function createSocialAuthUser(
       { label: "Medium", value: "" },
       { label: "Website", value: "" }
     ],
-    skills: [],
+    skills: [
+      { name: "JS", noOfYears: 0, rating: 0 },
+      { name: "HTML5", noOfYears: 0, rating: 0 },
+      { name: "CSS", noOfYears: 0, rating: 0 },
+      { name: "React", noOfYears: 0, rating: 0 },
+      { name: "Angular", noOfYears: 0, rating: 0 },
+      { name: "Vue", noOfYears: 0, rating: 0 },
+      { name: "Web Components", noOfYears: 0, rating: 0 },
+      { name: "Website Design", noOfYears: 0, rating: 0 },
+      { name: "Android", noOfYears: 0, rating: 0 },
+      { name: "iOS", noOfYears: 0, rating: 0 }
+    ],
     conferences: [],
     meetups: [],
     socialId,
