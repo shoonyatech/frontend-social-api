@@ -8,7 +8,8 @@ const CitySchema = mongoose.Schema(
     photo: String,
     country: String,
     lat: String,
-    lng: String
+    lng: String,
+    topSkills: []
   },
   {
     timestamps: true
