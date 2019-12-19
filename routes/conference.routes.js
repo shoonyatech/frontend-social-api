@@ -10,6 +10,9 @@ module.exports = app => {
   // Retrieve all conference in a city
   app.get("/conference/city/:cityName/:countryCode", conference.findAllInCity);
 
+  // Retrieve all conference in a city
+  app.get("/conference/upcoming", conference.findAllUpcoming);
+
   // Retrieve a single conference with id
   app.get("/conference/:id", conference.findOne);
 

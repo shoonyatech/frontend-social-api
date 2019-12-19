@@ -90,6 +90,20 @@ exports.findAllInCity = (req, res) => {
     });
 };
 
+// Retrieve and return all conferences from the database.
+exports.findAllUpcoming = (req, res) => {
+  Conference.find({ dateFrom: { $gte: new Date() } })
+    .then(conferences => {
+      res.send(conferences);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving conferences."
+      });
+    });
+};
+
 // Find a single conference with a id
 exports.findOne = (req, res) => {
   Conference.findById(req.params.id)
