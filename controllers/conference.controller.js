@@ -129,17 +129,11 @@ exports.findOne = (req, res) => {
 
 // Update a conference identified by the id in the request
 exports.update = (req, res) => {
+  const reqBody = req.body;
   Conference.findByIdAndUpdate(
     req.params.id,
     {
-      name: req.body.name,
-      description: req.body.description,
-      dateFrom: req.body.dateFrom,
-      dateTo: req.body.dateTo,
-      city: req.body.city,
-      country: req.body.country,
-      conferenceOrMeetup: req.body.conferenceOrMeetup,
-      relatedSkills: req.body.relatedSkills
+      ...reqBody
     },
     { new: true }
   )
