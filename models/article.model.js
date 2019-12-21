@@ -10,7 +10,8 @@ const ArticleSchema = mongoose.Schema(
     courtesyUrl: String,
     tags: [String],
     medium: String,
-    type: String
+    type: String, // blog/talk/video/podcast
+    relatedSkills: []
   },
   {
     timestamps: true
