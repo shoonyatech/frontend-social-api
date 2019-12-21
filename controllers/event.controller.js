@@ -2,17 +2,7 @@ const Event = require("../models/event.model.js");
 
 // Create and Save a new event
 exports.create = (req, res) => {
-  const event = new Event({
-    name: req.body.name,
-    description: req.body.description,
-    dateFrom: req.body.dateFrom,
-    dateTo: req.body.dateTo,
-    city: req.body.city,
-    country: req.body.country,
-    eventOrMeetup: req.body.eventOrMeetup,
-    relatedSkills: req.body.relatedSkills,
-    link: req.body.link
-  });
+  const event = new Event(...req.body);
 
   // Save event in the database
   event
@@ -55,7 +45,7 @@ exports.findAll = (req, res) => {
     "_id",
     "name",
     "dateFrom",
-    "eventOrMeetup",
+    "type",
     "description",
     "link"
   ])
@@ -125,11 +115,10 @@ exports.findOne = (req, res) => {
 
 // Update a event identified by the id in the request
 exports.update = (req, res) => {
-  const reqBody = req.body;
   Event.findByIdAndUpdate(
     req.params.id,
     {
-      ...reqBody
+      ...req.body
     },
     { new: true }
   )
