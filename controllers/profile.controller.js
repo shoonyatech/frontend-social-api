@@ -191,11 +191,10 @@ exports.update = async (req, res) => {
     });
 
     try {
-      const reqBody = req.body;
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
-          ...reqBody
+          ...req.body
         },
         { new: true }
       );
