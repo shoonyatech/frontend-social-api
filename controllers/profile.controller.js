@@ -91,7 +91,6 @@ async function createSocialAuthUser(
       { name: "iOS", noOfYears: 0, rating: 0 }
     ],
     events: [],
-    meetups: [],
     socialId,
     provider,
     authToken,
