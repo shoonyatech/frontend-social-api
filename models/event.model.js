@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ConferenceSchema = mongoose.Schema(
+const EventSchema = mongoose.Schema(
   {
     name: String,
     description: String,
@@ -8,7 +8,7 @@ const ConferenceSchema = mongoose.Schema(
     dateTo: Date,
     city: String,
     country: String,
-    conferenceOrMeetup: String, // c/m
+    type: String, // c - conferene / m - meetup
     relatedSkills: [],
     website: String,
     twitter: String,
@@ -19,4 +19,4 @@ const ConferenceSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Conference", ConferenceSchema);
+module.exports = mongoose.model("Event", EventSchema);

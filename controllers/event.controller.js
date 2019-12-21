@@ -1,34 +1,33 @@
-const Conference = require("../models/conference.model.js");
+const Event = require("../models/event.model.js");
 
-// Create and Save a new conference
+// Create and Save a new event
 exports.create = (req, res) => {
-  const conference = new Conference({
+  const event = new Event({
     name: req.body.name,
     description: req.body.description,
     dateFrom: req.body.dateFrom,
     dateTo: req.body.dateTo,
     city: req.body.city,
     country: req.body.country,
-    conferenceOrMeetup: req.body.conferenceOrMeetup,
+    eventOrMeetup: req.body.eventOrMeetup,
     relatedSkills: req.body.relatedSkills,
     link: req.body.link
   });
 
-  // Save conference in the database
-  conference
+  // Save event in the database
+  event
     .save()
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the conference."
+        message: err.message || "Some error occurred while creating the event."
       });
     });
 };
 
-// Retrieve and return all conferences from the database.
+// Retrieve and return all events from the database.
 exports.findAll = (req, res) => {
   let pageNumber = parseInt(req.query.pageNo);
   let nPerPage = parseInt(req.query.itemsPerPage);
@@ -52,130 +51,127 @@ exports.findAll = (req, res) => {
     reqArr.push(reqObj);
   }
   filterObj["$or"] = reqArr;
-  Conference.find(filterObj, [
+  Event.find(filterObj, [
     "_id",
     "name",
     "dateFrom",
-    "conferenceOrMeetup",
+    "eventOrMeetup",
     "description",
     "link"
   ])
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
-    .then(conferences => {
-      res.send(conferences);
+    .then(events => {
+      res.send(events);
     })
     .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving conferences."
+        message: err.message || "Some error occurred while retrieving events."
       });
     });
 };
 
-// Retrieve and return all conferences from the database.
+// Retrieve and return all events from the database.
 exports.findAllInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
-  Conference.find({ city: cityName, country: countryCode })
-    .then(conferences => {
-      res.send(conferences);
+  Event.find({ city: cityName, country: countryCode })
+    .then(events => {
+      res.send(events);
     })
     .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving conferences."
+        message: err.message || "Some error occurred while retrieving events."
       });
     });
 };
 
-// Retrieve and return all conferences from the database.
+// Retrieve and return all events from the database.
 exports.findAllUpcoming = (req, res) => {
-  Conference.find({ dateFrom: { $gte: new Date() } })
-    .then(conferences => {
-      res.send(conferences);
+  Event.find({ dateFrom: { $gte: new Date() } })
+    .then(events => {
+      res.send(events);
     })
     .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving conferences."
+        message: err.message || "Some error occurred while retrieving events."
       });
     });
 };
 
-// Find a single conference with a id
+// Find a single event with a id
 exports.findOne = (req, res) => {
-  Conference.findById(req.params.id)
-    .then(conference => {
-      if (!conference) {
+  Event.findById(req.params.id)
+    .then(event => {
+      if (!event) {
         return res.status(404).send({
-          message: "conference not found with id " + req.params.id
+          message: "event not found with id " + req.params.id
         });
       }
-      res.send(conference);
+      res.send(event);
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "conference not found with id " + req.params.id
+          message: "event not found with id " + req.params.id
         });
       }
       return res.status(500).send({
-        message: "Error retrieving conference with id " + req.params.id
+        message: "Error retrieving event with id " + req.params.id
       });
     });
 };
 
-// Update a conference identified by the id in the request
+// Update a event identified by the id in the request
 exports.update = (req, res) => {
   const reqBody = req.body;
-  Conference.findByIdAndUpdate(
+  Event.findByIdAndUpdate(
     req.params.id,
     {
       ...reqBody
     },
     { new: true }
   )
-    .then(conference => {
-      if (!conference) {
+    .then(event => {
+      if (!event) {
         return res.status(404).send({
-          message: "conference not found with id " + req.params.id
+          message: "event not found with id " + req.params.id
         });
       }
-      res.send(conference);
+      res.send(event);
     })
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "conference not found with id " + req.params.id
+          message: "event not found with id " + req.params.id
         });
       }
       return res.status(500).send({
-        message: "Error updating conference with id " + req.params.id
+        message: "Error updating event with id " + req.params.id
       });
     });
 };
 
-// Delete a conference with the specified id in the request
+// Delete a event with the specified id in the request
 exports.delete = (req, res) => {
-  Conference.findByIdAndRemove(req.params.id)
-    .then(conference => {
-      if (!conference) {
+  Event.findByIdAndRemove(req.params.id)
+    .then(event => {
+      if (!event) {
         return res.status(404).send({
-          message: "conference not found with id " + req.params.id
+          message: "event not found with id " + req.params.id
         });
       }
-      res.send({ message: "conference deleted successfully!" });
+      res.send({ message: "event deleted successfully!" });
     })
     .catch(err => {
       if (err.kind === "ObjectId" || err.name === "NotFound") {
         return res.status(404).send({
-          message: "conference not found with id " + req.params.id
+          message: "event not found with id " + req.params.id
         });
       }
       return res.status(500).send({
-        message: "Could not delete conference with id " + req.params.id
+        message: "Could not delete event with id " + req.params.id
       });
     });
 };
