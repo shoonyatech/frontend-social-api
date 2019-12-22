@@ -9,7 +9,7 @@ const UserSchema = mongoose.Schema(
     email: String,
     social: [],
     skills: [],
-    events: [String], // name of event
+    eventIds: [String], // ids of event
     fbId: String,
     authToken: String,
     role: String, // <empty>/admin

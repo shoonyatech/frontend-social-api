@@ -90,7 +90,7 @@ async function createSocialAuthUser(
       { name: "Android", noOfYears: 0, rating: 0 },
       { name: "iOS", noOfYears: 0, rating: 0 }
     ],
-    events: [],
+    eventIds: [],
     socialId,
     provider,
     authToken,

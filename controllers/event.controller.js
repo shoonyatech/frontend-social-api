@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Event = require("../models/event.model.js");
 
 // Create and Save a new event
@@ -19,8 +20,10 @@ exports.create = (req, res) => {
 
 // Retrieve and return all events from the database.
 exports.findAll = (req, res) => {
-  let pageNumber = parseInt(req.query.pageNo);
-  let nPerPage = parseInt(req.query.itemsPerPage);
+  let pageNumber = req.query.pageNo ? parseInt(req.query.pageNo) : 1;
+  let nPerPage = req.query.itemsPerPage
+    ? parseInt(req.query.itemsPerPage)
+    : 200;
 
   let filterObj = {};
   let reqArr = [];
@@ -41,14 +44,7 @@ exports.findAll = (req, res) => {
     reqArr.push(reqObj);
   }
   filterObj["$or"] = reqArr;
-  Event.find(filterObj, [
-    "_id",
-    "name",
-    "dateFrom",
-    "type",
-    "description",
-    "link"
-  ])
+  Event.find(filterObj)
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
@@ -62,7 +58,21 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Retrieve and return all events from the database.
+// Retrieve and return all events with given IDs.
+exports.withIds = (req, res) => {
+  const ids = req.query.ids.split(",").map(id => mongoose.Types.ObjectId(id));
+  Event.find({ _id: { $in: ids } })
+    .then(events => {
+      res.send(events);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events."
+      });
+    });
+};
+
+// Retrieve and return all events from the given city.
 exports.findAllInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
