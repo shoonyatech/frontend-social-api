@@ -7,6 +7,9 @@ module.exports = app => {
   // Retrieve all event
   app.get("/event", event.findAll);
 
+  // Retrieve all event
+  app.get("/event/withIds", event.withIds);
+
   // Retrieve all event in a city
   app.get("/event/city/:cityName/:countryCode", event.findAllInCity);
 
