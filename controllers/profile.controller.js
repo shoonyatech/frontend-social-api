@@ -76,7 +76,8 @@ async function createSocialAuthUser(
       { label: "LinkedIn", value: "" },
       { label: "Bitbucket", value: "" },
       { label: "Medium", value: "" },
-      { label: "Website", value: "" }
+      { label: "Website", value: "" },
+      { label: "Stack Overflow", value: "" }
     ],
     skills: [
       { name: "JS", noOfYears: 0, rating: 0 },
