@@ -5,28 +5,26 @@ const cityController = require("./city.controller");
 
 // Create and Save a new user
 exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
+  let name, profilePic, email;
+
+  if (provider === "facebook") {
+    name = user.name;
+    profilePic = user.picture.data.url;
+    email = user.email;
+  } else if (provider === "github") {
+    name = user.name;
+    profilePic = user.avatar_url;
+    email = user.email;
+  } else if (provider === "twitter") {
+    name = authResponse.user.name;
+    profilePic = authResponse.user.user_image_url_https;
+    email = authResponse.user.screen_name;
+  }
+
   User.find({ socialId: user.id, provider: provider })
     .then(existingUser => {
       if (existingUser == null || !existingUser.length) {
         //user not found. Create one
-        let name, profilePic, email;
-
-        console.log(user);
-        if (provider === "facebook") {
-          name = user.name;
-          profilePic = user.picture.data.url;
-          email = user.email;
-        } else if (provider === "github") {
-          name = user.name;
-          profilePic = user.avatar_url;
-          email = user.email;
-        } else if (provider === "twitter") {
-          console.log(user);
-          name = authResponse.user.name;
-          profilePic = authResponse.user.user_image_url_https;
-          email = authResponse.user.screen_name;
-        }
-
         return createSocialAuthUser(
           name,
           profilePic,
@@ -37,7 +35,9 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
           authResponse
         );
       }
-      const account = { ...authResponse, ...existingUser[0]._doc };
+
+      const authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
+      const account = { ...authResponse, authToken, ...existingUser[0]._doc };
       res.send(account);
     })
     .catch(err => {
@@ -94,7 +94,6 @@ async function createSocialAuthUser(
     eventIds: [],
     socialId,
     provider,
-    authToken,
     city: null,
     country: null
   });
@@ -102,7 +101,7 @@ async function createSocialAuthUser(
   // Save user in the database
   try {
     const userModel = await user.save();
-    const account = { ...authResponse, ...userModel._doc };
+    const account = { ...authResponse, authToken, ...userModel._doc };
     res.send(account);
   } catch (err) {
     res.status(500).send({
