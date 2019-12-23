@@ -11,7 +11,6 @@ const UserSchema = mongoose.Schema(
     skills: [],
     eventIds: [String], // ids of event
     fbId: String,
-    authToken: String,
     role: String, // <empty>/admin
     city: String,
     country: String,
