@@ -25,29 +25,40 @@ exports.findAll = (req, res) => {
     ? parseInt(req.query.itemsPerPage)
     : 200;
 
-  let filterObj = {};
-  let reqArr = [];
-  let reqObj = {};
+  let skillsQuery = {};
+  let textQuery = {};
+  let finalAndQuery = [];
+
   if (req.query.searchText) {
-    reqObj = { name: { $regex: req.query.searchText, $options: "i" } };
-    reqArr.push(reqObj);
-    reqObj = { description: { $regex: req.query.searchText, $options: "i" } };
-    reqArr.push(reqObj);
-  }
-  if (req.query.relatedSkills) {
-    let relatedSkills = req.query.relatedSkills.split(",");
-    reqObj = { relatedSkills: { $in: relatedSkills } };
-    reqArr.push(reqObj);
-  }
-  if (req.query.city) {
-    reqObj = { city: { $regex: req.query.city, $options: "i" } };
-    reqArr.push(reqObj);
+    textQuery["$or"] = [
+      { name: { $regex: req.query.searchText, $options: "i" } },
+      { description: { $regex: req.query.searchText, $options: "i" } }
+    ];
+    finalAndQuery.push(textQuery);
   }
 
-  if (reqArr.length) {
-    filterObj["$or"] = reqArr;
+  if (req.query.relatedSkills) {
+    let relatedSkills = req.query.relatedSkills.split(",");
+    skillsQuery["$or"] = [{ relatedSkills: { $in: relatedSkills } }];
+    finalAndQuery.push(skillsQuery);
   }
-  Event.find(filterObj)
+
+  let cityQuery = [];
+  if (req.query.city || req.query.country) {
+    if (req.query.city) {
+      cityQuery.push({ city: { $regex: req.query.city, $options: "i" } });
+    }
+    if (req.query.country) {
+      cityQuery.push({ country: req.query.country });
+    }
+    let locationQuery = {
+      $or: cityQuery
+    };
+    finalAndQuery.push(locationQuery);
+  }
+
+  Event.find()
+    .and(finalAndQuery)
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
