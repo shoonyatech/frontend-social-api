@@ -43,7 +43,10 @@ exports.findAll = (req, res) => {
     reqObj = { city: { $regex: req.query.city, $options: "i" } };
     reqArr.push(reqObj);
   }
-  filterObj["$or"] = reqArr;
+
+  if (reqArr.length) {
+    filterObj["$or"] = reqArr;
+  }
   Event.find(filterObj)
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
