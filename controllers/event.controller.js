@@ -27,20 +27,20 @@ exports.findAll = (req, res) => {
 
   let skillsQuery = {};
   let textQuery = {};
-  let finalAndQuery = [];
+  let andQuery = [];
 
   if (req.query.searchText) {
     textQuery["$or"] = [
       { name: { $regex: req.query.searchText, $options: "i" } },
       { description: { $regex: req.query.searchText, $options: "i" } }
     ];
-    finalAndQuery.push(textQuery);
+    andQuery.push(textQuery);
   }
 
   if (req.query.relatedSkills) {
     let relatedSkills = req.query.relatedSkills.split(",");
     skillsQuery["$or"] = [{ relatedSkills: { $in: relatedSkills } }];
-    finalAndQuery.push(skillsQuery);
+    andQuery.push(skillsQuery);
   }
 
   let cityQuery = [];
@@ -54,11 +54,15 @@ exports.findAll = (req, res) => {
     let locationQuery = {
       $or: cityQuery
     };
-    finalAndQuery.push(locationQuery);
+    andQuery.push(locationQuery);
   }
 
-  Event.find()
-    .and(finalAndQuery)
+  let finalQuery = {};
+  if (andQuery.length) {
+    finalQuery = { $and: andQuery };
+  }
+
+  Event.find(finalQuery)
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
