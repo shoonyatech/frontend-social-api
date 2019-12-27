@@ -20,36 +20,44 @@ exports.create = (req, res) => {
 
 // Retrieve and return all events from the database.
 exports.findAll = (req, res) => {
-  let pageNumber = req.query.pageNo ? parseInt(req.query.pageNo) : 1;
-  let nPerPage = req.query.itemsPerPage
-    ? parseInt(req.query.itemsPerPage)
-    : 200;
+  const {
+    pageNo,
+    itemsPerPage,
+    searchText,
+    relatedSkills,
+    city,
+    country
+  } = req.query;
+  let pageNumber = pageNo ? parseInt(pageNo) : 1;
+  let nPerPage = itemsPerPage ? parseInt(itemsPerPage) : 200;
 
   let skillsQuery = {};
   let textQuery = {};
   let andQuery = [];
 
-  if (req.query.searchText) {
+  if (searchText) {
     textQuery["$or"] = [
-      { name: { $regex: req.query.searchText, $options: "i" } },
-      { description: { $regex: req.query.searchText, $options: "i" } }
+      { name: { $regex: searchText, $options: "i" } },
+      { description: { $regex: searchText, $options: "i" } }
     ];
     andQuery.push(textQuery);
   }
 
-  if (req.query.relatedSkills) {
-    let relatedSkills = req.query.relatedSkills.split(",");
-    skillsQuery["$or"] = [{ relatedSkills: { $in: relatedSkills } }];
-    andQuery.push(skillsQuery);
+  if (relatedSkills) {
+    let skills = relatedSkills.split(",");
+    if (skills.length) {
+      skillsQuery["$or"] = [{ relatedSkills: { $in: skills } }];
+      andQuery.push(skillsQuery);
+    }
   }
 
   let cityQuery = [];
-  if (req.query.city || req.query.country) {
-    if (req.query.city) {
-      cityQuery.push({ city: { $regex: req.query.city, $options: "i" } });
+  if (city || country) {
+    if (city) {
+      cityQuery.push({ city: { $regex: city, $options: "i" } });
     }
-    if (req.query.country) {
-      cityQuery.push({ country: req.query.country });
+    if (country) {
+      cityQuery.push({ country: country });
     }
     let locationQuery = {
       $or: cityQuery
