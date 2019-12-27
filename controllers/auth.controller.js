@@ -3,7 +3,7 @@ let OAuth = require("oauth");
 let timestamp = require("unix-timestamp");
 let oauthSignature = require("oauth-signature");
 let profileController = require("./profile.controller");
-const authConfig = process.env.AUTH_DATA || {};
+const authConfig = JSON.parse(process.env.AUTH_DATA) || {};
 // Create and Save a new user
 exports.fbSignin = (req, res) => {
   console.log("Attempting Facebook login");
