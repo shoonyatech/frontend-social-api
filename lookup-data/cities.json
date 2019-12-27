@@ -1,0 +1,190 @@
+[
+  {
+    "name": "Bengaluru",
+    "title": "Garden city of India",
+    "country": "IN"
+  },
+  {
+    "name": "Pune",
+    "title": "Oxford of the East",
+    "country": "IN"
+  },
+  {
+    "name": "New Delhi",
+    "title": "Capital of India",
+    "country": "IN"
+  },
+
+  {
+    "name": "Kolkata",
+    "title": "Art, Literature and Culture",
+    "country": "IN"
+  },
+
+  {
+    "name": "Mumbai",
+    "title": "Financial capital of India",
+    "country": "IN"
+  },
+
+  {
+    "name": "Goa",
+    "title": "Chilled beer and beaches",
+    "country": "IN"
+  },
+
+  {
+    "name": "Chennai",
+    "title": "The Detroit of India",
+    "country": "IN"
+  },
+
+  {
+    "name": "Nagpur",
+    "title": "Orange city",
+    "country": "IN"
+  },
+
+  {
+    "name": "Chandigad",
+    "title": "",
+    "country": "IN"
+  },
+
+  {
+    "name": "Hyderabad",
+    "title": "Biryani and Pearls",
+    "country": "IN"
+  },
+
+  {
+    "name": "Toronto",
+    "title": "",
+    "country": "CA"
+  },
+
+  {
+    "name": "Vancouver",
+    "title": "",
+    "country": "CA"
+  },
+
+  {
+    "name": "New York City",
+    "title": "",
+    "country": "US"
+  },
+
+  {
+    "name": "San Francisco",
+    "title": "",
+    "country": "US"
+  },
+
+  {
+    "name": "Seattle",
+    "title": "",
+    "country": "US"
+  },
+
+  {
+    "name": "Chicago",
+    "title": "",
+    "country": "US"
+  },
+  {
+    "name": "London",
+    "title": "",
+    "country": "UK"
+  },
+  {
+    "name": "Paris",
+    "title": "",
+    "country": "FR"
+  },
+  {
+    "name": "Dubai",
+    "title": "",
+    "country": "AE"
+  },
+  {
+    "name": "Tokyo",
+    "title": "",
+    "country": "JP"
+  },
+  {
+    "name": "Shanghai",
+    "title": "",
+    "country": "CN"
+  },
+  {
+    "name": "Beijing",
+    "title": "",
+    "country": "CN"
+  },
+  {
+    "name": "Berlin",
+    "title": "",
+    "country": "DE"
+  },
+  {
+    "name": "Brussels",
+    "title": "",
+    "country": "BE"
+  },
+  {
+    "name": "Reykjavik",
+    "title": "",
+    "country": "IS"
+  },
+  {
+    "name": "Cardiff",
+    "title": "",
+    "country": "UK"
+  },
+  {
+    "name": "Amsterdam",
+    "title": "",
+    "country": "NL"
+  },
+  {
+    "name": "Moscow",
+    "title": "",
+    "country": "RU"
+  },
+  {
+    "name": "Melbourne",
+    "title": "",
+    "country": "AU"
+  },
+  {
+    "name": "Sydney",
+    "title": "",
+    "country": "AU"
+  },
+  {
+    "name": "Madrid",
+    "title": "",
+    "country": "ES"
+  },
+  {
+    "name": "Seoul",
+    "title": "",
+    "country": "KR"
+  },
+  {
+    "name": "Los Angeles",
+    "title": "",
+    "country": "US"
+  },
+  {
+    "name": "Singapore",
+    "title": "",
+    "country": "SG"
+  },
+  {
+    "name": "Hong Kong",
+    "title": "",
+    "country": "HK"
+  }
+]

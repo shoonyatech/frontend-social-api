@@ -8,7 +8,7 @@ exports.create = async (req, res) => {
 
 exports.createCityIfNotExists = async cityDetails => {
   const existingCity = await City.find({
-    name: cityDetails.city,
+    name: cityDetails.name,
     country: cityDetails.country
   });
 
@@ -17,10 +17,7 @@ exports.createCityIfNotExists = async cityDetails => {
   }
 
   // Save city in the database
-  const cityModel = new City({
-    name: cityDetails.city,
-    country: cityDetails.country
-  });
+  const cityModel = new City({ ...cityDetails });
   return await cityModel.save();
 };
 
