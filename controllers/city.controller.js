@@ -30,6 +30,7 @@ exports.findAll = (req, res) => {
   }
 
   City.find(reqObj)
+    .sort({ name: "ascending" })
     .then(cities => {
       res.send(cities);
     })
