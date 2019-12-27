@@ -184,7 +184,7 @@ exports.update = async (req, res) => {
 
     //create city for the user
     await cityController.createCityIfNotExists({
-      city: req.body.city,
+      name: req.body.city,
       country: req.body.country
     });
 
