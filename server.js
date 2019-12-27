@@ -1,19 +1,18 @@
-let express = require("express");
-let bodyParser = require("body-parser");
+var express = require("express");
+var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-let cors = require("cors");
-let jwt = require("express-jwt");
-let config = require("./config/config").config;
+var cors = require("cors");
+var jwt = require("express-jwt");
 require("dotenv").config();
-
 mongoose.Promise = global.Promise;
 
+const { MONGODB_URI, JWT_SECRET, PORT = 3000 } = process.env;
 let app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 mongoose
-  .connect(config.db, {
+  .connect(MONGODB_URI, {
     useNewUrlParser: true
   })
   .then(() => {
@@ -37,11 +36,9 @@ require("./routes/event.routes.js")(app);
 require("./routes/article.routes.js")(app);
 
 // this will attach the logged in user to req.user
-app.use(jwt({ secret: config.auth.jwtSecret }));
+app.use(jwt({ secret: JWT_SECRET }));
 
 require("./routes/profile.routes.js")(app);
-
-let server = app.listen(process.env.PORT || 3000, () => {
-  let port = server.address().port;
-  console.log("Server is listening on port " + port);
+app.listen(PORT, () => {
+  console.log("Server is listening on port " + PORT);
 });
