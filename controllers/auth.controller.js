@@ -1,10 +1,9 @@
 const axios = require("axios");
-let config = require("../config/config").config;
 let OAuth = require("oauth");
 let timestamp = require("unix-timestamp");
 let oauthSignature = require("oauth-signature");
 let profileController = require("./profile.controller");
-
+const authConfig = process.env.AUTH_DATA || {};
 // Create and Save a new user
 exports.fbSignin = (req, res) => {
   console.log("Attempting Facebook login");
@@ -12,8 +11,8 @@ exports.fbSignin = (req, res) => {
     .post(
       "https://graph.facebook.com/v5.0/oauth/access_token",
       {
-        client_id: config.auth.facebook.clientId,
-        client_secret: config.auth.facebook.clientSecret,
+        client_id: authConfig.facebook.clientId,
+        client_secret: authConfig.facebook.clientSecret,
         code: req.body.code,
         redirect_uri: req.body.redirectUri
       },
@@ -64,8 +63,8 @@ exports.githubSignin = (req, res) => {
     .post(
       "https://github.com/login/oauth/access_token",
       {
-        client_id: config.auth.github.clientId,
-        client_secret: config.auth.github.clientSecret,
+        client_id: authConfig.github.clientId,
+        client_secret: authConfig.github.clientSecret,
         code: req.body.code,
         redirect_uri: req.body.redirectUri,
         state: req.body.state,
@@ -102,8 +101,8 @@ exports.githubSignin = (req, res) => {
 oauthService = new OAuth.OAuth(
   "https://api.twitter.com/oauth/request_token",
   "https://api.twitter.com/oauth/access_token",
-  config.auth.twitter.clientId,
-  config.auth.twitter.clientSecret,
+  authConfig.twitter.clientId,
+  authConfig.twitter.clientSecret,
   "1.0A",
   null,
   "HMAC-SHA1"
@@ -137,7 +136,7 @@ exports.twitterSignin = (req, res) => {
           let verifyCredentialsUrl =
             "https://api.twitter.com/1.1/account/verify_credentials.json";
           let parameters = {
-            oauth_consumer_key: config.auth.twitter.clientId,
+            oauth_consumer_key: authConfig.twitter.clientId,
             oauth_token: oauthAccessToken,
             oauth_nonce: "vueauth-" + new Date().getTime(),
             oauth_timestamp: timestamp.now(),
@@ -149,7 +148,7 @@ exports.twitterSignin = (req, res) => {
             "GET",
             verifyCredentialsUrl,
             parameters,
-            config.auth.twitter.clientSecret,
+            authConfig.twitter.clientSecret,
             oauthAccessTokenSecret
           );
 
@@ -161,7 +160,7 @@ exports.twitterSignin = (req, res) => {
                   Authorization:
                     "OAuth " +
                     'oauth_consumer_key="' +
-                    config.auth.twitter.clientId +
+                    authConfig.twitter.clientId +
                     '",' +
                     'oauth_token="' +
                     oauthAccessToken +

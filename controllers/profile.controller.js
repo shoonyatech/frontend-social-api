@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
-const config = require("../config/config").config;
 const cityController = require("./city.controller");
-
+const { JWT_SECRET } = process.env;
 // Create and Save a new user
 exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
   let name, profilePic, email;
@@ -36,7 +35,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
         );
       }
 
-      const authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
+      const authToken = jwt.sign({ email: email }, JWT_SECRET);
       const account = { ...authResponse, authToken, ...existingUser[0]._doc };
       res.send(account);
     })
@@ -61,7 +60,7 @@ async function createSocialAuthUser(
   res,
   authResponse
 ) {
-  const authToken = jwt.sign({ email: email }, config.auth.jwtSecret);
+  const authToken = jwt.sign({ email: email }, JWT_SECRET);
   const username = createUniqueUsername(name);
 
   const user = new User({
