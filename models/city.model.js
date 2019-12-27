@@ -6,7 +6,8 @@ const CitySchema = mongoose.Schema(
     title: String,
     description: String,
     country: String,
-    topSkills: []
+    topSkills: [],
+    latestEvents: []
   },
   {
     timestamps: true
