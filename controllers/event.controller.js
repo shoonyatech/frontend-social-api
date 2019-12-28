@@ -60,7 +60,7 @@ exports.findAll = (req, res) => {
       cityQuery.push({ country: country });
     }
     let locationQuery = {
-      $or: cityQuery
+      $and: cityQuery
     };
     andQuery.push(locationQuery);
   }
