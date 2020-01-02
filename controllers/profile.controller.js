@@ -193,6 +193,15 @@ exports.update = async (req, res) => {
     }
     const userId = existingUser.id;
 
+    const userWithNewUsername = await User.findOne({
+      username: req.body.username
+    });
+    if (userWithNewUsername != null && userWithNewUsername.id != userId) {
+      return res.status(500).send({
+        message: "user with username " + req.body.username + " already exists"
+      });
+    }
+
     //create city for the user
     await cityController.createCityIfNotExists({
       name: req.body.city,
