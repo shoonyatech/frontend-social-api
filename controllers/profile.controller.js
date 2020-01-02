@@ -47,8 +47,19 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
     });
 };
 
-function createUniqueUsername(name) {
-  return name.replace(" ", "").toLowerCase();
+async function createUniqueUsername(name) {
+  let alreadyExists = true;
+  let username = "";
+  let counter = 0;
+  while (alreadyExists) {
+    username =
+      name.replace(" ", "").toLowerCase() +
+      (counter === 0 ? "" : counter.toString());
+    let existingUser = await User.findOne({ username: username });
+    alreadyExists = existingUser != null;
+    counter++;
+  }
+  return username;
 }
 
 async function createSocialAuthUser(
@@ -61,7 +72,7 @@ async function createSocialAuthUser(
   authResponse
 ) {
   const authToken = jwt.sign({ email: email }, JWT_SECRET);
-  const username = createUniqueUsername(name);
+  const username = await createUniqueUsername(name);
 
   const user = new User({
     name,
