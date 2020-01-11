@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const EventSchema = mongoose.Schema(
   {
-    name: String,
+    title: String,
     description: String,
     dateFrom: Date,
     dateTo: Date,
@@ -19,4 +19,4 @@ const EventSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Event", EventSchema);
+module.exports = mongoose.model("CityEvent", EventSchema);
