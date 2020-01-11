@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const Event = require("../models/event.model.js");
+const CityEvent = require("../models/event.model.js");
 
 // Create and Save a new event
 exports.create = (req, res) => {
-  const event = new Event(...req.body);
+  const event = new CityEvent(req.body);
 
   // Save event in the database
   event
@@ -70,7 +70,7 @@ exports.findAll = (req, res) => {
     finalQuery = { $and: andQuery };
   }
 
-  Event.find(finalQuery)
+  CityEvent.find(finalQuery)
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
@@ -87,7 +87,7 @@ exports.findAll = (req, res) => {
 // Retrieve and return all events with given IDs.
 exports.withIds = (req, res) => {
   const ids = req.query.ids.split(",").map(id => mongoose.Types.ObjectId(id));
-  Event.find({ _id: { $in: ids } })
+  CityEvent.find({ _id: { $in: ids } })
     .then(events => {
       res.send(events);
     })
@@ -102,7 +102,7 @@ exports.withIds = (req, res) => {
 exports.findAllInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
-  Event.find({ city: cityName, country: countryCode })
+  CityEvent.find({ city: cityName, country: countryCode })
     .then(events => {
       res.send(events);
     })
@@ -115,7 +115,7 @@ exports.findAllInCity = (req, res) => {
 
 // Retrieve and return all events from the database.
 exports.findAllUpcoming = (req, res) => {
-  Event.find({ dateFrom: { $gte: new Date() } })
+  CityEvent.find({ dateFrom: { $gte: new Date() } })
     .then(events => {
       res.send(events);
     })
@@ -128,7 +128,7 @@ exports.findAllUpcoming = (req, res) => {
 
 // Find a single event with a id
 exports.findOne = (req, res) => {
-  Event.findById(req.params.id)
+  CityEvent.findById(req.params.id)
     .then(event => {
       if (!event) {
         return res.status(404).send({
@@ -151,7 +151,7 @@ exports.findOne = (req, res) => {
 
 // Update a event identified by the id in the request
 exports.update = (req, res) => {
-  Event.findByIdAndUpdate(
+  CityEvent.findByIdAndUpdate(
     req.params.id,
     {
       ...req.body
@@ -180,7 +180,7 @@ exports.update = (req, res) => {
 
 // Delete a event with the specified id in the request
 exports.delete = (req, res) => {
-  Event.findByIdAndRemove(req.params.id)
+  CityEvent.findByIdAndRemove(req.params.id)
     .then(event => {
       if (!event) {
         return res.status(404).send({
