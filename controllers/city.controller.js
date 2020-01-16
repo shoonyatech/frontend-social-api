@@ -7,6 +7,10 @@ exports.create = async (req, res) => {
 };
 
 exports.createCityIfNotExists = async cityDetails => {
+  if (cityDetails.name == null || cityDetails.country == null) {
+    return null;
+  }
+
   const existingCity = await City.find({
     name: cityDetails.name,
     country: cityDetails.country
