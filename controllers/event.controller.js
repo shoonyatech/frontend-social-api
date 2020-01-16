@@ -1,9 +1,16 @@
 const mongoose = require("mongoose");
 const CityEvent = require("../models/event.model.js");
+const cityController = require("./city.controller");
 
 // Create and Save a new event
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   const event = new CityEvent(req.body);
+
+  //create city for the event
+  await cityController.createCityIfNotExists({
+    name: event.city,
+    country: event.country
+  });
 
   // Save event in the database
   event
@@ -150,7 +157,13 @@ exports.findOne = (req, res) => {
 };
 
 // Update a event identified by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
+  //create city for the event
+  await cityController.createCityIfNotExists({
+    name: req.body.city,
+    country: req.body.country
+  });
+
   CityEvent.findByIdAndUpdate(
     req.params.id,
     {
