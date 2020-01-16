@@ -12,7 +12,11 @@ const EventSchema = mongoose.Schema(
     relatedSkills: [],
     website: String,
     twitter: String,
-    youtube: String
+    youtube: String,
+    facebook: String,
+    instagram: String,
+    linkedin: String,
+    schedule: String
   },
   {
     timestamps: true
