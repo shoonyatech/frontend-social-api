@@ -1,8 +1,8 @@
-const SkillLookup = require("../models/skill-lookup.model");
+const Skill = require("../models/skill.model");
 
 exports.create = (req, res) => {
   //need to add validation and request sanitization
-  const skill = new SkillLookup({ name: req.body.name });
+  const skill = new Skill({ name: req.body.name });
   skill
     .save()
     .then(data => {
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
 
 // Retrieve and return all users from the database.
 exports.findAll = (req, res) => {
-  SkillLookup.find()
+  Skill.find()
     .then(skills => {
       res.send(skills);
     })
