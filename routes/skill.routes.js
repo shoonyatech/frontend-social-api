@@ -6,4 +6,7 @@ module.exports = app => {
 
   // Retrieve all skill
   app.get("/skill", skill.findAll);
+
+  // Delete a skill with id
+  app.delete("/skill/:id", skill.delete);
 };
