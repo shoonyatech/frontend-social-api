@@ -27,3 +27,26 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+// Delete a skill with the specified id in the request
+exports.delete = (req, res) => {
+  Skill.findByIdAndRemove(req.params.id)
+    .then(skill => {
+      if (!skill) {
+        return res.status(404).send({
+          message: "skill not found with id " + req.params.id
+        });
+      }
+      res.send({ message: "skill deleted successfully!" });
+    })
+    .catch(err => {
+      if (err.kind === "ObjectId" || err.name === "NotFound") {
+        return res.status(404).send({
+          message: "skill not found with id " + req.params.id
+        });
+      }
+      return res.status(500).send({
+        message: "Could not delete skill with id " + req.params.id
+      });
+    });
+};
