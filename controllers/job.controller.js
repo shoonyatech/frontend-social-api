@@ -2,7 +2,7 @@ const Job = require("../models/job.model.js");
 
 exports.create = (req, res) => {
   //need to add validation and request sanitization
-  const job = new Job(...req.body);
+  const job = new Job(req.body);
   job
     .save()
     .then(data => {
