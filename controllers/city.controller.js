@@ -28,9 +28,15 @@ exports.createCityIfNotExists = async cityDetails => {
 // Retrieve and return all citys from the database that matches search result.
 exports.findAll = (req, res) => {
   let reqObj = {};
-  const searchText = req.query.searchText;
-  if (searchText && searchText.length) {
-    reqObj = { name: { $regex: searchText, $options: "i" } };
+  const citySearchText = req.query.citySearchText;
+  const country = req.query.country;
+
+  if (citySearchText && citySearchText.length) {
+    reqObj["name"] = { $regex: citySearchText, $options: "i" };
+  }
+
+  if (country && country.length) {
+    reqObj["country"] = country;
   }
 
   City.find(reqObj)
