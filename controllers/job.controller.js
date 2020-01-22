@@ -1,4 +1,6 @@
 const Job = require("../models/job.model.js");
+const { getAppliedFilters } = require("../utils/helperMethods");
+const { filterTypes, jobTypeIds } = require("../utils/constants");
 
 exports.create = (req, res) => {
   //need to add validation and request sanitization
@@ -15,22 +17,59 @@ exports.create = (req, res) => {
     });
 };
 
+const getJobTypeKey = id => {
+  const { CONTRACT, PERMANENT, PART_TIME, FULL_TIME } = jobTypeIds;
+  let defaultId;
+  switch (id) {
+    case CONTRACT:
+      return "isContract";
+    case PERMANENT:
+      return "isPermanent";
+    case PART_TIME:
+      return "isPartTime";
+    case FULL_TIME:
+      return "isFullTime";
+    default:
+      return defaultId;
+  }
+};
+
+const getJobTypesQuery = (jobFilter = []) => {
+  let query = [];
+  jobFilter.forEach(({ id, selected }) => {
+    if (selected) {
+      let jobQuery = {};
+      const jobKey = getJobTypeKey(id);
+      jobQuery[jobKey] = true;
+      query.push(jobQuery);
+    }
+  });
+  return query;
+};
+
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
   const {
-    pageNo,
-    itemsPerPage,
+    pageNo = 1,
+    itemsPerPage = 20,
     searchText,
-    skills,
-    isFullTime,
-    isPartTime,
-    isRemote,
-    isContract,
+    skills = "",
+    jobTypes = "",
     level
   } = req.query;
   let pageNumber = parseInt(pageNo);
   let nPerPage = parseInt(itemsPerPage);
-
+  const pagination = {
+    currentPage: pageNumber,
+    totalPages: 5,
+    count: 100
+  };
+  const jobFilter = getAppliedFilters(jobTypes, filterTypes.JOB);
+  const skillFilter = getAppliedFilters(skills, filterTypes.SKILL);
+  const response = {
+    results: [],
+    meta: { pagination, filters: { jobTypes: jobFilter, skills: skillFilter } }
+  };
   let skillsQuery = {};
   let textQuery = {};
   let filterObj = {};
@@ -49,19 +88,11 @@ exports.findAll = (req, res) => {
       reqArr.push(skillsQuery);
     }
   }
-  if (isFullTime) {
-    reqArr.push({ isFullTime });
+  const jobTypesQuery = getJobTypesQuery(jobFilter);
+  if (jobTypesQuery.length) {
+    reqArr = reqArr.concat(jobTypesQuery);
   }
-  if (isPartTime) {
-    reqArr.push({ isPartTime });
-  }
-  if (isRemote) {
-    reqArr.push({ isRemote });
-  }
-  if (isContract) {
-    reqArr.push({ isContract });
-  }
-  if (level) {
+  if (level > -1) {
     reqArr.push({ level });
   }
   if (reqArr.length) {
@@ -72,7 +103,10 @@ exports.findAll = (req, res) => {
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
     .then(jobs => {
-      res.send(jobs);
+      if (jobs.length) {
+        response.results = jobs;
+      }
+      res.send(response);
     })
     .catch(err => {
       res.status(500).send({
