@@ -122,7 +122,12 @@ exports.findAllInCity = (req, res) => {
 
 // Retrieve and return all events from the database.
 exports.findAllUpcoming = (req, res) => {
-  CityEvent.find({ dateFrom: { $gte: new Date() } })
+  let filter = { dateFrom: { $gte: new Date() } };
+  const skill = req.query.skill;
+  if (skill) {
+    filter["relatedSkills"] = { $regex: skill, $options: "i" };
+  }
+  CityEvent.find(filter)
     .then(events => {
       res.send(events);
     })
