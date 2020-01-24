@@ -32,6 +32,7 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   let filterObj = {};
   let reqObj = {};
+  let reqArr = [];
   if (req.query.tags) {
     let tags = req.query.tags.split(",");
     reqObj = { tags: { $in: tags } };
