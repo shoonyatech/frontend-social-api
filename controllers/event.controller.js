@@ -78,7 +78,7 @@ exports.findAll = (req, res) => {
   }
 
   CityEvent.find(finalQuery)
-    .sort({ createdAt: "descending" })
+    .sort({ dateFrom: "ascending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
     .then(events => {
@@ -95,6 +95,7 @@ exports.findAll = (req, res) => {
 exports.withIds = (req, res) => {
   const ids = req.query.ids.split(",").map(id => mongoose.Types.ObjectId(id));
   CityEvent.find({ _id: { $in: ids } })
+    .sort({ dateFrom: "ascending" })
     .then(events => {
       res.send(events);
     })
@@ -110,6 +111,7 @@ exports.findAllInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
   CityEvent.find({ city: cityName, country: countryCode })
+    .sort({ dateFrom: "ascending" })
     .then(events => {
       res.send(events);
     })
@@ -128,6 +130,7 @@ exports.findAllUpcoming = (req, res) => {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
   CityEvent.find(filter)
+    .sort({ dateFrom: "ascending" })
     .then(events => {
       res.send(events);
     })
