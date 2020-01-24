@@ -15,7 +15,7 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve and return all users from the database.
+// Retrieve and return all skills from the database.
 exports.findAll = (req, res) => {
   Skill.find()
     .then(skills => {
@@ -24,6 +24,20 @@ exports.findAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving skills."
+      });
+    });
+};
+
+// Retrieve and return all frameworks from the database.
+exports.findAllFrameworks = (req, res) => {
+  Skill.find({ name: { $in: ["React", "Angular", "Vue", "Svelte"] } })
+    .then(frameoworks => {
+      res.send(frameoworks);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving frameworks."
       });
     });
 };
