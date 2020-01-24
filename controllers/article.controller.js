@@ -41,6 +41,10 @@ exports.findAll = (req, res) => {
     reqObj = { medium: req.query.medium };
     reqArr.push(reqObj);
   }
+  if (req.query.skill) {
+    reqObj = { relatedSkill: { $regex: req.query.skill, $options: "i" } };
+    reqArr.push(reqObj);
+  }
   Article.find(filterObj)
     .sort({ createdAt: "descending" })
     .then(articles => {
