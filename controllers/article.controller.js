@@ -30,23 +30,13 @@ exports.create = (req, res) => {
 
 // Retrieve and return all articles from the database.
 exports.findAll = (req, res) => {
-  let filterObj = {};
-  let reqObj = {};
-  let reqArr = [];
-  if (req.query.tags) {
-    let tags = req.query.tags.split(",");
-    reqObj = { tags: { $in: tags } };
-    reqArr.push(reqObj);
+  let filter = {};
+  const skill = req.query.skill;
+  if (skill) {
+    filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
-  if (req.query.medium) {
-    reqObj = { medium: req.query.medium };
-    reqArr.push(reqObj);
-  }
-  if (req.query.skill) {
-    reqObj = { relatedSkill: { $regex: req.query.skill, $options: "i" } };
-    reqArr.push(reqObj);
-  }
-  Article.find(filterObj)
+
+  Article.find(filter)
     .sort({ createdAt: "descending" })
     .then(articles => {
       res.send(articles);
