@@ -32,12 +32,14 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   let filter = {};
   const skill = req.query.skill;
+  const count = Number(req.query.count) || 1000;
   if (skill) {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
 
   Article.find(filter)
     .sort({ createdAt: "descending" })
+    .limit(count)
     .then(articles => {
       res.send(articles);
     })
