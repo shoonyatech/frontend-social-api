@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const SkillSchema = mongoose.Schema(
   {
-    name: String
+    name: String,
+    githubStars: Number
   },
   {
     timestamps: true
