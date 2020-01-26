@@ -4,13 +4,13 @@ const ArticleSchema = mongoose.Schema(
   {
     title: String,
     author: String,
-    details: String,
+    onDescriptionChange: String,
     url: String,
     courtesy: String,
     courtesyUrl: String,
     tags: [String],
-    medium: String,
-    type: String, // blog/talk/video/podcast
+    medium: String, // blog/video/podcast
+    type: String, // talk/tutorial/casestudy
     relatedSkills: []
   },
   {

@@ -2,17 +2,7 @@ const Article = require("../models/article.model.js");
 
 // Create and Save a new article
 exports.create = (req, res) => {
-  const article = new Article({
-    title: req.body.title,
-    author: req.body.author,
-    details: req.body.details,
-    url: req.body.url,
-    courtesy: req.body.courtesy,
-    courtesyUrl: req.body.courtesyUrl,
-    tags: req.body.tags,
-    medium: req.body.medium,
-    type: req.body.type
-  });
+  const article = new Article(req.body);
 
   // Save article in the database
   article
@@ -80,7 +70,7 @@ exports.update = (req, res) => {
     {
       title: req.body.title,
       author: req.body.author,
-      details: req.body.details,
+      description: req.body.description,
       url: req.body.url,
       courtesy: req.body.courtesy,
       courtesyUrl: req.body.courtesyUrl,
