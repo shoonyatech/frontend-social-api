@@ -30,15 +30,18 @@ app.get("/", function(req, res) {
 });
 
 require("./routes/auth.routes.js")(app);
-require("./routes/job.routes.js")(app);
+require("./routes/job-read.routes.js")(app);
 require("./routes/city.routes.js")(app);
-require("./routes/event.routes.js")(app);
-require("./routes/article.routes.js")(app);
+require("./routes/event-read.routes.js")(app);
+require("./routes/article-read.routes.js")(app);
 require("./routes/skill.routes.js")(app);
 
 // this will attach the logged in user to req.user
 app.use(jwt({ secret: JWT_SECRET }));
 
+require("./routes/job-write.routes.js")(app);
+require("./routes/event-write.routes.js")(app);
+require("./routes/article-write.routes.js")(app);
 require("./routes/profile.routes.js")(app);
 app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);

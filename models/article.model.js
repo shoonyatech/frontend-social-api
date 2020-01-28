@@ -10,8 +10,9 @@ const ArticleSchema = mongoose.Schema(
     courtesyUrl: String,
     tags: [String],
     medium: String, // blog/video/podcast
-    type: String, // talk/tutorial/casestudy
-    relatedSkills: []
+    type: String, // talk/tutorial/casestudy/announcement
+    relatedSkills: [],
+    createdBy: Object
   },
   {
     timestamps: true

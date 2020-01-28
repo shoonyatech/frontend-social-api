@@ -35,7 +35,10 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
         );
       }
 
-      const authToken = jwt.sign({ email: email }, JWT_SECRET);
+      const authToken = jwt.sign(
+        { email, username: existingUser[0].username },
+        JWT_SECRET
+      );
       const account = { ...authResponse, authToken, ...existingUser[0]._doc };
       res.send(account);
     })
@@ -71,8 +74,8 @@ async function createSocialAuthUser(
   res,
   authResponse
 ) {
-  const authToken = jwt.sign({ email: email }, JWT_SECRET);
   const username = await createUniqueUsername(name);
+  const authToken = jwt.sign({ email, username }, JWT_SECRET);
 
   const user = new User({
     name,

@@ -2,7 +2,7 @@ const Article = require("../models/article.model.js");
 
 // Create and Save a new article
 exports.create = (req, res) => {
-  const article = new Article(req.body);
+  const article = new Article({ ...req.body, createdBy: req.user });
 
   // Save article in the database
   article

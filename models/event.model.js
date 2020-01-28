@@ -16,7 +16,8 @@ const EventSchema = mongoose.Schema(
     facebook: String,
     instagram: String,
     linkedin: String,
-    schedule: String
+    schedule: String,
+    createdBy: Object
   },
   {
     timestamps: true
