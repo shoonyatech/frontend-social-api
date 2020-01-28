@@ -4,12 +4,6 @@ module.exports = app => {
   // Create a new job
   app.post("/job", job.create);
 
-  // Retrieve all job
-  app.get("/job", job.findAll);
-
-  // Retrieve a single job with id
-  app.get("/job/:id", job.findOne);
-
   // Update a job with id
   app.put("/job/:id", job.update);
 

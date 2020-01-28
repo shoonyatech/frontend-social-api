@@ -14,7 +14,8 @@ const JobSchema = mongoose.Schema(
     isContract: Boolean,
     level: Number,
     tags: [String],
-    link: String
+    link: String,
+    createdBy: Object
   },
   {
     timestamps: true

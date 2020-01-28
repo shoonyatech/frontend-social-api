@@ -4,7 +4,8 @@ const { filterTypes, jobTypeIds } = require("../utils/constants");
 
 exports.create = (req, res) => {
   //need to add validation and request sanitization
-  const job = new Job(req.body);
+  const job = new Job({ ...req.body, createdBy: req.user });
+
   job
     .save()
     .then(data => {
