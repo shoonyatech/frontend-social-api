@@ -56,7 +56,9 @@ exports.findAll = (req, res) => {
     searchText,
     skills = "",
     jobTypes = "",
-    level
+    level,
+    city = "",
+    country = ""
   } = req.query;
   let pageNumber = parseInt(pageNo);
   let nPerPage = parseInt(itemsPerPage);
