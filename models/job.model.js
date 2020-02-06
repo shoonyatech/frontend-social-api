@@ -7,6 +7,7 @@ const JobSchema = mongoose.Schema(
     skills: [String],
     company: String,
     city: String,
+    country: String,
     isFullTime: Boolean,
     isPartTime: Boolean,
     isRemote: Boolean,
