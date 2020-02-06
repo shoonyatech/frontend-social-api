@@ -1,6 +1,7 @@
 const Job = require("../models/job.model.js");
 const { getAppliedFilters } = require("../utils/helperMethods");
-const { filterTypes, jobTypeIds } = require("../utils/constants");
+const { filterTypes } = require("../utils/constants");
+const { getExplicitFilters } = require("../utils/jobUtils");
 
 exports.create = (req, res) => {
   //need to add validation and request sanitization
@@ -18,36 +19,6 @@ exports.create = (req, res) => {
     });
 };
 
-const getJobTypeKey = id => {
-  const { CONTRACT, PERMANENT, PART_TIME, FULL_TIME } = jobTypeIds;
-  let defaultId;
-  switch (id) {
-    case CONTRACT:
-      return "isContract";
-    case PERMANENT:
-      return "isPermanent";
-    case PART_TIME:
-      return "isPartTime";
-    case FULL_TIME:
-      return "isFullTime";
-    default:
-      return defaultId;
-  }
-};
-
-const getJobTypesQuery = (jobFilter = []) => {
-  let query = [];
-  jobFilter.forEach(({ id, selected }) => {
-    if (selected) {
-      let jobQuery = {};
-      const jobKey = getJobTypeKey(id);
-      jobQuery[jobKey] = true;
-      query.push(jobQuery);
-    }
-  });
-  return query;
-};
-
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
   const {
@@ -60,6 +31,7 @@ exports.findAll = (req, res) => {
     city = "",
     country = ""
   } = req.query;
+  let filterObj = {};
   let pageNumber = parseInt(pageNo);
   let nPerPage = parseInt(itemsPerPage);
   const pagination = {
@@ -73,34 +45,21 @@ exports.findAll = (req, res) => {
     results: [],
     meta: { pagination, filters: { jobTypes: jobFilter, skills: skillFilter } }
   };
-  let skillsQuery = {};
-  let textQuery = {};
-  let filterObj = {};
-  let reqArr = [];
-  if (searchText) {
-    textQuery["$or"] = [
-      { title: { $regex: searchText, $options: "i" } },
-      { description: { $regex: searchText, $options: "i" } }
-    ];
-    reqArr.push(textQuery);
+
+  const explicitFilters = getExplicitFilters({
+    searchText,
+    skills,
+    jobFilter,
+    city,
+    country,
+    level
+  });
+  if (explicitFilters.length) {
+    filterObj = {
+      $and: explicitFilters
+    };
   }
-  if (skills) {
-    let requiredSkills = skills.split(",");
-    if (requiredSkills.length) {
-      skillsQuery["$or"] = [{ skills: { $in: requiredSkills } }];
-      reqArr.push(skillsQuery);
-    }
-  }
-  const jobTypesQuery = getJobTypesQuery(jobFilter);
-  if (jobTypesQuery.length) {
-    reqArr = reqArr.concat(jobTypesQuery);
-  }
-  if (level > -1) {
-    reqArr.push({ level });
-  }
-  if (reqArr.length) {
-    filterObj["$and"] = reqArr;
-  }
+
   Job.find(filterObj)
     .sort({ createdAt: "descending" })
     .skip((pageNumber - 1) * nPerPage)
