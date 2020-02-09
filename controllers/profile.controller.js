@@ -11,7 +11,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
     profilePic = user.picture.data.url;
     email = user.email;
   } else if (provider === "github") {
-    name = user.name;
+    name = user.name || user.login;
     profilePic = user.avatar_url;
     email = user.email;
   } else if (provider === "twitter") {
@@ -45,7 +45,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
     .catch(err => {
       console.log(err);
       return res.status(500).send({
-        message: "Error retrieving user with fb id " + user.id
+        message: "Error retrieving user with " + provider + " id " + user.id
       });
     });
 };
@@ -160,12 +160,12 @@ exports.findOne = (req, res) => {
 };
 
 exports.me = (req, res) => {
-  const email = req.user.email;
-  User.findOne({ email: email })
+  const username = req.user.username;
+  User.findOne({ username: username })
     .then(user => {
       if (!user) {
         return res.status(404).send({
-          message: "user not found with email " + email
+          message: "user not found with username " + username
         });
       }
       res.send(user);
@@ -173,11 +173,11 @@ exports.me = (req, res) => {
     .catch(err => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with email " + email
+          message: "user not found with username " + username
         });
       }
       return res.status(500).send({
-        message: "Error retrieving user with email " + email
+        message: "Error retrieving user with username " + username
       });
     });
 };
