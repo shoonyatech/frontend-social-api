@@ -27,19 +27,28 @@ exports.createCityIfNotExists = async cityDetails => {
 
 // Retrieve and return all citys from the database that matches search result.
 exports.findAll = (req, res) => {
-  let reqObj = {};
-  const citySearchText = req.query.citySearchText;
-  const country = req.query.country;
+  const { citySearchText, country } = req.query;
 
+  let orQuery = [];
+  let cityName = {};
   if (citySearchText && citySearchText.length) {
-    reqObj["name"] = { $regex: citySearchText, $options: "i" };
+    cityName["$or"] = [
+      { name: { $regex: citySearchText, $options: "i" } },
+      { oldName: { $regex: citySearchText, $options: "i" } }
+    ];
+    orQuery.push(cityName);
   }
 
   if (country && country.length) {
-    reqObj["country"] = country;
+    orQuery.push({ country: country });
   }
 
-  City.find(reqObj)
+  let finalQuery = {};
+  if (orQuery.length) {
+    finalQuery = { $or: orQuery };
+  }
+
+  City.find(finalQuery)
     .sort({ name: "ascending" })
     .then(cities => {
       res.send(cities);
