@@ -184,25 +184,27 @@ exports.me = (req, res) => {
 
 // Update user of logged in user
 exports.update = async (req, res) => {
-  const email = req.user.email;
+  const username = req.user.username;
 
   try {
-    const existingUser = await User.findOne({ email: email });
+    const existingUser = await User.findOne({ username: username });
 
     if (!existingUser) {
       return res.status(404).send({
-        message: "user not found with email " + email
+        message: "user not found with email " + username
       });
     }
     const userId = existingUser.id;
 
-    const userWithNewUsername = await User.findOne({
-      username: req.body.username
-    });
-    if (userWithNewUsername != null && userWithNewUsername.id != userId) {
-      return res.status(500).send({
-        message: "user with username " + req.body.username + " already exists"
+    if (req.user.username !== req.body.username) {
+      const userWithNewUsername = await User.findOne({
+        username: req.body.username
       });
+      if (userWithNewUsername != null && userWithNewUsername.id != userId) {
+        return res.status(500).send({
+          message: "user with username " + req.body.username + " already exists"
+        });
+      }
     }
 
     //create city for the user
@@ -241,11 +243,11 @@ exports.update = async (req, res) => {
     console.log(err);
     if (err.kind === "ObjectId") {
       return res.status(404).send({
-        message: "user not found with email " + email
+        message: "user not found with email " + username
       });
     }
     return res.status(500).send({
-      message: "Error retrieving user with email " + email
+      message: "Error retrieving user with email " + username
     });
   }
 };
