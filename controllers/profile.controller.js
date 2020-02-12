@@ -20,34 +20,65 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
     email = null;
   }
 
-  User.find({ socialId: user.id, provider: provider })
-    .then(existingUser => {
-      if (existingUser == null || !existingUser.length) {
-        //user not found. Create one
-        return createSocialAuthUser(
-          name,
-          profilePic,
-          email,
-          provider,
-          user.id,
-          res,
-          authResponse
-        );
-      }
+  if (email) {
+    User.find({ email: email })
+      .then(existingUser => {
+        if (existingUser == null || !existingUser.length) {
+          //user not found. Create one
+          return createSocialAuthUser(
+            name,
+            profilePic,
+            email,
+            provider,
+            user.id,
+            res,
+            authResponse
+          );
+        }
 
-      const authToken = jwt.sign(
-        { email, username: existingUser[0].username },
-        JWT_SECRET
-      );
-      const account = { ...authResponse, authToken, ...existingUser[0]._doc };
-      res.send(account);
-    })
-    .catch(err => {
-      console.log(err);
-      return res.status(500).send({
-        message: "Error retrieving user with " + provider + " id " + user.id
+        const authToken = jwt.sign(
+          { email, username: existingUser[0].username },
+          JWT_SECRET
+        );
+        const account = { ...authResponse, authToken, ...existingUser[0]._doc };
+        res.send(account);
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(500).send({
+          message: "Error retrieving user with " + provider + " id " + user.id
+        });
       });
-    });
+  } else {
+    User.find({ socialId: user.id, provider: provider })
+      .then(existingUser => {
+        if (existingUser == null || !existingUser.length) {
+          //user not found. Create one
+          return createSocialAuthUser(
+            name,
+            profilePic,
+            email,
+            provider,
+            user.id,
+            res,
+            authResponse
+          );
+        }
+
+        const authToken = jwt.sign(
+          { email, username: existingUser[0].username },
+          JWT_SECRET
+        );
+        const account = { ...authResponse, authToken, ...existingUser[0]._doc };
+        res.send(account);
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(500).send({
+          message: "Error retrieving user with " + provider + " id " + user.id
+        });
+      });
+  }
 };
 
 async function createUniqueUsername(name) {
