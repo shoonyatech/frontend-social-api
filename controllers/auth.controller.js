@@ -182,15 +182,20 @@ exports.twitterSignin = (req, res) => {
               }
             )
             .then(function(response) {
-              res.json({
+              const user = response.data;
+              const authResponse = {
                 access_token: oauthAccessToken,
-                access_token_secret: oauthAccessTokenSecret,
-
-                profile: response.data
-              });
+                access_token_secret: oauthAccessTokenSecret
+              };
+              profileController.findSocialAuthUserinDB(
+                "twitter",
+                user,
+                res,
+                authResponse
+              );
             })
             .catch(function(err) {
-              console.log(err.response.data.errors);
+              console.log(err);
               res.status(500).json(err.response.data.errors);
             });
         }

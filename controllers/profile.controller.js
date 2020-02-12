@@ -15,9 +15,9 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
     profilePic = user.avatar_url;
     email = user.email;
   } else if (provider === "twitter") {
-    name = authResponse.user.name;
-    profilePic = authResponse.user.user_image_url_https;
-    email = authResponse.user.screen_name;
+    name = user.name;
+    profilePic = user.profile_image_url_https;
+    email = null;
   }
 
   User.find({ socialId: user.id, provider: provider })
