@@ -6,4 +6,6 @@ module.exports = app => {
   app.post("/auth/github", auth.githubSignin);
 
   app.post("/auth/twitter", auth.twitterSignin);
+
+  app.post("/auth/google", auth.googleSignin);
 };

@@ -203,3 +203,45 @@ exports.twitterSignin = (req, res) => {
     );
   }
 };
+
+exports.googleSignin = (req, res) => {
+  console.log("Attempting Google login");
+  axios
+    .post(
+      "https://accounts.google.com/o/oauth2/token",
+      {
+        code: req.body.code,
+        client_id: authConfig.google.clientId,
+        client_secret: authConfig.google.clientSecret,
+        redirect_uri: req.body.redirectUri,
+        grant_type: "authorization_code"
+      },
+      {
+        "content-type": "application/x-www-form-urlencoded"
+      }
+    )
+    .then(function(response) {
+      let authResponse = response.data;
+      if (authResponse.error) {
+        res.status(500).json({ error: authResponse.error });
+      } else {
+        axios
+          .get(`https://www.googleapis.com/oauth2/v3/userinfo`, {
+            headers: { Authorization: "Bearer " + authResponse.access_token }
+          })
+          .then(function(response) {
+            const user = response.data;
+            profileController.findSocialAuthUserinDB(
+              "github",
+              user,
+              res,
+              authResponse
+            );
+          });
+      }
+    })
+    .catch(function(err) {
+      console.log(err);
+      res.status(500).json(err);
+    });
+};
