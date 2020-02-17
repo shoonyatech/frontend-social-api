@@ -35,6 +35,7 @@ require("./routes/city.routes.js")(app);
 require("./routes/event-read.routes.js")(app);
 require("./routes/article-read.routes.js")(app);
 require("./routes/skill.routes.js")(app);
+require("./routes/user.routes.js")(app);
 
 // this will attach the logged in user to req.user
 app.use(jwt({ secret: JWT_SECRET }));
