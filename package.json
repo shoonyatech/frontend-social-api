@@ -15,7 +15,7 @@
   "license": "MIT",
   "homepage": "https://www.frontend.social",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "dotenv": "^8.0.0",
