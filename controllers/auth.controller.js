@@ -205,7 +205,7 @@ exports.twitterSignin = (req, res) => {
 };
 
 exports.googleSignin = (req, res) => {
-  console.log("Attempting Google login");
+  console.log("Attempting Google login: ", req.body);
   axios
     .post(
       "https://accounts.google.com/o/oauth2/token",
@@ -222,6 +222,7 @@ exports.googleSignin = (req, res) => {
     )
     .then(function(response) {
       let authResponse = response.data;
+      console.log("received response from Google", authResponse);
       if (authResponse.error) {
         res.status(500).json({ error: authResponse.error });
       } else {
@@ -241,7 +242,7 @@ exports.googleSignin = (req, res) => {
       }
     })
     .catch(function(err) {
-      console.log(err);
+      console.log("Error making call to Google", err);
       res.status(500).json(err);
     });
 };
