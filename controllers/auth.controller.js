@@ -232,7 +232,7 @@ exports.googleSignin = (req, res) => {
           .then(function(response) {
             const user = response.data;
             profileController.findSocialAuthUserinDB(
-              "github",
+              "google",
               user,
               res,
               authResponse
