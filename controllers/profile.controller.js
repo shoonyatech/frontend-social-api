@@ -21,7 +21,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
   } else if (provider === "google") {
     name = user.name;
     profilePic = user.picture;
-    email = email;
+    email = user.email;
   }
 
   if (email) {
