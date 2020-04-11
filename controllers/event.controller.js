@@ -45,7 +45,8 @@ exports.findAll = (req, res) => {
   if (searchText) {
     textQuery["$or"] = [
       { name: { $regex: searchText, $options: "i" } },
-      { description: { $regex: searchText, $options: "i" } }
+      { description: { $regex: searchText, $options: "i" } },
+      { title: { $regex: searchText, $options: "i" } },
     ];
     andQuery.push(textQuery);
   }
