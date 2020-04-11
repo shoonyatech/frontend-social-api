@@ -9,6 +9,8 @@ const EventSchema = mongoose.Schema(
     city: String,
     country: String,
     type: String, // c - conferene / m - meetup
+    isOnline: Boolean,
+    onlineLink: String, // zoom or other live video link
     relatedSkills: [],
     website: String,
     twitter: String,
