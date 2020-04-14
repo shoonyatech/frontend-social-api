@@ -1,5 +1,9 @@
-# frontend-social-api-api
-
+# frontend-social-api
 API endpoint for Frontend Social website (frontend.social)
 
-This contaoins nodejs backend with expressJs
+### Steps to locally setup frontend-social-api
+```
+Rename .env.test file to .env
+npm install
+npm run start
+```
