@@ -35,6 +35,7 @@ require("./routes/job-read.routes.js")(app);
 require("./routes/city.routes.js")(app);
 require("./routes/event-read.routes.js")(app);
 require("./routes/article-read.routes.js")(app);
+require("./routes/tool-read.routes.js")(app);
 require("./routes/skill.routes.js")(app);
 require("./routes/newsletter.routes.js")(app);
 require("./routes/user.routes.js")(app);
@@ -45,6 +46,7 @@ app.use(jwt({ secret: JWT_SECRET }));
 require("./routes/job-write.routes.js")(app);
 require("./routes/event-write.routes.js")(app);
 require("./routes/article-write.routes.js")(app);
+require("./routes/tool-write.routes.js")(app);
 require("./routes/profile.routes.js")(app);
 app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
