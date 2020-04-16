@@ -14,19 +14,19 @@ app.use(bodyParser.json());
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connected to the database");
   })
-  .catch(err => {
+  .catch((err) => {
     console.log("Could not connect to the database. Exiting now...", err);
     process.exit();
   });
 
 /*  heartbeat
  */
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   res.status(200).json({ message: "Welcome to Frontend Social API! v1" });
 });
 
@@ -36,6 +36,7 @@ require("./routes/city.routes.js")(app);
 require("./routes/event-read.routes.js")(app);
 require("./routes/article-read.routes.js")(app);
 require("./routes/skill.routes.js")(app);
+require("./routes/newsletter.routes.js")(app);
 require("./routes/user.routes.js")(app);
 
 // this will attach the logged in user to req.user
