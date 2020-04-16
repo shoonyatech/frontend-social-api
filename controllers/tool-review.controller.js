@@ -1,4 +1,4 @@
-const ToolReview = require("../models/toolReview-review.model.js");
+const ToolReview = require("../models/tool-review.model.js");
 
 // Create and Save a new toolReview
 exports.create = (req, res) => {
