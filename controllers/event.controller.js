@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const CityEvent = require("../models/event.model.js");
 const cityController = require("./city.controller");
+const meetingController = require('./meeting.controller');
 const apiKey = "";
 const appSecret = "";
 // Create and Save a new event
@@ -255,14 +256,31 @@ exports.createMeeting = async (req, res) => {
     'content-type': 'application/json',
     'Authorization': "Bearer " + token
   }
+
   try {
-    const meetingInfo = await axios.post('https://api.zoom.us/v2/users/me/meetings', meetingConfig ,  {headers});
-    await axios.get(meetingInfo.data.start_url, {headers});
+    const meetingInfo = (await axios.post('https://api.zoom.us/v2/users/me/meetings', meetingConfig , {headers})).data;
+    await meetingController.saveMeeting({
+      title,
+      eventId: req.params.id,
+      createdBy: req.user,
+      meetingId: meetingInfo.id
+    });
+
     return res.send({
-      meetingId: meetingInfo.data.id,
+      meetingId: meetingInfo.id,
     });
   } catch(ex) {
     console.log(ex);
     return res.status(400).send();
   } 
 };
+
+exports.findMeetings = async (req, res) => {
+  const eventId = req.params.id;
+  try {
+    const meetings = await meetingController.getMeetings(eventId);
+    res.send(meetings);
+  } catch(ex) {
+    res.status(500).send(ex.message)
+  }
+}

@@ -17,4 +17,6 @@ module.exports = app => {
   app.get("/event/:id", event.findOne);
 
   app.post("/event/:id/create-meeting", event.createMeeting);
+
+  app.get("/event/:id/meetings", event.findMeetings);
 };
