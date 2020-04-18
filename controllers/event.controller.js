@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const axios = require("axios");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const CityEvent = require("../models/event.model.js");
 const cityController = require("./city.controller");
-const meetingController = require('./meeting.controller');
-const apiKey = "";
-const appSecret = "";
+const meetingController = require("./meeting.controller");
+const apiKey = "0P5HB2imRQCT8T567zKkug";
+const appSecret = "Jp7lO8jx9FXIpy03USpB9AxjDxikw4oRx5YF";
 // Create and Save a new event
 exports.create = async (req, res) => {
   const event = new CityEvent({ ...req.body, createdBy: req.user });
@@ -14,18 +14,18 @@ exports.create = async (req, res) => {
   //create city for the event
   await cityController.createCityIfNotExists({
     name: event.city,
-    country: event.country
+    country: event.country,
   });
 
   // Save event in the database
   event
     .save()
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the event."
+        message: err.message || "Some error occurred while creating the event.",
       });
     });
 };
@@ -38,7 +38,7 @@ exports.findAll = (req, res) => {
     searchText,
     relatedSkills,
     city,
-    country
+    country,
   } = req.query;
   let pageNumber = pageNo ? parseInt(pageNo) : 1;
   let nPerPage = itemsPerPage ? parseInt(itemsPerPage) : 200;
@@ -73,7 +73,7 @@ exports.findAll = (req, res) => {
       cityQuery.push({ country: country });
     }
     let locationQuery = {
-      $and: cityQuery
+      $and: cityQuery,
     };
     andQuery.push(locationQuery);
   }
@@ -87,27 +87,27 @@ exports.findAll = (req, res) => {
     .sort({ dateFrom: "ascending" })
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
-    .then(events => {
+    .then((events) => {
       res.send(events);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events."
+        message: err.message || "Some error occurred while retrieving events.",
       });
     });
 };
 
 // Retrieve and return all events with given IDs.
 exports.withIds = (req, res) => {
-  const ids = req.query.ids.split(",").map(id => mongoose.Types.ObjectId(id));
+  const ids = req.query.ids.split(",").map((id) => mongoose.Types.ObjectId(id));
   CityEvent.find({ _id: { $in: ids } })
     .sort({ dateFrom: "ascending" })
-    .then(events => {
+    .then((events) => {
       res.send(events);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events."
+        message: err.message || "Some error occurred while retrieving events.",
       });
     });
 };
@@ -118,12 +118,12 @@ exports.findAllInCity = (req, res) => {
   const countryCode = req.params.countryCode;
   CityEvent.find({ city: cityName, country: countryCode })
     .sort({ dateFrom: "ascending" })
-    .then(events => {
+    .then((events) => {
       res.send(events);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events."
+        message: err.message || "Some error occurred while retrieving events.",
       });
     });
 };
@@ -139,12 +139,12 @@ exports.findAllUpcoming = (req, res) => {
   CityEvent.find(filter)
     .sort({ dateFrom: "ascending" })
     .limit(count)
-    .then(events => {
+    .then((events) => {
       res.send(events);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events."
+        message: err.message || "Some error occurred while retrieving events.",
       });
     });
 };
@@ -152,22 +152,22 @@ exports.findAllUpcoming = (req, res) => {
 // Find a single event with a id
 exports.findOne = (req, res) => {
   CityEvent.findById(req.params.id)
-    .then(event => {
+    .then((event) => {
       if (!event) {
         return res.status(404).send({
-          message: "event not found with id " + req.params.id
+          message: "event not found with id " + req.params.id,
         });
       }
       res.send(event);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "event not found with id " + req.params.id
+          message: "event not found with id " + req.params.id,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving event with id " + req.params.id
+        message: "Error retrieving event with id " + req.params.id,
       });
     });
 };
@@ -177,32 +177,32 @@ exports.update = async (req, res) => {
   //create city for the event
   await cityController.createCityIfNotExists({
     name: req.body.city,
-    country: req.body.country
+    country: req.body.country,
   });
 
   CityEvent.findByIdAndUpdate(
     req.params.id,
     {
-      ...req.body
+      ...req.body,
     },
     { new: true }
   )
-    .then(event => {
+    .then((event) => {
       if (!event) {
         return res.status(404).send({
-          message: "event not found with id " + req.params.id
+          message: "event not found with id " + req.params.id,
         });
       }
       res.send(event);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "event not found with id " + req.params.id
+          message: "event not found with id " + req.params.id,
         });
       }
       return res.status(500).send({
-        message: "Error updating event with id " + req.params.id
+        message: "Error updating event with id " + req.params.id,
       });
     });
 };
@@ -210,32 +210,31 @@ exports.update = async (req, res) => {
 // Delete a event with the specified id in the request
 exports.delete = (req, res) => {
   CityEvent.findByIdAndRemove(req.params.id)
-    .then(event => {
+    .then((event) => {
       if (!event) {
         return res.status(404).send({
-          message: "event not found with id " + req.params.id
+          message: "event not found with id " + req.params.id,
         });
       }
       res.send({ message: "event deleted successfully!" });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId" || err.name === "NotFound") {
         return res.status(404).send({
-          message: "event not found with id " + req.params.id
+          message: "event not found with id " + req.params.id,
         });
       }
       return res.status(500).send({
-        message: "Could not delete event with id " + req.params.id
+        message: "Could not delete event with id " + req.params.id,
       });
     });
 };
-
 
 exports.createMeeting = async (req, res) => {
   const title = req.body.title;
   const payload = {
     iss: apiKey,
-    exp: ((new Date()).getTime() + 5000)
+    exp: new Date().getTime() + 5000,
   };
   const token = jwt.sign(payload, appSecret);
   const meetingConfig = {
@@ -249,30 +248,36 @@ exports.createMeeting = async (req, res) => {
       approval_type: 0,
       enforce_login: false,
       waiting_room: true,
-    }
+    },
   };
-  const headers =  {
-    'User-Agent': 'Zoom-api-Jwt-Request',
-    'content-type': 'application/json',
-    'Authorization': "Bearer " + token
-  }
+  const headers = {
+    "User-Agent": "Zoom-api-Jwt-Request",
+    "content-type": "application/json",
+    Authorization: "Bearer " + token,
+  };
 
   try {
-    const meetingInfo = (await axios.post('https://api.zoom.us/v2/users/me/meetings', meetingConfig , {headers})).data;
+    const meetingInfo = (
+      await axios.post(
+        "https://api.zoom.us/v2/users/me/meetings",
+        meetingConfig,
+        { headers }
+      )
+    ).data;
     await meetingController.saveMeeting({
       title,
       eventId: req.params.id,
       createdBy: req.user,
-      meetingId: meetingInfo.id
+      meetingId: meetingInfo.id,
     });
 
     return res.send({
       meetingId: meetingInfo.id,
     });
-  } catch(ex) {
+  } catch (ex) {
     console.log(ex);
     return res.status(400).send();
-  } 
+  }
 };
 
 exports.findMeetings = async (req, res) => {
@@ -280,7 +285,7 @@ exports.findMeetings = async (req, res) => {
   try {
     const meetings = await meetingController.getMeetings(eventId);
     res.send(meetings);
-  } catch(ex) {
-    res.status(500).send(ex.message)
+  } catch (ex) {
+    res.status(500).send(ex.message);
   }
-}
+};
