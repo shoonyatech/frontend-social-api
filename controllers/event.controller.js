@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
+const axios = require("axios");
+const jwt = require('jsonwebtoken');
+
 const CityEvent = require("../models/event.model.js");
 const cityController = require("./city.controller");
-
+const apiKey = "";
+const appSecret = "";
 // Create and Save a new event
 exports.create = async (req, res) => {
   const event = new CityEvent({ ...req.body, createdBy: req.user });
@@ -223,4 +227,42 @@ exports.delete = (req, res) => {
         message: "Could not delete event with id " + req.params.id
       });
     });
+};
+
+
+exports.createMeeting = async (req, res) => {
+  const title = req.body.title;
+  const payload = {
+    iss: apiKey,
+    exp: ((new Date()).getTime() + 5000)
+  };
+  const token = jwt.sign(payload, appSecret);
+  const meetingConfig = {
+    topic: title,
+    password: "",
+    type: 2,
+    start_time: new Date(),
+    settings: {
+      join_before_host: true,
+      mute_upon_entry: true,
+      approval_type: 0,
+      enforce_login: false,
+      waiting_room: true,
+    }
+  };
+  const headers =  {
+    'User-Agent': 'Zoom-api-Jwt-Request',
+    'content-type': 'application/json',
+    'Authorization': "Bearer " + token
+  }
+  try {
+    const meetingInfo = await axios.post('https://api.zoom.us/v2/users/me/meetings', meetingConfig ,  {headers});
+    await axios.get(meetingInfo.data.start_url, {headers});
+    return res.send({
+      meetingId: meetingInfo.data.id,
+    });
+  } catch(ex) {
+    console.log(ex);
+    return res.status(400).send();
+  } 
 };
