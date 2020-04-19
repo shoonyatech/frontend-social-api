@@ -16,7 +16,5 @@ module.exports = app => {
   // Retrieve a single event with id
   app.get("/event/:id", event.findOne);
 
-  app.post("/event/:id/create-meeting", event.createMeeting);
-
   app.get("/event/:id/meetings", event.findMeetings);
 };

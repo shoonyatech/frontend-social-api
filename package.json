@@ -27,6 +27,7 @@
     "mongoose": "^5.7.5",
     "oauth": "^0.9.15",
     "oauth-signature": "^1.5.0",
-    "unix-timestamp": "^0.2.0"
+    "unix-timestamp": "^0.2.0",
+    "uuid": "^7.0.3"
   }
 }

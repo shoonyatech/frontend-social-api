@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
+const uuid = require("uuid/v4");
 
 const CityEvent = require("../models/event.model.js");
 const cityController = require("./city.controller");
@@ -232,45 +233,53 @@ exports.delete = (req, res) => {
 
 exports.createMeeting = async (req, res) => {
   const title = req.body.title;
+  const type = req.body.type;
   const payload = {
     iss: apiKey,
     exp: new Date().getTime() + 5000,
   };
-  const token = jwt.sign(payload, appSecret);
-  const meetingConfig = {
-    topic: title,
-    password: "",
-    type: 2,
-    start_time: new Date(),
-    settings: {
-      join_before_host: true,
-      mute_upon_entry: true,
-      approval_type: 0,
-      enforce_login: false,
-      waiting_room: true,
-    },
-  };
-  const headers = {
-    "User-Agent": "Zoom-api-Jwt-Request",
-    "content-type": "application/json",
-    Authorization: "Bearer " + token,
-  };
+  let meetingInfo = {};
 
-  try {
-    const meetingInfo = (
+  if (type === "zoom") {
+    const token = jwt.sign(payload, appSecret);
+    const meetingConfig = {
+      topic: title,
+      password: "",
+      type: 2,
+      start_time: new Date(),
+      settings: {
+        join_before_host: true,
+        mute_upon_entry: true,
+        approval_type: 0,
+        enforce_login: false,
+        waiting_room: true,
+      },
+    };
+    const headers = {
+      "User-Agent": "Zoom-api-Jwt-Request",
+      "content-type": "application/json",
+      Authorization: "Bearer " + token,
+    };
+    meetingInfo = (
       await axios.post(
         "https://api.zoom.us/v2/users/me/meetings",
         meetingConfig,
         { headers }
       )
     ).data;
+  } else {
+    meetingInfo = {
+      id: title + "-" + uuid()
+    };
+  }
+
+  try {
     await meetingController.saveMeeting({
       title,
       eventId: req.params.id,
       createdBy: req.user,
       meetingId: meetingInfo.id,
     });
-
     return res.send({
       meetingId: meetingInfo.id,
     });
