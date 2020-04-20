@@ -2,12 +2,11 @@ const mongoose = require("mongoose");
 
 const CommentSchema = mongoose.Schema(
   {
-    parentId:String,  //Will have GUID of Course/Tool/etc
-    commentId:String,  //Added ID
+    parentId:String,
     comment:String,
     createdTime: String,
     createdBy: Object,
-    replies:[ReplySchema]
+    replies:[]
   },
   {
     timestamps: true,

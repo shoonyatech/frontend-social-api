@@ -5,9 +5,9 @@ module.exports = (app) => {
     app.post("/comment", comment.create);
   
     // Update a comment with id
-    app.put("/comment/:id", tool.update);
+    app.put("/comment/:id", comment.update);
   
     // Delete a comment with id
-    app.delete("/comment/:id", tool.delete);
+    app.delete("/comment/:id", comment.delete);
   };
   
