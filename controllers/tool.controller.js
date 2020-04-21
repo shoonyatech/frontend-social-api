@@ -19,7 +19,28 @@ exports.create = (req, res) => {
 
 // Retrieve and return all tools from the database.
 exports.findAll = (req, res) => {
-  Tool.find()
+
+  const {
+    relatedSkills  
+  } = req.query;
+
+  let skillsQuery = {};
+  let andQuery = [];
+  
+  if (relatedSkills) {
+    let skills = relatedSkills.split(",");
+    if (skills.length) {
+      skillsQuery["$or"] = [{ technologies: { $in: skills } }];
+      andQuery.push(skillsQuery);
+    }
+  }
+
+  let finalQuery = {};
+  if (andQuery.length) {
+    finalQuery = { $and: andQuery };
+  }
+
+  Tool.find(finalQuery)
     .then((tools) => {
       res.send(tools);
     })
