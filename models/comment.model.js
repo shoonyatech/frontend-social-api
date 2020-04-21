@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const CommentSchema = mongoose.Schema(
   {
     parentId:String,
-    comment:String,
+    commentText:String,
     rating: Number,
     createdBy: Object,
     replies:[]
@@ -15,7 +15,7 @@ const CommentSchema = mongoose.Schema(
 
 const ReplySchema = mongoose.Schema(
     {
-      reply:String,
+      replyText:String,
       createdTime: String,
       createdBy: Object,
     },
