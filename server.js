@@ -50,6 +50,8 @@ require("./routes/article-write.routes.js")(app);
 require("./routes/tool-write.routes.js")(app);
 require("./routes/profile.routes.js")(app);
 require("./routes/comment-write.routes.js")(app);
+require("./routes/vote-write.routes.js")(app);
+require("./routes/vote-read.routes.js")(app);
 app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
 });

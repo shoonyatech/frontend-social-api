@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const ToolSchema = mongoose.Schema(
   {
     name: String,
+    link: String,
     section: String,
     icon: String,
     upRating: Number,
