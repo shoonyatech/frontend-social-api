@@ -5,7 +5,6 @@ const CommentSchema = mongoose.Schema(
     parentId:String,
     comment:String,
     rating: Number,
-    createdTime: String,
     createdBy: Object,
     replies:[]
   },

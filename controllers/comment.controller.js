@@ -39,7 +39,7 @@ exports.update = (req, res) => {
             parentId: req.body.parentId,
             commentId: req.body.commentId,
             comment: req.body.comment,
-            createdTime: req.body.createdTime,
+            rating: req.body.rating,
             createdBy: req.body.createdBy,
             replies: req.body.replies,
         },
