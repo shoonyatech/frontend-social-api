@@ -4,18 +4,20 @@ const UserPage = require("../models/user-page.model.js");
 exports.create = (req, res) => {
     const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy: req.user });
 
-    // Save userPage in the database
-    userPage
-        .save()
-        .then((data) => {
-            res.send(data);
+    // Delete and Save userPage in the database
+    UserPage.findOneAndDelete({ username: req.user.username, url: req.headers.referer })
+        .then((response) => {
+            userPage.save()
+                .then((data) => {
+                    res.send(data);
+                })
+                .catch((err) => {
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while creating the userPage.",
+                    });
+                });
         })
-        .catch((err) => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the userPage.",
-            });
-        });
 };
 
 // Delete a userPage by user
