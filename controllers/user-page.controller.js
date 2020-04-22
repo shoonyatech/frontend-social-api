@@ -1,0 +1,55 @@
+const UserPage = require("../models/user-page.model.js");
+
+// Create and Save a new userPage
+exports.create = (req, res) => {
+    const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy: req.user });
+
+    // Save userPage in the database
+    userPage
+        .save()
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while creating the userPage.",
+            });
+        });
+};
+
+// Delete a userPage by user
+exports.delete = (req, res) => {
+    UserPage.findOneAndDelete({ username: req.user.username, url: req.headers.referer })
+        .then((comment) => {
+            if (!comment) {
+                return res.status(404).send({
+                    message: "userpage not found with id " + req.params.id,
+                });
+            }
+            res.send({ message: "userpage deleted successfully!" });
+        })
+        .catch((err) => {
+            if (err.kind === "ObjectId" || err.name === "NotFound") {
+                return res.status(404).send({
+                    message: "userpage not found with url " + req.params.url,
+                });
+            }
+            return res.status(500).send({
+                message: "Could not delete userpage with url " + req.params.url,
+            });
+        });
+};
+
+//Get All user online
+exports.findAllUserByURL = (req, res) => {
+    UserPage.find({ url: req.headers.referer })
+        .then((userPages) => {
+            res.send(userPages);
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving userPages.",
+            });
+        });
+};
