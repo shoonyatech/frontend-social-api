@@ -9,4 +9,7 @@ module.exports = (app) => {
 
     // get all online user by page
     app.get("/userpage/online/", userPage.findAllUserByURL);
+
+    // Create a new userpage data
+    app.post("/userpage/online/count", userPage.getUserCountByURL);
 };
