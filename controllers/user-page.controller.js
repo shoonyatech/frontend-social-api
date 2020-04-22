@@ -55,3 +55,15 @@ exports.findAllUserByURL = (req, res) => {
             });
         });
 };
+
+exports.getUserCountByURL = (req, res) => {
+    UserPage.find({ url: req.body.url })
+        .then((users) => {
+            res.send({ "userCount": users.length });
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving userPages.",
+            });
+        });
+}
