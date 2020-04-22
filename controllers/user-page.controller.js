@@ -5,7 +5,7 @@ exports.create = (req, res) => {
     const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy: req.user });
 
     // Delete and Save userPage in the database
-    UserPage.findOneAndDelete({ username: req.user.username, url: req.headers.referer })
+    UserPage.deleteMany({ username: req.user.username, url: req.headers.referer })
         .then((response) => {
             userPage.save()
                 .then((data) => {
@@ -22,7 +22,7 @@ exports.create = (req, res) => {
 
 // Delete a userPage by user
 exports.delete = (req, res) => {
-    UserPage.findOneAndDelete({ username: req.user.username, url: req.headers.referer })
+    UserPage.deleteMany({ username: req.user.username, url: req.headers.referer })
         .then((comment) => {
             if (!comment) {
                 return res.status(404).send({
