@@ -5,7 +5,7 @@ exports.create = (req, res) => {
     const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy: req.user });
 
     // Delete and Save userPage in the database
-    UserPage.deleteMany({ username: req.user.username, url: req.headers.referer })
+    UserPage.deleteMany({ username: req.user.username })
         .then((response) => {
             userPage.save()
                 .then((data) => {
