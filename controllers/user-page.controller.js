@@ -43,19 +43,58 @@ exports.delete = (req, res) => {
         });
 };
 
+// //Get All user online
+// exports.findAllUserByURL = (req, res) => {
+//     UserPage.find({ url: req.headers.referer })
+//         .then((users) => {
+//             users = users.filter(x => (req.body.currentTime - x.createdTime) / 1000 <= 15)
+//             users.sort(compare);
+//             res.send(users);
+//         })
+//         .catch((err) => {
+//             res.status(500).send({
+//                 message: err.message || "Some error occurred while retrieving userPages.",
+//             });
+//         });
+// };
+
 //Get All user online
 exports.findAllUserByURL = (req, res) => {
-    UserPage.find({ url: req.headers.referer })
-        .then((users) => {
-            users = users.filter(x => (req.body.currentTime - x.createdTime) / 1000 <= 10)
-            res.send(users);
+    const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy: req.user });
+
+    // Delete and Save userPage in the database
+    UserPage.deleteMany({ username: req.user.username })
+        .then((response) => {
+            //console.log(response)
+            userPage.save()
+                .then((data) => {
+                    //conysole.log(data)
+                    UserPage.find({ url: req.headers.referer })
+                        .then((users) => {
+                            users = users.filter(x => (req.body.currentTime - x.createdTime) / 1000 <= 15)
+                            users.sort(compare);
+                            res.send(users);
+                        })
+                })
+                .catch((err) => {
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while creating the userPage.",
+                    });
+                });
         })
-        .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while retrieving userPages.",
-            });
-        });
 };
+
+function compare(a, b) {
+    if (a.username < b.username) {
+        return -1;
+    }
+    if (a.username > b.username) {
+        return 1;
+    }
+    return 0;
+}
+
 
 exports.getUserCountByURL = (req, res) => {
     UserPage.find({ url: req.body.url })
