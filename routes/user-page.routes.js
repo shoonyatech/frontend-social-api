@@ -8,7 +8,7 @@ module.exports = (app) => {
     app.delete("/userpage", userPage.delete);
 
     // get all online user by page
-    app.get("/userpage/online/", userPage.findAllUserByURL);
+    app.post("/userpage/online/", userPage.findAllUserByURL);
 
     // Create a new userpage data
     app.post("/userpage/online/count", userPage.getUserCountByURL);
