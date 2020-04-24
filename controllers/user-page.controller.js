@@ -47,7 +47,7 @@ exports.delete = (req, res) => {
 exports.findAllUserByURL = (req, res) => {
     UserPage.find({ url: req.headers.referer })
         .then((users) => {
-            users = users.find(x => (req.body.currentTime - x.createdTime) / 1000 <= 10)
+            users = users.filter(x => (req.body.currentTime - x.createdTime) / 1000 <= 10)
             res.send(users);
         })
         .catch((err) => {
