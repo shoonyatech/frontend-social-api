@@ -3,10 +3,11 @@ const mongoose = require("mongoose");
 const UserPageSchema = mongoose.Schema(
   {
     url: String,
-    username:String,
+    createdTime: Number,
+    username: String,
     name: String,
     avatar: String,
-    createdBy:[]
+    createdBy: []
   },
   {
     timestamps: true
