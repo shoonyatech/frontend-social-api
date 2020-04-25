@@ -89,6 +89,7 @@ exports.findAll = (req, res) => {
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
     .then((events) => {
+      events = events.filter(x => x.isPrivate != true)
       res.send(events);
     })
     .catch((err) => {
@@ -103,7 +104,7 @@ exports.withIds = (req, res) => {
   const ids = req.query.ids.split(",").map((id) => mongoose.Types.ObjectId(id));
   CityEvent.find({ _id: { $in: ids } })
     .sort({ dateFrom: "ascending" })
-    .then((events) => {
+    .then((events) => {      
       res.send(events);
     })
     .catch((err) => {
@@ -120,6 +121,7 @@ exports.findAllInCity = (req, res) => {
   CityEvent.find({ city: cityName, country: countryCode })
     .sort({ dateFrom: "ascending" })
     .then((events) => {
+      events = events.filter(x => x.isPrivate != true)
       res.send(events);
     })
     .catch((err) => {
@@ -141,6 +143,7 @@ exports.findAllUpcoming = (req, res) => {
     .sort({ dateFrom: "ascending" })
     .limit(count)
     .then((events) => {
+      events = events.filter(x => x.isPrivate != true)
       res.send(events);
     })
     .catch((err) => {
