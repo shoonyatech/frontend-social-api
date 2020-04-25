@@ -90,7 +90,7 @@ exports.findAll = (req, res) => {
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
     .then((events) => {
-      events = events.filter(x => x.isPrivate != true)
+      events = events.filter(x => x.isPrivate !== true)
       res.send(events);
     })
     .catch((err) => {
@@ -122,7 +122,7 @@ exports.findAllInCity = (req, res) => {
   CityEvent.find({ city: cityName, country: countryCode })
     .sort({ dateFrom: "ascending" })
     .then((events) => {
-      events = events.filter(x => x.isPrivate != true)
+      events = events.filter(x => x.isPrivate !== true)
       res.send(events);
     })
     .catch((err) => {
@@ -144,7 +144,7 @@ exports.findAllUpcoming = (req, res) => {
     .sort({ dateFrom: "ascending" })
     .limit(count)
     .then((events) => {
-      events = events.filter(x => x.isPrivate != true)
+      events = events.filter(x => x.isPrivate !== true)
       res.send(events);
     })
     .catch((err) => {
