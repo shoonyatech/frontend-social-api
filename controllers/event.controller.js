@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const uuid = require("uuid/v4");
 
 const CityEvent = require("../models/event.model.js");
+const EventRegistration = require("../models/event-registration.model.js");
 const cityController = require("./city.controller");
 const meetingController = require("./meeting.controller");
 const apiKey = "0P5HB2imRQCT8T567zKkug";
@@ -104,7 +105,7 @@ exports.withIds = (req, res) => {
   const ids = req.query.ids.split(",").map((id) => mongoose.Types.ObjectId(id));
   CityEvent.find({ _id: { $in: ids } })
     .sort({ dateFrom: "ascending" })
-    .then((events) => {      
+    .then((events) => {
       res.send(events);
     })
     .catch((err) => {
@@ -300,4 +301,28 @@ exports.findMeetings = async (req, res) => {
   } catch (ex) {
     res.status(500).send(ex.message);
   }
+};
+
+
+exports.registerUser = async (req, res) => {
+  const eventRegistration = new EventRegistration({ ...req.body, createdBy: req.user });
+
+  // Save eventRegistration in the database
+  EventRegistration.find()
+    .then((users) => {
+      if (users.length == 0)
+        eventRegistration
+          .save()
+          .then((data) => {
+            res.send({ message: "Registered sucessfully." });
+          })
+      else {
+        res.send({ message: "You've already registered for this event." });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while registering user.",
+      });
+    });
 };
