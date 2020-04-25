@@ -11,4 +11,8 @@ module.exports = app => {
 
   // Delete a event with id
   app.delete("/event/:id", event.delete);
+
+  //Register users for the event
+  app.post("/event/register", event.registerUser);
+  
 };
