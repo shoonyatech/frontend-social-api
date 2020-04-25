@@ -19,7 +19,9 @@ const EventSchema = mongoose.Schema(
     instagram: String,
     linkedin: String,
     schedule: String,
-    createdBy: Object
+    createdBy: Object,
+    isPrivate: Boolean,
+    isRequiresRegistration: Boolean
   },
   {
     timestamps: true
