@@ -90,7 +90,6 @@ exports.findAll = (req, res) => {
     .skip((pageNumber - 1) * nPerPage)
     .limit(nPerPage)
     .then((events) => {
-      events = events.filter(x => x.isPrivate !== true)
       res.send(events);
     })
     .catch((err) => {
