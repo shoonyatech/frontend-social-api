@@ -15,7 +15,8 @@ const UserSchema = mongoose.Schema(
     city: String,
     country: String,
     socialId: String,
-    provider: String
+    provider: String,
+    userPreferences: []
   },
   {
     timestamps: true

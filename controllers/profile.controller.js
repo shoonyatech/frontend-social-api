@@ -364,7 +364,25 @@ exports.findUsersInCity = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users."
+        message: err.message || "Some error occurred while saving users."
       });
     });
 };
+
+
+// Update user preferences of logged in user
+exports.updatePreferences = async (req, res) => {
+  User.update({ username: req.user.username }, { $set: { userPreferences: req.body.userPreferences } })
+    .then(users => {
+      User.findOne({ username: req.user.username })
+        .then(user => {         
+          res.send(user);
+        })
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while saving user preferences."
+      });
+    });
+
+}
