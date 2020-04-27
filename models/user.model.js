@@ -16,7 +16,9 @@ const UserSchema = mongoose.Schema(
     country: String,
     socialId: String,
     provider: String,
-    userPreferences: []
+    userPreferences: {
+      cookieConsent: Boolean
+    }
   },
   {
     timestamps: true
