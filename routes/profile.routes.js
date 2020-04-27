@@ -9,4 +9,7 @@ module.exports = app => {
 
   // Delete my profile
   app.delete("/me", profile.delete);
+
+  // Update update preferences
+  app.put("/user/preferences", profile.updatePreferences);
 };
