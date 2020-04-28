@@ -22,14 +22,17 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   let filter = {};
   const skill = req.query.skill;
-  const count = Number(req.query.count) || 1000;
   if (skill) {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
 
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   Article.find(filter)
     .sort({ createdAt: "descending" })
-    .limit(count)
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then(articles => {
       res.send(articles);
     })

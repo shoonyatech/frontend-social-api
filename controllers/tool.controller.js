@@ -21,12 +21,12 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
 
   const {
-    relatedSkills  
+    relatedSkills
   } = req.query;
 
   let skillsQuery = {};
   let andQuery = [];
-  
+
   if (relatedSkills) {
     let skills = relatedSkills.split(",");
     if (skills.length) {
@@ -40,7 +40,12 @@ exports.findAll = (req, res) => {
     finalQuery = { $and: andQuery };
   }
 
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   Tool.find(finalQuery)
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then((tools) => {
       res.send(tools);
     })

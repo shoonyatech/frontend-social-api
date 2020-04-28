@@ -48,8 +48,13 @@ exports.findAll = (req, res) => {
     finalQuery = { $or: orQuery };
   }
 
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   City.find(finalQuery)
     .sort({ name: "ascending" })
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then(cities => {
       res.send(cities);
     })
