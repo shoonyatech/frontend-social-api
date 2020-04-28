@@ -32,18 +32,12 @@ exports.findAll = (req, res) => {
     country = ""
   } = req.query;
   let filterObj = {};
-  let pageNumber = parseInt(pageNo);
-  let nPerPage = parseInt(itemsPerPage);
-  const pagination = {
-    currentPage: pageNumber,
-    totalPages: 5,
-    count: 100
-  };
+
   const jobFilter = getAppliedFilters(jobTypes, filterTypes.JOB);
   const skillFilter = getAppliedFilters(skills, filterTypes.SKILL);
   const response = {
     results: [],
-    meta: { pagination, filters: { jobTypes: jobFilter, skills: skillFilter } }
+    meta: { filters: { jobTypes: jobFilter, skills: skillFilter } }
   };
 
   const explicitFilters = getExplicitFilters({
@@ -60,10 +54,12 @@ exports.findAll = (req, res) => {
     };
   }
 
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
   Job.find(filterObj)
     .sort({ createdAt: "descending" })
-    .skip((pageNumber - 1) * nPerPage)
-    .limit(nPerPage)
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then(jobs => {
       if (jobs.length) {
         response.results = jobs;

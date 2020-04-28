@@ -35,15 +35,11 @@ exports.create = async (req, res) => {
 // Retrieve and return all events from the database.
 exports.findAll = (req, res) => {
   const {
-    pageNo,
-    itemsPerPage,
     searchText,
     relatedSkills,
     city,
     country,
   } = req.query;
-  let pageNumber = pageNo ? parseInt(pageNo) : 1;
-  let nPerPage = itemsPerPage ? parseInt(itemsPerPage) : 200;
 
   let skillsQuery = {};
   let textQuery = {};
@@ -85,10 +81,13 @@ exports.findAll = (req, res) => {
     finalQuery = { $and: andQuery };
   }
 
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   CityEvent.find(finalQuery)
     .sort({ dateFrom: "ascending" })
-    .skip((pageNumber - 1) * nPerPage)
-    .limit(nPerPage)
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then((events) => {
       res.send(events);
     })
@@ -118,8 +117,14 @@ exports.withIds = (req, res) => {
 exports.findAllInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
+
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   CityEvent.find({ city: cityName, country: countryCode })
     .sort({ dateFrom: "ascending" })
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then((events) => {
       events = events.filter(x => x.isPrivate !== true)
       res.send(events);
@@ -134,14 +139,18 @@ exports.findAllInCity = (req, res) => {
 // Retrieve and return all events from the database.
 exports.findAllUpcoming = (req, res) => {
   let filter = { dateFrom: { $gte: new Date() } };
-  const count = Number(req.query.count) || 10;
   const skill = req.query.skill;
   if (skill) {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
+
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   CityEvent.find(filter)
     .sort({ dateFrom: "ascending" })
-    .limit(count)
+    .limit(limit)
+    .skip(limit * (page - 1))
     .then((events) => {
       events = events.filter(x => x.isPrivate !== true)
       res.send(events);
