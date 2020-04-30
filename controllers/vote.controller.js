@@ -20,8 +20,7 @@ exports.create = (req, res) => {
 
 // Check if user canVote
 exports.canVote = (req, res) => {
-    const username = req.user.username;
-    Vote.find({ parentId: req.params.id, createdBy: { username: username } })    
+    Vote.find({ parentId: req.params.id, 'createdBy.username': { $eq: req.user.username } })
         .then((votes) => {
             if (votes.length > 0) {
                 res.send({ canVote: false });
