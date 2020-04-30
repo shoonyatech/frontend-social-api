@@ -142,8 +142,8 @@ exports.findAllUpcoming = (req, res) => {
   if (skill) {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
-  filter.push({ isPrivate: false });
-  
+  filter["isPrivate"] = false;
+
   const limit = Number(req.query.limit) || 100
   const page = Number(req.query.page) || 1
 
@@ -330,6 +330,133 @@ exports.registerUser = async (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while registering user.",
+      });
+    });
+};
+
+
+// Retrieve and return all events created by the loggedIn user
+exports.findMyEvent = (req, res) => {
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
+  CityEvent.find({ 'createdBy.username': { $eq: req.user.username } })
+    .sort({ dateFrom: "ascending" })
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .then((events) => {
+      res.send(events);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events.",
+      });
+    });
+};
+
+// Retrieve and return all online events not created by the loggedIn user
+exports.findUpcomingOnlineEvents = (req, res) => {
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+  const username = req.query.username
+
+  let andQuery = []
+  andQuery.push({ dateFrom: { $gte: new Date() } })
+  andQuery.push({ isOnline: { $eq: true } })
+
+  /** Added not equal to true as some records don't have isPrivate field */
+  andQuery.push({ isPrivate: { $ne: true } })
+
+  /** If user is loggedIn */
+  if (username)
+    andQuery.push({ 'createdBy.username': { $ne: username } })
+
+  let finalQuery = {};
+  if (andQuery.length) {
+    finalQuery = { $and: andQuery };
+  }
+  CityEvent.find(finalQuery)
+    .sort({ dateFrom: "ascending" })
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .then((events) => {
+      res.send(events);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events.",
+      });
+    });
+};
+
+// Retrieve and return all offilne events not created by the loggedIn user
+exports.findUpcomingOfflineEvents = (req, res) => {
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+  const username = req.query.username
+
+  let andQuery = []
+  andQuery.push({ dateFrom: { $gte: new Date() } })
+
+  /** Added not equal to true as some records don't have isOnline field */
+  andQuery.push({ isOnline: { $ne: true } })
+
+  /** Added not equal to true as some records don't have isPrivate field  */
+  andQuery.push({ isPrivate: { $ne: true } })
+
+  /** If user is loggedIn */
+  if (username)
+    andQuery.push({ 'createdBy.username': { $ne: username } })
+
+  let finalQuery = {};
+  if (andQuery.length) {
+    finalQuery = { $and: andQuery };
+  }
+  CityEvent.find(finalQuery)
+    .sort({ dateFrom: "ascending" })
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .then((events) => {
+      res.send(events);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events.",
+      });
+    });
+};
+
+
+// Retrieve and return all past events not created by the loggedIn user
+exports.findPastEvents = (req, res) => {
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+  const username = req.query.username
+
+  let andQuery = []
+  andQuery.push({ dateFrom: { $lt: new Date() } })
+
+  /** Added not equal to true as some records don't have isPrivate field  */
+  andQuery.push({ isPrivate: { $ne: true } })
+
+  /** If user is loggedIn */
+  if (username)
+    andQuery.push({ 'createdBy.username': { $ne: username } })
+
+  let finalQuery = {};
+  if (andQuery.length) {
+    finalQuery = { $and: andQuery };
+  }
+  CityEvent.find(finalQuery)
+    .sort({ dateFrom: "ascending" })
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .then((events) => {
+      res.send(events);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving events.",
       });
     });
 };
