@@ -121,12 +121,11 @@ exports.findAllInCity = (req, res) => {
   const limit = Number(req.query.limit) || 100
   const page = Number(req.query.page) || 1
 
-  CityEvent.find({ city: cityName, country: countryCode })
+  CityEvent.find({ city: cityName, country: countryCode, isPrivate: false })
     .sort({ dateFrom: "ascending" })
     .limit(limit)
     .skip(limit * (page - 1))
     .then((events) => {
-      events = events.filter(x => x.isPrivate !== true)
       res.send(events);
     })
     .catch((err) => {
@@ -143,7 +142,8 @@ exports.findAllUpcoming = (req, res) => {
   if (skill) {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
-
+  filter.push({ isPrivate: false });
+  
   const limit = Number(req.query.limit) || 100
   const page = Number(req.query.page) || 1
 
@@ -152,7 +152,6 @@ exports.findAllUpcoming = (req, res) => {
     .limit(limit)
     .skip(limit * (page - 1))
     .then((events) => {
-      events = events.filter(x => x.isPrivate !== true)
       res.send(events);
     })
     .catch((err) => {
