@@ -7,7 +7,13 @@ exports.saveMeeting =  async (meetingDetails) => {
 };
 
 exports.getMeetings = (eventId) => {
-  return Meeting.find({eventId}).then((meetings)=> {
+  return Meeting.find({eventId, isPrivate: {$ne: true}}).then((meetings)=> {
+    return meetings;
+  });
+}
+
+exports.getPrivateMeetings = (eventId, user) => {
+  return Meeting.find({eventId, isPrivate: true, createdBy: user}).then((meetings)=> {
     return meetings;
   });
 }

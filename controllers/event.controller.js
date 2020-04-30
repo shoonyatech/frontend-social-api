@@ -205,6 +205,8 @@ exports.delete = (req, res) => {
 exports.createMeeting = async (req, res) => {
   const title = req.body.title;
   const type = req.body.type;
+  const isPrivate = req.body.isPrivate;
+
   const payload = {
     iss: apiKey,
     exp: new Date().getTime() + 5000,
@@ -250,6 +252,7 @@ exports.createMeeting = async (req, res) => {
       eventId: req.params.id,
       createdBy: req.user,
       meetingId: meetingInfo.id,
+      isPrivate
     });
     return res.send({
       meetingId: meetingInfo.id,
@@ -270,6 +273,15 @@ exports.findMeetings = async (req, res) => {
   }
 };
 
+exports.findPrivateMeetings = async (req, res) => {
+  const eventId = req.params.id;
+  try {
+    const meetings = await meetingController.getPrivateMeetings(eventId, req.user);
+    res.send(meetings);
+  } catch (ex) {
+    res.status(500).send(ex.message);
+  }
+};
 
 exports.registerUser = async (req, res) => {
   const eventRegistration = new EventRegistration({ ...req.body, createdBy: req.user });

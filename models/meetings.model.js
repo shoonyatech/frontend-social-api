@@ -5,7 +5,8 @@ const MeetingSchema = mongoose.Schema(
     title: String,
     meetingId: String,
     createdBy: Object,
-    eventId: String
+    eventId: String,
+    isPrivate: Boolean,
   },
   {
     timestamps: true
