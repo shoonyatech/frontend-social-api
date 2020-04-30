@@ -17,4 +17,13 @@ module.exports = app => {
   app.get("/event/:id", event.findOne);
 
   app.get("/event/:id/meetings", event.findMeetings);
+
+  //Retrieve all online events not created by the loggedIn user
+  app.get("/event/get/upcoming/online", event.findUpcomingOnlineEvents);
+
+  //Retrieve all offline events not created by the loggedIn user
+  app.get("/event/get/upcoming/offline", event.findUpcomingOfflineEvents);
+
+  //Retrieve all past events not created by the loggedIn user
+  app.get("/event/get/past", event.findPastEvents);
 };
