@@ -300,7 +300,15 @@ exports.findMyEvent = (req, res) => {
   const limit = Number(req.query.limit) || 100
   const page = Number(req.query.page) || 1
 
-  CityEvent.find({ 'createdBy.username': { $eq: req.user.username } })
+  let andQuery = getQuery(req.query);
+  andQuery.push({ 'createdBy.username': { $eq: req.user.username } })
+
+  let finalQuery = {};
+  if (andQuery.length) {
+    finalQuery = { $and: andQuery };
+  }
+
+  CityEvent.find(finalQuery)
     .sort({ dateFrom: "ascending" })
     .limit(limit)
     .skip(limit * (page - 1))
