@@ -34,47 +34,7 @@ exports.create = async (req, res) => {
 
 // Retrieve and return all events from the database.
 exports.findAll = (req, res) => {
-  const {
-    searchText,
-    relatedSkills,
-    city,
-    country,
-  } = req.query;
-
-  let skillsQuery = {};
-  let textQuery = {};
-  let andQuery = [];
-
-  if (searchText) {
-    textQuery["$or"] = [
-      { name: { $regex: searchText, $options: "i" } },
-      { description: { $regex: searchText, $options: "i" } },
-      { title: { $regex: searchText, $options: "i" } },
-    ];
-    andQuery.push(textQuery);
-  }
-
-  if (relatedSkills) {
-    let skills = relatedSkills.split(",");
-    if (skills.length) {
-      skillsQuery["$or"] = [{ relatedSkills: { $in: skills } }];
-      andQuery.push(skillsQuery);
-    }
-  }
-
-  let cityQuery = [];
-  if (city || country) {
-    if (city) {
-      cityQuery.push({ city: { $regex: city, $options: "i" } });
-    }
-    if (country) {
-      cityQuery.push({ country: country });
-    }
-    let locationQuery = {
-      $and: cityQuery,
-    };
-    andQuery.push(locationQuery);
-  }
+  let andQuery = getQuery(req.query);
 
   let finalQuery = {};
   if (andQuery.length) {
@@ -360,7 +320,7 @@ exports.findUpcomingOnlineEvents = (req, res) => {
   const page = Number(req.query.page) || 1
   const username = req.query.username
 
-  let andQuery = []
+  let andQuery = getQuery(req.query);
   andQuery.push({ dateFrom: { $gte: new Date() } })
   andQuery.push({ isOnline: { $eq: true } })
 
@@ -395,7 +355,7 @@ exports.findUpcomingOfflineEvents = (req, res) => {
   const page = Number(req.query.page) || 1
   const username = req.query.username
 
-  let andQuery = []
+  let andQuery = getQuery(req.query);
   andQuery.push({ dateFrom: { $gte: new Date() } })
 
   /** Added not equal to true as some records don't have isOnline field */
@@ -433,7 +393,7 @@ exports.findPastEvents = (req, res) => {
   const page = Number(req.query.page) || 1
   const username = req.query.username
 
-  let andQuery = []
+  let andQuery = getQuery(req.query);
   andQuery.push({ dateFrom: { $lt: new Date() } })
 
   /** Added not equal to true as some records don't have isPrivate field  */
@@ -460,3 +420,50 @@ exports.findPastEvents = (req, res) => {
       });
     });
 };
+
+
+function getQuery(query) {
+  const {
+    searchText,
+    relatedSkills,
+    city,
+    country,
+  } = query;
+
+  let skillsQuery = {};
+  let textQuery = {};
+  let andQuery = [];
+
+  if (searchText) {
+    textQuery["$or"] = [
+      { name: { $regex: searchText, $options: "i" } },
+      { description: { $regex: searchText, $options: "i" } },
+      { title: { $regex: searchText, $options: "i" } },
+    ];
+    andQuery.push(textQuery);
+  }
+
+  if (relatedSkills) {
+    let skills = relatedSkills.split(",");
+    if (skills.length) {
+      skillsQuery["$or"] = [{ relatedSkills: { $in: skills } }];
+      andQuery.push(skillsQuery);
+    }
+  }
+
+  let cityQuery = [];
+  if (city || country) {
+    if (city) {
+      cityQuery.push({ city: { $regex: city, $options: "i" } });
+    }
+    if (country) {
+      cityQuery.push({ country: country });
+    }
+    let locationQuery = {
+      $and: cityQuery,
+    };
+    andQuery.push(locationQuery);
+  }
+
+  return andQuery;
+}
