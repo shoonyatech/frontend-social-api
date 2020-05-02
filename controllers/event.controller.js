@@ -309,7 +309,7 @@ exports.findMyEvent = (req, res) => {
   }
 
   CityEvent.find(finalQuery)
-    .sort({ dateFrom: "ascending" })
+    .sort({ createdAt: "desc" })
     .limit(limit)
     .skip(limit * (page - 1))
     .then((events) => {
