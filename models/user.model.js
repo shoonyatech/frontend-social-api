@@ -16,6 +16,7 @@ const UserSchema = mongoose.Schema(
     country: String,
     socialId: String,
     provider: String,
+    referrals: [],
     userPreferences: {
       cookieConsent: Boolean
     }

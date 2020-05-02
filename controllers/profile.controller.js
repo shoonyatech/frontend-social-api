@@ -375,13 +375,32 @@ exports.updatePreferences = async (req, res) => {
   User.update({ username: req.user.username }, { $set: { userPreferences: req.body.userPreferences } })
     .then(users => {
       User.findOne({ username: req.user.username })
-        .then(user => {         
+        .then(user => {
           res.send(user);
         })
     })
     .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while saving user preferences."
+      });
+    });
+
+}
+
+// Update user referrals of logged in user
+exports.updateReferrals = async (req, res) => {
+  const username = req.query.username
+  var referral = { username: req.user.username, createdAt: new Date() };
+  User.update({ username: username }, {
+    "$push":
+      { referrals: referral }
+  })
+    .then(result => {
+      res.send(true);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while referrals user preferences."
       });
     });
 

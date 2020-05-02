@@ -12,4 +12,7 @@ module.exports = app => {
 
   // Update update preferences
   app.put("/user/preferences", profile.updatePreferences);
+
+   // Update update referrals
+   app.put("/user/referrals", profile.updateReferrals);
 };
