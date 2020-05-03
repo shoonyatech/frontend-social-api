@@ -6,4 +6,6 @@ module.exports = app => {
 
   // get list of all users from a given city
   app.get("/user/from/:cityName/:countryCode", profile.findUsersInCity);
+
+  app.get("/users", profile.findAll);
 };

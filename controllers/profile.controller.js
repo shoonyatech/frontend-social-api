@@ -186,7 +186,15 @@ async function updateReferral(referrer, username) {
 
 // Retrieve and return all users from the database.
 exports.findAll = (req, res) => {
-  User.find()
+  const searchText = req.query.searchText;
+  let textQuery = {};
+  if (searchText) {
+    textQuery["$or"] = [
+      { name: { $regex: searchText, $options: "i" }},
+      { username: { $regex: searchText, $options: "i" }}
+    ];
+  }
+  User.find(textQuery)
     .then(users => {
       res.send(users);
     })
