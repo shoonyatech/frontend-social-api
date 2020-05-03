@@ -34,6 +34,7 @@ exports.fbSignin = (req, res) => {
           profileController.findSocialAuthUserinDB(
             "facebook",
             user,
+            req,
             res,
             authResponse
           );
@@ -88,6 +89,7 @@ exports.githubSignin = (req, res) => {
             profileController.findSocialAuthUserinDB(
               "github",
               user,
+              req,
               res,
               authResponse
             );
@@ -190,6 +192,7 @@ exports.twitterSignin = (req, res) => {
               profileController.findSocialAuthUserinDB(
                 "twitter",
                 user,
+                req,
                 res,
                 authResponse
               );
@@ -235,6 +238,7 @@ exports.googleSignin = (req, res) => {
             profileController.findSocialAuthUserinDB(
               "google",
               user,
+              req,
               res,
               authResponse
             );

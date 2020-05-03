@@ -3,7 +3,7 @@ const User = require("../models/user.model");
 const cityController = require("./city.controller");
 const { JWT_SECRET } = process.env;
 // Create and Save a new user
-exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
+exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) => {
   let name, profilePic, email;
 
   if (provider === "facebook") {
@@ -35,6 +35,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
             email,
             provider,
             user.id,
+            req,
             res,
             authResponse
           );
@@ -44,7 +45,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
           { email, username: existingUser[0].username },
           JWT_SECRET
         );
-        const account = { ...authResponse, authToken, ...existingUser[0]._doc };
+        const account = { ...authResponse, authToken, ...existingUser[0]._doc };       
         res.send(account);
       })
       .catch(err => {
@@ -64,6 +65,7 @@ exports.findSocialAuthUserinDB = async (provider, user, res, authResponse) => {
             email,
             provider,
             user.id,
+            req,
             res,
             authResponse
           );
@@ -106,6 +108,7 @@ async function createSocialAuthUser(
   email,
   provider,
   socialId,
+  req,
   res,
   authResponse
 ) {
@@ -150,7 +153,30 @@ async function createSocialAuthUser(
   try {
     const userModel = await user.save();
     const account = { ...authResponse, authToken, ...userModel._doc };
+
+    updateReferral(req.query.referrer, user.username);
     res.send(account);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while creating the user."
+    });
+  }
+}
+
+async function updateReferral(referrer, username) {
+
+  // Save referral in the database
+  try {
+    if (referrer != "null") {
+      var referral = { username: username, createdAt: new Date() };
+      await User.updateOne({ username: referrer }, {
+        "$push":
+          { referrals: referral }
+      })
+      console.log(referrer)
+      return true;
+    }
+    return false;
   } catch (err) {
     res.status(500).send({
       message: err.message || "Some error occurred while creating the user."
@@ -382,25 +408,6 @@ exports.updatePreferences = async (req, res) => {
     .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while saving user preferences."
-      });
-    });
-
-}
-
-// Update user referrals of logged in user
-exports.updateReferrals = async (req, res) => {
-  const username = req.query.username
-  var referral = { username: req.user.username, createdAt: new Date() };
-  User.update({ username: username }, {
-    "$push":
-      { referrals: referral }
-  })
-    .then(result => {
-      res.send(true);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while referrals user preferences."
       });
     });
 
