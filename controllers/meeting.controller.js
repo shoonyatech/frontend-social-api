@@ -6,8 +6,16 @@ exports.saveMeeting =  async (meetingDetails) => {
   return meeting;
 };
 
+exports.updateMeeting = (meetingId, meetingDetails) => {
+  return Meeting.findByIdAndUpdate(
+    meetingId,
+    {...meetingDetails},
+    { new: true }
+  );
+};
+
 exports.getMeetings = (eventId) => {
-  return Meeting.find({eventId, isPrivate: {$ne: true}}).then((meetings)=> {
+  return Meeting.find({eventId}).then((meetings)=> {
     return meetings;
   });
 }
