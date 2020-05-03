@@ -25,3 +25,9 @@ exports.getPrivateMeetings = (eventId, user) => {
     return meetings;
   });
 }
+
+exports.deleteMeeting = (meetingId) => {
+  return Meeting.findByIdAndRemove(meetingId).then(meeting => {
+    return meeting;
+  });
+}
