@@ -81,7 +81,7 @@ exports.findAllInCity = (req, res) => {
   const limit = Number(req.query.limit) || 100
   const page = Number(req.query.page) || 1
 
-  CityEvent.find({ city: cityName, country: countryCode, isPrivate: false })
+  CityEvent.find({ city: cityName, country: countryCode, isPrivate: { $ne: true } })
     .sort({ dateFrom: "ascending" })
     .limit(limit)
     .skip(limit * (page - 1))
@@ -102,7 +102,7 @@ exports.findAllUpcoming = (req, res) => {
   if (skill) {
     filter["relatedSkills"] = { $regex: skill, $options: "i" };
   }
-  filter["isPrivate"] = false;
+  filter["isPrivate"] = { $ne: true };
 
   const limit = Number(req.query.limit) || 100
   const page = Number(req.query.page) || 1
