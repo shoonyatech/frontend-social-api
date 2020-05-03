@@ -12,4 +12,7 @@ module.exports = app => {
 
   // Update update preferences
   app.put("/user/preferences", profile.updatePreferences);
+
+  // retrieve current user profile
+  app.get("/user/get/referrals", profile.getAllReferrals);
 };

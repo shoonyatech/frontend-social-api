@@ -45,7 +45,7 @@ exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) 
           { email, username: existingUser[0].username },
           JWT_SECRET
         );
-        const account = { ...authResponse, authToken, ...existingUser[0]._doc };       
+        const account = { ...authResponse, authToken, ...existingUser[0]._doc };
         res.send(account);
       })
       .catch(err => {
@@ -408,6 +408,30 @@ exports.updatePreferences = async (req, res) => {
     .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while saving user preferences."
+      });
+    });
+
+}
+
+
+// Update user referrals of logged in user
+exports.getAllReferrals = async (req, res) => {
+  User.findOne({ username: req.user.username })
+    .then(user => {
+      var users = [];
+      user.referrals.forEach(async (element) => {
+        result = await User.findOne(
+          { username: element.username },
+          { _id: 0, name: 1, username: 1, profilePic: 1 })
+        users.push(result)
+
+        if (users.length == user.referrals.length)
+          res.send(users)
+      });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while getting user referrals."
       });
     });
 
