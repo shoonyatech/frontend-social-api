@@ -252,6 +252,22 @@ exports.updateMeeting = async (req, res) => {
   }
 };
 
+exports.deleteMeeting = async (req, res) => {
+  try {
+    const meeting = await meetingController.deleteMeeting(req.params.meetingId);
+    if (!meeting) {
+      return res.status(404).send({
+        message: "meeting not found with id " + req.params.meetingId
+      });
+    }
+    return res.send();
+
+  } catch(ex) {
+    console.log(ex);
+    return res.status(400).send();
+  }
+}
+
 exports.findMeetings = async (req, res) => {
   const eventId = req.params.id;
   try {

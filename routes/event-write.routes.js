@@ -11,6 +11,8 @@ module.exports = app => {
 
   app.put("/event/:id/update-meeting/:meetingId", event.updateMeeting);
 
+  app.delete("/event/:id/update-meeting/:meetingId", event.deleteMeeting);
+
   app.get("/event/:id/privateMeetings", event.findPrivateMeetings);
 
   // Delete a event with id
