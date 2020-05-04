@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
-const uuid = require("uuid/v4");
 
 const CityEvent = require("../models/event.model.js");
 const EventRegistration = require("../models/event-registration.model.js");
 const cityController = require("./city.controller");
-const meetingController = require("./meeting.controller");
 
 // Create and Save a new event
 exports.create = async (req, res) => {
@@ -197,95 +195,6 @@ exports.delete = (req, res) => {
         message: "Could not delete event with id " + req.params.id,
       });
     });
-};
-
-exports.createMeeting = async (req, res) => {
-  const title = req.body.title;
-  const isPrivate = req.body.isPrivate;
-  const meetingId = title + "-" + uuid();
-  const allowedUsers = req.body.allowedUsers || [];
-  try {
-    await meetingController.saveMeeting({
-      title,
-      eventId: req.params.id,
-      createdBy: req.user,
-      meetingId,
-      isPrivate,
-      allowedUsers,
-    });
-    return res.send({
-      meetingId,
-    });
-  } catch (ex) {
-    console.log(ex);
-    return res.status(400).send();
-  }
-};
-
-exports.updateMeeting = async (req, res) => {
-  const title = req.body.title;
-  const isPrivate = req.body.isPrivate;
-  const meetingId = req.body.meetingId;
-  const allowedUsers = req.body.allowedUsers || [];
-
-  try {
-    const updatedMeeting = await meetingController.updateMeeting(req.params.meetingId, {
-      title,
-      eventId: req.params.id,
-      createdBy: req.user,
-      meetingId,
-      isPrivate,
-      allowedUsers,
-    });
-
-    if (!updatedMeeting) {
-      return res.status(404).send({
-        message: "meeting not found with id " + req.params.meetingId
-      });
-    }
-    return res.send({
-      meetingId,
-    });
-  } catch (ex) {
-    console.log(ex);
-    return res.status(400).send();
-  }
-};
-
-exports.deleteMeeting = async (req, res) => {
-  try {
-    const meeting = await meetingController.deleteMeeting(req.params.meetingId);
-    if (!meeting) {
-      return res.status(404).send({
-        message: "meeting not found with id " + req.params.meetingId
-      });
-    }
-    return res.send();
-
-  } catch(ex) {
-    console.log(ex);
-    return res.status(400).send();
-  }
-}
-
-exports.findMeetings = async (req, res) => {
-  const eventId = req.params.id;
-  try {
-    const meetings = await meetingController.getMeetings(eventId);
-    res.send(meetings);
-  } catch (ex) {
-    res.status(500).send(ex.message);
-  }
-};
-
-exports.findPrivateMeetings = async (req, res) => {
-  const eventId = req.params.id;
-  try {
-    const meetings = await meetingController.getPrivateMeetings(eventId, req.user);
-    res.send(meetings);
-  } catch (ex) {
-    res.status(500).send(ex.message);
-  }
 };
 
 exports.registerUser = async (req, res) => {

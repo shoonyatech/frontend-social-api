@@ -42,6 +42,7 @@ require("./routes/skill.routes.js")(app);
 require("./routes/newsletter.routes.js")(app);
 require("./routes/user.routes.js")(app);
 require("./routes/comment-read.routes.js")(app);
+require("./routes/meeting-read.routes.js")(app);
 
 // this will attach the logged in user to req.user
 app.use(jwt({ secret: JWT_SECRET }));
@@ -56,6 +57,8 @@ require("./routes/vote-write.routes.js")(app);
 require("./routes/vote-read.routes.js")(app);
 require("./routes/user-page.routes.js")(app);
 require("./routes/user-activity.routes.js")(app);
+require("./routes/meeting-write.routes.js")(app);
+
 app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
 });
