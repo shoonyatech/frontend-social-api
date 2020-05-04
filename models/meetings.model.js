@@ -6,6 +6,7 @@ const MeetingSchema = mongoose.Schema(
     meetingId: String,
     createdBy: Object,
     eventId: String,
+    userId: String,
     isPrivate: Boolean,
     allowedUsers: [],
   },
