@@ -432,10 +432,9 @@ exports.getAllReferrals = async (req, res) => {
           { username: element.username },
           { _id: 0, name: 1, username: 1, profilePic: 1 })
         users.push(result)
-
-        if (users.length == user.referrals.length)
-          res.send(users)
       });
+
+      res.send(users)
     })
     .catch(err => {
       res.status(500).send({
