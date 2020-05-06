@@ -11,8 +11,8 @@ module.exports = app => {
   app.delete("/me", profile.delete);
 
   // Update update preferences
-  app.put("/user/preferences", profile.updatePreferences);
+  app.put("/profile/preferences", profile.updatePreferences);
 
   // retrieve current user profile
-  app.get("/user/get/referrals", profile.getAllReferrals);
+  app.get("/profile/referrals", profile.getAllReferrals);
 };
