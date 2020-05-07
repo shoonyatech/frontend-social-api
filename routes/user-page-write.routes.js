@@ -6,10 +6,4 @@ module.exports = (app) => {
 
   // Delete a userpage
   app.delete("/userpage", userPage.delete);
-
-  // get all online user by page
-  app.post("/userpage/online/", userPage.findAllUserByURL);
-
-  // get count of online users
-  app.post("/userpage/online/count", userPage.getUserCountByURL);
 };
