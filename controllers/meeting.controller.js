@@ -1,8 +1,8 @@
 const uuid = require("uuid/v4");
 const Meeting = require("../models/meetings.model.js");
 
-const saveMeeting =  async (meetingDetails) => {
-  const meeting = new Meeting({...meetingDetails});
+const saveMeeting = async (meetingDetails) => {
+  const meeting = new Meeting({ ...meetingDetails });
   await meeting.save();
   return meeting;
 };
@@ -10,28 +10,32 @@ const saveMeeting =  async (meetingDetails) => {
 const updateMeeting = (meetingId, meetingDetails) => {
   return Meeting.findByIdAndUpdate(
     meetingId,
-    {...meetingDetails},
+    { ...meetingDetails },
     { new: true }
   );
 };
 
 const getMeetingsByEventId = (eventId) => {
-  return Meeting.find({eventId}).then((meetings)=> {
-    return meetings;
-  });
-}
+  return Meeting.find({ eventId })
+    .sort({ title: "ascending" })
+    .then((meetings) => {
+      return meetings;
+    });
+};
 
 const getMeetingsByUserId = (userId) => {
-  return Meeting.find({userId}).then((meetings)=> {
-    return meetings;
-  });
-}
+  return Meeting.find({ userId })
+    .sort({ title: "ascending" })
+    .then((meetings) => {
+      return meetings;
+    });
+};
 
 const deleteMeeting = (meetingId) => {
-  return Meeting.findByIdAndRemove(meetingId).then(meeting => {
+  return Meeting.findByIdAndRemove(meetingId).then((meeting) => {
     return meeting;
   });
-}
+};
 
 exports.findMeetings = async (req, res) => {
   const eventId = req.query.eventId;
@@ -43,7 +47,7 @@ exports.findMeetings = async (req, res) => {
     } else if (userId) {
       meetings = await getMeetingsByUserId(userId);
     } else {
-      return res.status(400).send({message: "Bad Request"})
+      return res.status(400).send({ message: "Bad Request" });
     }
     return res.send(meetings);
   } catch (ex) {
@@ -99,7 +103,7 @@ exports.updateMeeting = async (req, res) => {
 
     if (!updatedMeeting) {
       return res.status(404).send({
-        message: "meeting not found with id " + req.params.meetingId
+        message: "meeting not found with id " + req.params.meetingId,
       });
     }
     return res.send({
@@ -116,13 +120,12 @@ exports.deleteMeeting = async (req, res) => {
     const meeting = await deleteMeeting(req.params.meetingId);
     if (!meeting) {
       return res.status(404).send({
-        message: "meeting not found with id " + req.params.meetingId
+        message: "meeting not found with id " + req.params.meetingId,
       });
     }
     return res.send();
-
-  } catch(ex) {
+  } catch (ex) {
     console.log(ex);
     return res.status(400).send();
   }
-}
+};
