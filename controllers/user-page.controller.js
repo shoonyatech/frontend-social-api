@@ -64,7 +64,12 @@ exports.findAllUserByURL = (req, res) => {
         username: req.body.username, avatar: req.body.avatar,
         name: req.body.name
     }
-    const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy });
+
+    var pageURL = req.headers.referer;
+    if (pageURL.includes('join-meeting')) {
+        pageURL = req.headers.referer.split('?')[0];
+    }
+    const userPage = new UserPage({ ...req.body, url: pageURL, createdBy });
 
     // Delete and Save userPage in the database
     UserPage.deleteMany({ username: req.body.username })
@@ -73,7 +78,7 @@ exports.findAllUserByURL = (req, res) => {
             userPage.save()
                 .then((data) => {
                     //conysole.log(data)
-                    UserPage.find({ url: req.headers.referer })
+                    UserPage.find({ url: pageURL })
                         .then((users) => {
                             users = users.filter(x => (req.body.currentTime - x.createdTime) / 1000 <= 15)
                             users.sort(compare);
@@ -101,8 +106,13 @@ function compare(a, b) {
 
 
 exports.getUserCountByURL = (req, res) => {
-    UserPage.find({ url: req.body.url })
+    var pageURL = req.headers.referer;
+    if (pageURL.includes('?')) {
+        pageURL = req.body.url.split('?')[0];
+    }
+    UserPage.find({ url: pageURL })
         .then((users) => {
+            users = users.filter(x => (Date.now() - x.createdTime) / 1000 <= 15)
             res.send({ "userCount": users.length });
         })
         .catch((err) => {
