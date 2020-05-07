@@ -191,11 +191,11 @@ exports.findAll = (req, res) => {
   let textQuery = {};
   if (searchText) {
     textQuery["$or"] = [
-      { name: { $regex: searchText, $options: "i" }},
-      { username: { $regex: searchText, $options: "i" }}
+      { name: { $regex: searchText, $options: "i" } },
+      { username: { $regex: searchText, $options: "i" } }
     ];
   } else if (userId) {
-    textQuery = {_id: userId};
+    textQuery = { _id: userId };
   }
   User.find(textQuery)
     .then(users => {
@@ -430,19 +430,28 @@ exports.getAllReferrals = async (req, res) => {
   User.findOne({ username: req.user.username })
     .then(user => {
       var users = [];
-      user.referrals.forEach(async (element) => {
-        result = await User.findOne(
-          { username: element.username },
-          { _id: 0, name: 1, username: 1, profilePic: 1 })
-        users.push(result)
-      });
 
-      res.send(users)
+      if (user.referrals.length > 0) {
+        user.referrals.forEach(async (element) => {
+
+          result = await User.findOne(
+            { username: element.username },
+            { _id: 0, name: 1, username: 1, profilePic: 1 })
+          users.push(result)
+
+          if (users.length === user.referrals.length) {
+            res.send(users);
+          }
+        });
+      }
+      else {
+        //if no referrals
+        res.send(users);
+      }
     })
     .catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while getting user referrals."
       });
     });
-
 }

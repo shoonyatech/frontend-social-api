@@ -60,10 +60,14 @@ exports.delete = (req, res) => {
 
 //Get All user online
 exports.findAllUserByURL = (req, res) => {
-    const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy: req.user });
+    var createdBy = {
+        username: req.body.username, avatar: req.body.avatar,
+        name: req.body.name
+    }
+    const userPage = new UserPage({ ...req.body, url: req.headers.referer, createdBy });
 
     // Delete and Save userPage in the database
-    UserPage.deleteMany({ username: req.user.username })
+    UserPage.deleteMany({ username: req.body.username })
         .then((response) => {
             //console.log(response)
             userPage.save()
