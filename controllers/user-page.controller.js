@@ -67,7 +67,7 @@ exports.findAllUserByURL = (req, res) => {
 
     var pageURL = req.headers.referer;
     if (pageURL.includes('join-meeting')) {
-        pageURL = req.headers.referer.split('?')[0];
+        pageURL = pageURL.split('?')[0];
     }
     const userPage = new UserPage({ ...req.body, url: pageURL, createdBy });
 
@@ -106,9 +106,9 @@ function compare(a, b) {
 
 
 exports.getUserCountByURL = (req, res) => {
-    var pageURL = req.headers.referer;
+    var pageURL = req.body.url;
     if (pageURL.includes('?')) {
-        pageURL = req.body.url.split('?')[0];
+        pageURL = pageURL.split('?')[0];
     }
     UserPage.find({ url: pageURL })
         .then((users) => {
