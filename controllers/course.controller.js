@@ -1,7 +1,6 @@
 const Course = require("../models/course.model.js");
 const { getAppliedFilters } = require("../utils/helperMethods");
-const { filterTypes } = require("../utils/constants");
-const { getExplicitFilters } = require("../utils/jobUtils");
+const { filterTypes, skillFilterSet } = require("../utils/constants");
 
 exports.create = (req, res) => {
     const course = new Course({ ...req.body, createdBy: req.user });
@@ -18,7 +17,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve and return all courses from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
     const {
         searchText,
         skills = "",
@@ -26,7 +25,18 @@ exports.findAll = (req, res) => {
     let filterObj = {};
     let filter = []
 
-    const skillFilter = getAppliedFilters(skills, filterTypes.SKILL);
+
+    /** Getting technology from database */
+    var results = await Course.collection.distinct("technology");
+
+    var skillFilter = [];
+    results.forEach(element => {
+        var obj = skillFilterSet.find(x => x.name.toLocaleLowerCase() === element.toLocaleLowerCase())
+        if (obj) { skillFilter.push(obj) }
+    });
+
+    skillFilter = getAppliedFilters(skills, filterTypes.SKILL, skillFilter);
+
     const response = {
         results: [],
         meta: { filters: { skills: skillFilter } }
@@ -35,7 +45,7 @@ exports.findAll = (req, res) => {
     if (searchText) {
         filter.push({
             $or: [
-                { title: { $regex: searchText, $options: "i" } },
+                { courseName: { $regex: searchText, $options: "i" } },
                 { description: { $regex: searchText, $options: "i" } }
             ]
         });
