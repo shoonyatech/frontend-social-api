@@ -11,8 +11,8 @@ const getFiltersSet = type => {
   }
 };
 
-const getAppliedFilters = (filters = "", type) => {
-  const filterSet = getFiltersSet(type);
+const getAppliedFilters = (filters = "", type, filterSet) => {
+  if (!filterSet) { filterSet = getFiltersSet(type); }
   const selectedFilterSet = new Set(filters.split(","));
   return filterSet.map(item => {
     return {
