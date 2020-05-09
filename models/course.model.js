@@ -2,9 +2,31 @@ const mongoose = require("mongoose");
 
 const CourseSchema = mongoose.Schema(
     {
-        courseName: String,
+        title: String,
         technology: String,
         description: String,
+        introductoryVideoId: String,
+        chapters: [
+            {
+                title: String,
+                description: String,
+                aboutAuthor: String,
+                sections: [
+                    {
+                        title: String,
+                        codeLink: String,
+                        videoId: String,
+                        codeSubtitle: [
+                            {
+                                time: String,
+                                file: String,
+                                line: String
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
         createdBy: Object,
     },
     {
