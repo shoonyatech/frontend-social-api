@@ -68,7 +68,8 @@ exports.findAll = async (req, res) => {
 
     const limit = Number(req.query.limit) || 100
     const page = Number(req.query.page) || 1
-    Course.find(filterObj)
+    Course.find(filterObj,
+        { title: 1, technology: 1, description: 1 })
         .sort({ createdAt: "descending" })
         .limit(limit)
         .skip(limit * (page - 1))
