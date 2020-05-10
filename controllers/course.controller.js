@@ -160,3 +160,26 @@ exports.delete = (req, res) => {
             });
         });
 };
+
+// Find a single topics with a id
+exports.findOneByTopicId = (req, res) => {
+    Course.findOne({ 'chapters.topics': { $elemMatch: { '_id': { $eq: req.params.id } } } })
+        .then(course => {
+            if (!course) {
+                return res.status(404).send({
+                    message: "topic not found with id " + req.params.id
+                });
+            }
+            res.send(course);
+        })
+        .catch(err => {
+            if (err.kind === "ObjectId") {
+                return res.status(404).send({
+                    message: "topic not found with id " + req.params.id
+                });
+            }
+            return res.status(500).send({
+                message: "Error retrieving course with id " + req.params.id
+            });
+        });
+};
