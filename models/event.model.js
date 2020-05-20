@@ -6,6 +6,7 @@ const EventSchema = mongoose.Schema(
     description: String,
     dateFrom: Date,
     dateTo: Date,
+    timezone: String,
     city: String,
     country: String,
     type: String, // c - conferene / m - meetup
