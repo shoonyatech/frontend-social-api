@@ -22,7 +22,8 @@ const EventSchema = mongoose.Schema(
     schedule: String,
     createdBy: Object,
     isPrivate: Boolean,
-    isRequiresRegistration: Boolean
+    isRequiresRegistration: Boolean,
+    adminUsers: Array
   },
   {
     timestamps: true
