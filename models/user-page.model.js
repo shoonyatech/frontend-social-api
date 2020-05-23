@@ -7,6 +7,7 @@ const UserPageSchema = mongoose.Schema(
     username: String,
     name: String,
     avatar: String,
+    isGuest: Boolean,
     createdBy: []
   },
   {
