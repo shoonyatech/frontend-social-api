@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = (app) => {
   const course = require("../controllers/course.controller.js");
 
   // Retrieve all course
@@ -8,6 +8,5 @@ module.exports = app => {
   app.get("/course/:id", course.findOne);
 
   // Retrieve a single topic with id
-  app.get("/course/topic/:id", course.findOneByTopicId);
-
+  app.get("/course/topic/:url", course.findOneByTopicUrl);
 };
