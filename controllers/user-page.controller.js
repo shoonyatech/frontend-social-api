@@ -95,10 +95,12 @@ exports.findAllUserByURL = (req, res) => {
 };
 
 function compare(a, b) {
-    if (a.username < b.username) {
+    const usernameA = (a.username || '').toLowerCase();
+    const usernameB = (b.username || '').toLowerCase();
+    if (usernameA < usernameB) {
         return -1;
     }
-    if (a.username > b.username) {
+    if (usernameA > usernameB) {
         return 1;
     }
     return 0;
