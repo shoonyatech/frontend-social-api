@@ -2,7 +2,7 @@ const Submission = require("../models/submission.model");
 
 exports.create = async (req, res) => {
   try{
-    const submission = new Submission({...req.body, submittedBy: req.user});
+    const submission = new Submission({...req.body, submittedBy: req.user, upVote: 0, downVote: 0});
     const data = await submission.save();
     res.send(data);
   } catch(err) {
@@ -22,7 +22,7 @@ exports.getSubmissionsByChallengeId = async (req, res) => {
 exports.delete = async (req, res) => {
  try{
   const id = req.params.id;
-  const submission = await Submission.findByIdAndDelete({id});
+  const submission = await Submission.findByIdAndDelete(id);
   if (!submission) {
     res.status(404).send('submission not found');
   } else {
@@ -34,10 +34,11 @@ exports.delete = async (req, res) => {
 }
 
 
-exports.upVote = async(req, res) => {
+exports.upVote = async (req, res) => {
   try {
     const id = req.params.id;
-    const submission = Submission.findByIdAndUpdate({id}, {$inc: {'upVote': 1}}, {new: true});
+    const submission = await Submission.findByIdAndUpdate(id, {$inc: {'upVote': 1}}, {new: true});
+    console.log(submission);
     if (!submission) {
       res.status(400).send('submission not found');
     } else {
@@ -48,10 +49,10 @@ exports.upVote = async(req, res) => {
   }
 }
 
-exports.downVote = async(req, res) => {
+exports.downVote = async (req, res) => {
   try {
     const id = req.params.id;
-    const submission = Submission.findByIdAndUpdate({id}, {$inc: {'downVote': 1}}, {new: true});
+    const submission = await Submission.findByIdAndUpdate(id, {$inc: {'downVote': 1}}, {new: true});
     if (!submission) {
       res.status(400).send('submission not found');
     } else {

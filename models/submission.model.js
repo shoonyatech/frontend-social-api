@@ -6,8 +6,6 @@ const SubmissionSchema = mongoose.Schema(
     upVote: Number,
     downVote: Number,
     challengeId: String,
-    startTime: Date,
-    endTime: Date,
     submittedBy: Object
   },
   {
