@@ -24,7 +24,7 @@ exports.findAll = async (req, res) => {
 exports.findById = async (req, res) => {
   try {
     const id = req.params.id;
-    const challenge = await Challenge.find({_id: id});
+    const challenge = await Challenge.findOne({_id: id});
     res.send(challenge);
   } catch (err) {
     res.status(500).send(err || 'error occurred while getting challenge')
