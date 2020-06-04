@@ -6,7 +6,8 @@ const cityController = require("./city.controller");
 
 // Create and Save a new event
 exports.create = async (req, res) => {
-  const event = new CityEvent({ ...req.body, createdBy: req.user });
+  const {_id, ...rest} = req.body;
+  const event = new CityEvent({ ...rest, createdBy: req.user });
 
   //create city for the event
   await cityController.createCityIfNotExists({
