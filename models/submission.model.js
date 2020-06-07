@@ -3,10 +3,9 @@ const mongoose = require("mongoose");
 const SubmissionSchema = mongoose.Schema(
   {
     submission: String,
-    upVote: Number,
-    downVote: Number,
     challengeId: String,
-    submittedBy: Object
+    submittedBy: Object,
+    votes: Array
   },
   {
     timestamps: true

@@ -9,4 +9,6 @@ module.exports = (app) => {
 
   //deleting a submission
   app.delete("/submission/:id", submission.delete);
+
+  app.get("/submissions/:challengeId", submission.getSubmissionsByChallengeId);
 };
