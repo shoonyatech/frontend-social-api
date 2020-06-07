@@ -34,11 +34,11 @@ exports.findById = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;
-    const challenge = Challenge.findByIdAndUpdate(id, req.body, {new: true});
+    const challenge = await Challenge.findByIdAndUpdate(id, {...req.body}, {new: true});
     if (!challenge) {
       res.status(404).send('no challenge exists with' + id);
     }
-    res.send(challenge);
+    res.send(200);
   } catch (err) {
     res.status(500).send(err || 'error occurred while updating challenge')
   }
@@ -47,7 +47,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const id = req.params.id;
-    const challenge = Challenge.findByIdAndRemove(id);
+    const challenge = await Challenge.findByIdAndRemove(id);
     if (!challenge) {
       res.status(404).send('no challenge exists with' + id);
     }

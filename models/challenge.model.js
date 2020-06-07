@@ -7,7 +7,8 @@ const ChallengeSchema = mongoose.Schema(
     tags: Array,
     startTime: Date,
     endTime: Date,
-    createdBy: Object
+    createdBy: Object,
+    published: Boolean,
   },
   {
     timestamps: true
