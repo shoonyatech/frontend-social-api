@@ -5,7 +5,8 @@ const SubmissionSchema = mongoose.Schema(
     submission: String,
     challengeId: String,
     submittedBy: Object,
-    votes: Array
+    votes: Array,
+    comments: Array
   },
   {
     timestamps: true
