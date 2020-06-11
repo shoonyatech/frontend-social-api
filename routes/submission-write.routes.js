@@ -11,4 +11,13 @@ module.exports = (app) => {
   app.delete("/submission/:id", submission.delete);
 
   app.get("/submissions/:challengeId", submission.getSubmissionsByChallengeId);
+
+  //posting a new comment
+  app.post("/submissions/:id/comment", submission.addComment);
+
+  //deleting a comment
+  app.delete('/submissions/:id/comment/:commentId', submission.deleteComment);
+ 
+  //updating a comment
+  app.put('/submissions/:id/comment/:commentId', submission.updateComment);
 };

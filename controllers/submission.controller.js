@@ -1,9 +1,10 @@
 const Submission = require("../models/submission.model");
 const Challenge = require("../models/challenge.model");
+var mongoose =  require('mongoose');
 
 exports.create = async (req, res) => {
   try{
-    const submission = new Submission({...req.body, submittedBy: req.user, upVote: 0, downVote: 0});
+    const submission = new Submission({...req.body, submittedBy: req.user, votes: [], comments: []});
     const data = await submission.save();
     res.send(data);
   } catch(err) {
@@ -17,7 +18,7 @@ exports.getSubmissionsByChallengeId = async (req, res) => {
     const challenge = await Challenge.findById(challengeId);
 
     if (challenge) {
-      let submission;
+      let submissions;
       if (challenge.published) {
         submissions =  await Submission.find({challengeId: challengeId});
       } else {
@@ -92,4 +93,85 @@ const vote = async (req, res, vote) => {
   } catch( err ) {
     res.status(500).send(err || 'error while voting submission for submissionId' + req.params.id);
   }
+}
+
+exports.addComment = async(req, res) => {
+  try {
+    const submissionId = req.params.id;
+    const comment = req.body.comment;
+  
+    const submission = await Submission(submissionId);
+  
+    if (!submission) {
+      return res.status(400).send('submission not found');
+    }
+
+    comment.id = new mongoose.mongo.ObjectId();
+    submission.comments.push(comment);
+    console.log(submission);
+    const updatedValue = await Submission.findByIdAndUpdate(id, submission, {new: true});
+    if (!updatedValue) {
+      return res.status(400).send('Failed to comment');
+    } else {
+      return res.status(200).send(submission);
+    }
+
+  } catch( err ) {
+    res.status(500).send(err || 'error while commenting submission for submissionId' + req.params.id);
+  }
+ 
+}
+
+exports.deleteComment = async(req, res) => {
+  try {
+    const submissionId = req.params.id;
+    const commentId = req.params.commentId
+    const submission = await Submission(submissionId);
+
+    if (!submission) {
+      return res.status(400).send('submission not found');
+    }
+    submission.comments = submission.comments.filter((comment) => comment.id !== commentId);
+    console.log(submission);
+    const updatedValue = await Submission.findByIdAndUpdate(id, submission, {new: true});
+    if (!updatedValue) {
+      return res.status(400).send('Failed to delete');
+    } else {
+      return res.status(200).send(submission);
+    }
+
+  } catch( err ) {
+    res.status(500).send(err || 'error while deleting comment for submissionId' + req.params.id);
+  }
+ 
+}
+
+exports.updateComment = async(req, res) => {
+  try {
+    const submissionId = req.params.id;
+    const commentId = req.params.commentId
+    const updatedComment = req.body.comment;
+    const submission = await Submission(submissionId);
+
+    if (!submission) {
+      return res.status(400).send('submission not found');
+    }
+    submission.comments = submission.comments.map((comment) => {
+      if (comment.id === commentId) {
+        comment = updatedComment;
+      }
+    });
+
+    console.log(submission);
+    const updatedValue = await Submission.findByIdAndUpdate(id, submission, {new: true});
+    if (!updatedValue) {
+      return res.status(400).send('Failed to update');
+    } else {
+      return res.status(200).send(submission);
+    }
+
+  } catch( err ) {
+    res.status(500).send(err || 'error while update comment for submissionId' + req.params.id);
+  }
+ 
 }
