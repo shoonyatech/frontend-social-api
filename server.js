@@ -68,6 +68,7 @@ require("./routes/course-write.routes.js")(app);
 require("./routes/blog-write.routes.js")(app);
 require("./routes/challenge-write.routes.js")(app);
 require("./routes/submission-write.routes.js")(app);
+require("./routes/reward-points-write.routes.js")(app);
 
 app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
