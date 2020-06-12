@@ -14,7 +14,7 @@ exports.redeem = async (req, res) => {
   try {
     const username = req.user.username;
     const redeemAmount = req.body.redeemAmount;
-    const transaction = new RewardPoints({
+    let transaction = new RewardPoints({
       username,
       credited: 0,
       debited: redeemAmount,
@@ -22,9 +22,32 @@ exports.redeem = async (req, res) => {
       comment: 'Redeem Request',
       transactionDate: Date.now()
     });
-    const transaction = await RewardPoints.save(transaction);
+    transaction = await transaction.save();
     res.send(transaction);
   } catch (err) {
     res.status(500).send(`Error while redeeming reward points for user ${req.user.username}`)
   }
-}s
+}
+
+// USED For testing
+// async function saveRewardPoints(username) {
+//   let transaction = new RewardPoints({
+//     username,
+//     credited: 1000,
+//     debited: 0,
+//     status: 'Pending',
+//     comment: 'test',
+//     transactionDate: Date.now()
+//   });
+//   await transaction.save();
+
+//   transaction = new RewardPoints({
+//     username,
+//     credited: 1000,
+//     debited: 0,
+//     status: 'Pending',
+//     comment: 'test',
+//     transactionDate: Date.now()
+//   });
+//   await transaction.save();
+// }

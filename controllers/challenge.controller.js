@@ -3,7 +3,7 @@ const Challenge = require("../models/challenge.model");
 
 exports.create = async (req, res) => {
   try{
-    const challenge = new Challenge({...req.body, createdBy: req.user});
+    const challenge = new Challenge({...req.body, createdBy: req.user, winnerSubmissionId: null});
     const data = await challenge.save();
     res.send(data);
   } catch(err) {

@@ -9,6 +9,7 @@ const ChallengeSchema = mongoose.Schema(
     endTime: Date,
     createdBy: Object,
     published: Boolean,
+    winnerSubmissionId: String,
   },
   {
     timestamps: true
