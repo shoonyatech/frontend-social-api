@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const cityController = require("./city.controller");
+const RewardPoints = require("../models/reward-points.model.js");
+
 const { JWT_SECRET } = process.env;
 // Create and Save a new user
 exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) => {
@@ -173,7 +175,8 @@ async function updateReferral(referrer, username) {
         "$push":
           { referrals: referral }
       })
-      console.log(referrer)
+      console.log(referrer);
+      setRewardPointsForReferral(referrer, username);
       return true;
     }
     return false;
@@ -181,6 +184,23 @@ async function updateReferral(referrer, username) {
     res.status(500).send({
       message: err.message || "Some error occurred while creating the user."
     });
+  }
+}
+
+async function setRewardPointsForReferral(referrer, username) {
+  try {
+    const amount = 100;
+    const transaction = new RewardPoints({
+      username: referrer,
+      credited: amount,
+      debited: 0,
+      status: 'Done',
+      comment: `Credited ${amount} for ${username}'s Referral`,
+      transactionDate: Date.now()
+    });
+    await transaction.save();
+  } catch (err) {
+    console.error(`Error while saving reward points for user ${referrer}`);
   }
 }
 
