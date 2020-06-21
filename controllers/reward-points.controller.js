@@ -29,6 +29,24 @@ exports.redeem = async (req, res) => {
   }
 }
 
+exports.addRewardPoints = async (username, points, reason) => {
+  try {
+    const transaction = new RewardPoints({
+      username: username,
+      credited: points,
+      debited: 0,
+      status: 'Done',
+      comment: reason,
+      transactionDate: Date.now()
+    });
+    await transaction.save();
+    return true;
+  } catch (err) {
+    console.error(`Error while saving reward points for user ${username}`);
+    return false;
+  }
+}
+
 // USED For testing
 // async function saveRewardPoints(username) {
 //   let transaction = new RewardPoints({

@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const CityEvent = require("../models/event.model.js");
 const EventRegistration = require("../models/event-registration.model.js");
 const cityController = require("./city.controller");
+const rewardPointsController = require("./reward-points.controller.js");
 
 // Create and Save a new event
 exports.create = async (req, res) => {
@@ -19,6 +20,7 @@ exports.create = async (req, res) => {
   event
     .save()
     .then((data) => {
+      rewardPointsController.addRewardPoints(req.user.username, 50, `For creating a new event`);
       res.send(data);
     })
     .catch((err) => {
