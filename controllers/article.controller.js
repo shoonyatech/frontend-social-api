@@ -1,4 +1,5 @@
 const Article = require("../models/article.model.js");
+const rewardPointsController = require("./reward-points.controller.js");
 
 // Create and Save a new article
 exports.create = (req, res) => {
@@ -8,6 +9,7 @@ exports.create = (req, res) => {
   article
     .save()
     .then(data => {
+      rewardPointsController.addRewardPoints(req.user.username, 50, `For creating a new article`);
       res.send(data);
     })
     .catch(err => {
