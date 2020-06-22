@@ -4,6 +4,9 @@ const cityController = require("./city.controller");
 const rewardPointsController = require("./reward-points.controller.js");
 
 const { JWT_SECRET } = process.env;
+
+const REFERRAL_REWARD_POINTS = 100;
+
 // Create and Save a new user
 exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) => {
   let name, profilePic, email;
@@ -188,7 +191,7 @@ async function updateReferral(referrer, username) {
 }
 
 async function setRewardPointsForReferral(referrer, username) {
-  rewardPointsController.addRewardPoints(referrer, 100, `Credited for ${username}'s Referral`);
+  rewardPointsController.addRewardPoints(referrer, REFERRAL_REWARD_POINTS, `Credited for ${username}'s Referral`);
 }
 
 // Retrieve and return all users from the database.
