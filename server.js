@@ -48,6 +48,7 @@ require("./routes/user-page-read.routes.js")(app);
 require("./routes/blog-read.routes.js")(app);
 require("./routes/challenge-read.routes.js")(app);
 require("./routes/submission-read.routes.js")(app);
+require("./routes/vlog-read.routes.js")(app);
 
 
 // this will attach the logged in user to req.user
@@ -69,6 +70,7 @@ require("./routes/blog-write.routes.js")(app);
 require("./routes/challenge-write.routes.js")(app);
 require("./routes/submission-write.routes.js")(app);
 require("./routes/reward-points-write.routes.js")(app);
+require("./routes/vlog-write.routes.js")(app);
 
 app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
