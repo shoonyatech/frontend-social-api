@@ -18,8 +18,15 @@ exports.findAll = async (req, res) => {
   if (andQuery.length) {
     finalQuery = { $and: andQuery };
   }
+
+  const limit = Number(req.query.limit) || 100
+  const page = Number(req.query.page) || 1
+
   try {
-   const tips = await Tip.find(finalQuery);
+   const tips = await Tip.find(finalQuery)
+    .sort({ createdAt: "descending" })
+    .limit(limit)
+    .skip(limit * (page - 1));
    res.send(tips);
   } catch (err) {
     res.status(500).send(err || 'error occurred while getting tips');
