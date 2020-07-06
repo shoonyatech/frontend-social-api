@@ -3,7 +3,8 @@ const RewardPoints = require("../models/reward-points.model.js");
 exports.getRewardPointsForUser = async (req, res) => {
   try {
     const username =req.user.username
-    const transactions = await RewardPoints.find({username})
+    const transactions = await RewardPoints.find({username}).sort({ transactionDate: "descending" })
+
     res.send(transactions);
   } catch (err) {
     res.status(500).send(`Error getting reward points for user ${req.user.username}`);
@@ -43,6 +44,24 @@ exports.addRewardPoints = async (username, points, reason) => {
     return true;
   } catch (err) {
     console.error(`Error while saving reward points for user ${username}`);
+    return false;
+  }
+}
+
+exports.deductRewardPoints = async (username, points, reason) => {
+  try {
+    const transaction = new RewardPoints({
+      username: username,
+      credited: 0,
+      debited: points,
+      status: 'Done',
+      comment: reason,
+      transactionDate: Date.now()
+    });
+    await transaction.save();
+    return true;
+  } catch (err) {
+    console.error(`Error while deducing reward points for the user ${username}`);
     return false;
   }
 }

@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 const Tip = require("../models/tips.model");
+const rewardPointsController = require("./reward-points.controller.js");
 
+const TIP_REWARD_POINTS = 50;
 exports.create = async (req, res) => {
   try {
     const tip = new Tip({...req.body, createdBy: req.user});
     const data = await tip.save();
+    rewardPointsController.addRewardPoints(req.user.username, TIP_REWARD_POINTS, `For creating a Tech Tip`);
     res.send(data);
   } catch(err) {
     res.status(500).send(err || 'error occurred while creating tip')
@@ -90,6 +93,7 @@ exports.delete = async (req, res) => {
     if (!tip) {
       res.status(404).send('no tip exists with' + id);
     }
+    rewardPointsController.deductRewardPoints(req.user.username, TIP_REWARD_POINTS, `For deleting the Tech Tip`);
     res.send('tip deleted successfully');
   } catch (err) {
     res.status(500).send(err || 'error occurred while deleting tip');
