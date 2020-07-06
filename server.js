@@ -51,9 +51,8 @@ require("./routes/submission-read.routes.js")(app);
 require("./routes/vlog-read.routes.js")(app);
 require("./routes/tip-read.routes.js")(app);
 
-
 // this will attach the logged in user to req.user
-app.use(jwt({ secret: JWT_SECRET }));
+app.use(jwt({ secret: JWT_SECRET, algorithms: ["RS256"] }));
 
 require("./routes/job-write.routes.js")(app);
 require("./routes/event-write.routes.js")(app);
