@@ -164,7 +164,7 @@ exports.delete = (req, res) => {
 // Find a single topics with a id
 exports.findOneByTopicUrl = (req, res) => {
   Course.findOne({
-    "chapters.topics": { $elemMatch: { url: { $eq: req.params.url } } },
+    "chapters.topics": { $elemMatch: { videoUrl: { $eq: req.params.url } } },
   })
     .then((course) => {
       if (!course) {
