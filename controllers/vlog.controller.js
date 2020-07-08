@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-   const vLogs = await VLog.find({});
+   const vLogs = await VLog.find({}).sort({ createdAt: "descending" });
    res.send(vLogs);
   } catch (err) {
     res.status(500).send(err || 'error occurred while getting vLogs');
