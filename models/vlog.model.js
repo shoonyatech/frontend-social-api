@@ -7,6 +7,7 @@ const VLogSchema = mongoose.Schema(
     link: String,
     uniqueId: String,
     createdBy: Object,
+    segments: Array,
   },
   {
     timestamps: true
