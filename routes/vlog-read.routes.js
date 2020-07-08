@@ -4,4 +4,6 @@ module.exports = app => {
   app.get("/vlog", vLog.findAll);
 
   app.get("/vlog/:id", vLog.findById);
+
+  app.get("/vlog/catchup/:id", vLog.findByUniqueId);
 };

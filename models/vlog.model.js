@@ -5,6 +5,7 @@ const VLogSchema = mongoose.Schema(
     title: String,
     description: String,
     link: String,
+    uniqueId: String,
     createdBy: Object,
   },
   {
