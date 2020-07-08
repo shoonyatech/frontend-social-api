@@ -21,7 +21,7 @@ exports.findAll = async (req, res) => {
   }
 }
 
-const findById = async (req, res) => {
+exports.findById = async (req, res) => {
   try {
     const id = req.params.id;
     const vLog = await VLog.findOne({_id: id});
@@ -30,8 +30,6 @@ const findById = async (req, res) => {
     res.status(500).send(err || 'error occurred while getting vLog');
   }
 }
-
-exports.findById = findById;
 
 exports.update = async (req, res) => {
   try {
@@ -69,10 +67,8 @@ async function generateUniqueId(title) {
 }
 
 async function searchByRegex(text) {
-  
   try {
     var regexp = new RegExp(`^${text}[0-9]*`);
-
     const vlogs = await VLog.find({ uniqueId: regexp});
     return vlogs;
   } catch (err) {
