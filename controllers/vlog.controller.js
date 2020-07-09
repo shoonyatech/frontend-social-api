@@ -1,9 +1,15 @@
 const mongoose = require("mongoose");
 const VLog = require("../models/vlog.model");
 
+const VLogType = {
+  CATCHUP : 'CATCHUP',
+  FREELANCING: 'FREELANCING',
+}
+
 exports.create = async (req, res) => {
   try {
-    const uniqueId = await generateUniqueId(req.body.title);
+    const type = req.body.type;
+    const uniqueId = await generateUniqueId(req.body.title, type);
     const vLog = new VLog({...req.body, createdBy: req.user, uniqueId});
     const data = await vLog.save();
     res.send(data);
@@ -14,8 +20,14 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
   try {
-   const vLogs = await VLog.find({}).sort({ createdAt: "descending" });
-   res.send(vLogs);
+    const type = req.query.type;
+    let query = {type: type};
+    // backward compatibility
+    if (type === VLogType.CATCHUP) {
+      query = {$or: [ {type: type}, {type: {$exists: false}}]};
+    }
+    const vLogs = await VLog.find(query).sort({ createdAt: "descending" });
+    res.send(vLogs);
   } catch (err) {
     res.status(500).send(err || 'error occurred while getting vLogs');
   }
@@ -59,8 +71,13 @@ exports.delete = async (req, res) => {
   }
 }
 
-async function generateUniqueId(title) {
-  let _t = title.toLowerCase().replace('catch up', '').trim().replace(' ', '-');
+async function generateUniqueId(title, type) {
+
+  let _t = title.toLowerCase();
+  if (type === VLogType.CATCHUP) {
+    _t = _t.replace('catch up', '');
+  }
+  _t = _t.trim().replace(/[^\w\s]/gi, '').replace(/ /g,"_");
 
   const vlogs = await searchByRegex(_t);
   return vlogs.length ? (_t + `-${vlogs.length}`) : _t;
