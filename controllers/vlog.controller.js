@@ -77,7 +77,7 @@ async function generateUniqueId(title, type) {
   if (type === VLogType.CATCHUP) {
     _t = _t.replace('catch up', '');
   }
-  _t = _t.trim().replace(/[^\w\s]/gi, '').replace(/ /g,"_");
+  _t = _t.trim().replace(/[^\w\s]/gi, '').replace(/ /g,"-");
 
   const vlogs = await searchByRegex(_t);
   return vlogs.length ? (_t + `-${vlogs.length}`) : _t;
