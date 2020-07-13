@@ -1,4 +1,6 @@
 const Course = require("../models/course.model.js");
+const Comment = require("../models/comment.model.js");
+
 const { getAppliedFilters } = require("../utils/helperMethods");
 const { filterTypes, skillFilterSet } = require("../utils/constants");
 
@@ -73,10 +75,19 @@ exports.findAll = async (req, res) => {
     .sort({ createdAt: "descending" })
     .limit(limit)
     .skip(limit * (page - 1))
-    .then((courses) => {
+    .then(async (courses) => {
       if (courses.length) {
-        response.results = courses;
+        const comments = await Comment.find({parentId: courses.map(x => x._id)});
+        const _courses = courses.map(course => {
+          const ratings = comments.filter(c => c.parentId === course.id).map(x => x.rating);
+
+          cumulativeRating = ratings.length ? ratings.reduce((acc, val) => acc + val, 0) / ratings.length : null;
+          return {...course._doc, rating: cumulativeRating}
+        });
+
+        response.results = _courses;
       }
+
       res.send(response);
     })
     .catch((err) => {
@@ -89,13 +100,20 @@ exports.findAll = async (req, res) => {
 // Find a single course with a id
 exports.findOne = (req, res) => {
   Course.findById(req.params.id)
-    .then((course) => {
+    .then(async (course) => {
       if (!course) {
         return res.status(404).send({
           message: "course not found with id " + req.params.id,
         });
       }
-      res.send(course);
+
+      const comments = await Comment.find({parentId: course._id});
+      const ratings = comments.map(x => x.rating);
+
+      cumulativeRating = ratings.length ? ratings.reduce((acc, val) => acc + val, 0) / ratings.length : null;
+      const _course = {...course._doc, rating: cumulativeRating}
+      
+      res.send(_course);
     })
     .catch((err) => {
       if (err.kind === "ObjectId") {
