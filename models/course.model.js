@@ -25,6 +25,7 @@ const CourseSchema = mongoose.Schema(
     title: String,
     technology: String,
     description: String,
+    isDisabled: Boolean,
     introductoryVideoUrl: String,
     author: {
       name: String,
