@@ -33,6 +33,7 @@ const CourseSchema = mongoose.Schema(
     },
     chapters: [ChapterSchema],
     createdBy: Object,
+    uniqueId: String,
   },
   {
     timestamps: true,
