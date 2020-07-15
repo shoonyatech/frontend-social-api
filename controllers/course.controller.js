@@ -4,8 +4,9 @@ const Comment = require("../models/comment.model.js");
 const { getAppliedFilters } = require("../utils/helperMethods");
 const { filterTypes, skillFilterSet } = require("../utils/constants");
 
-exports.create = (req, res) => {
-  const course = new Course({ ...req.body, createdBy: req.user });
+exports.create = async (req, res) => {
+  const uniqueId = await generateUniqueId(req.body.title);
+  const course = new Course({ ...req.body, uniqueId, createdBy: req.user });
   course
     .save()
     .then((data) => {
@@ -71,7 +72,7 @@ exports.findAll = async (req, res) => {
 
   const limit = Number(req.query.limit) || 100;
   const page = Number(req.query.page) || 1;
-  Course.find(filterObj, { title: 1, technology: 1, description: 1 })
+  Course.find(filterObj, { title: 1, technology: 1, description: 1, uniqueId: 1 })
     .sort({ createdAt: "descending" })
     .limit(limit)
     .skip(limit * (page - 1))
@@ -99,7 +100,7 @@ exports.findAll = async (req, res) => {
 
 // Find a single course with a id
 exports.findOne = (req, res) => {
-  Course.findById(req.params.id)
+  Course.findOne({uniqueId: req.params.id})
     .then(async (course) => {
       if (!course) {
         return res.status(404).send({
@@ -203,3 +204,48 @@ exports.findOneByTopicUrl = (req, res) => {
       });
     });
 };
+
+async function generateUniqueId(title, type) {
+  let _t = title.toLowerCase();
+  _t = _t.trim().replace(/[^\w\s]/gi, '').replace(/ /g,"-");
+
+  const courses = await searchByRegex(_t);
+  return courses.length ? (_t + `-${courses.length}`) : _t;
+}
+
+async function searchByRegex(text) {
+  try {
+    var regexp = new RegExp(`^${text}[0-9]*`);
+    const courses = await Course.find({ uniqueId: regexp});
+    return courses;
+  } catch (err) {
+    return [];
+  }
+}
+
+// const updateCourses = async () => {
+//   const courses = await Course.find({});
+
+//   const promises = courses.map( async (x) => {
+//     if (!x.title) return false;
+
+//     const uniqueId = await generateUniqueId(x.title);
+//     try {
+//       await Course.findByIdAndUpdate(
+//         x.id,
+//         {
+//           ...x._doc,
+//           uniqueId,
+//         },
+//         { new: true }
+//       )
+//     } catch (ex) {
+//       console.error(ex);
+//     }
+
+//   });
+
+//   await Promise.all(promises);
+// }
+
+// updateCourses();
