@@ -50,6 +50,7 @@ require("./routes/challenge-read.routes.js")(app);
 require("./routes/submission-read.routes.js")(app);
 require("./routes/vlog-read.routes.js")(app);
 require("./routes/tip-read.routes.js")(app);
+require("./routes/feedback.routes.js")(app);
 
 // this will attach the logged in user to req.user
 app.use(jwt({ secret: JWT_SECRET, algorithms: ["HS256"] }));
