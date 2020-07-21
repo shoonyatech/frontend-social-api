@@ -2,10 +2,16 @@ const Job = require("../models/job.model.js");
 const { getAppliedFilters } = require("../utils/helperMethods");
 const { filterTypes } = require("../utils/constants");
 const { getExplicitFilters } = require("../utils/jobUtils");
+const cityController = require("./city.controller");
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   //need to add validation and request sanitization
   const job = new Job({ ...req.body, createdBy: req.user });
+
+  await cityController.createCityIfNotExists({
+    name: job.city,
+    country: job.country,
+  });
 
   job
     .save()
