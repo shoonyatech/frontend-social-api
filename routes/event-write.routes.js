@@ -15,4 +15,6 @@ module.exports = app => {
   
   //Register users for the event
   app.get("/event/get/myevent", event.findMyEvent);
+
+  app.post("/event/backfill", event.backfillEventWithUniqueId);
 };

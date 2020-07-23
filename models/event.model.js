@@ -23,7 +23,8 @@ const EventSchema = mongoose.Schema(
     createdBy: Object,
     isPrivate: Boolean,
     isRequiresRegistration: Boolean,
-    adminUsers: Array
+    adminUsers: Array,
+    uniqueId: String,
   },
   {
     timestamps: true
