@@ -10,7 +10,9 @@ const ADD_EVENT_REWARD_POINTS = 50;
 // Create and Save a new event
 exports.create = async (req, res) => {
   const {_id, ...rest} = req.body;
-  const event = new CityEvent({ ...rest, createdBy: req.user });
+  const uniqueId = await generateUniqueId(req.body.title);
+
+  const event = new CityEvent({ ...rest, createdBy: req.user, uniqueId });
 
   //create city for the event
   await cityController.createCityIfNotExists({
@@ -57,6 +59,35 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+exports.findByUniqueId = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const event = await CityEvent.findOne({uniqueId: id});
+    res.send(event);
+  } catch (err) {
+    res.status(500).send(err || 'error occurred while getting event');
+  }
+}
+
+async function generateUniqueId(title, type) {
+
+  let _t = title.toLowerCase();
+  _t = _t.trim().replace(/[^\w\s]/gi, '').replace(/ /g,"-");
+
+  const events = await searchByRegex(_t);
+  return events.length ? (_t + `-${events.length}`) : _t;
+}
+
+async function searchByRegex(text) {
+  try {
+    var regexp = new RegExp(`^${text}[0-9]*`);
+    const events = await CityEvent.find({ uniqueId: regexp});
+    return events;
+  } catch (err) {
+    return [];
+  }
+}
 
 // Retrieve and return all events with given IDs.
 exports.withIds = (req, res) => {
@@ -152,10 +183,12 @@ exports.update = async (req, res) => {
     country: req.body.country,
   });
 
+  const oldEvent = await CityEvent.findOne({_id: req.params.id});
   CityEvent.findByIdAndUpdate(
     req.params.id,
     {
       ...req.body,
+      uniqueId: oldEvent.uniqueId,
     },
     { new: true }
   )
@@ -405,4 +438,30 @@ function getQuery(query) {
   }
 
   return andQuery;
+}
+
+exports.backfillEventWithUniqueId = async (req, res) => {
+  const events = await CityEvent.find({});
+  const failedIds = [];
+  const promises = events.map(async (x) => {
+    if (!x.title) return false;
+
+    const uniqueId = await generateUniqueId(x.title);
+    try {
+      await CityEvent.findByIdAndUpdate(
+        x.id,
+        {
+          ...x._doc,
+          uniqueId,
+        },
+        { new: true }
+      )
+    } catch (ex) {
+      console.error(ex);
+      failedIds.push(x.id);
+    }
+  });
+
+  await Promise.all(promises);
+  res.send(failedIds);
 }
