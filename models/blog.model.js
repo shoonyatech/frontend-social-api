@@ -4,10 +4,15 @@ const BlogSchema = mongoose.Schema(
   {
     title: String,
     markdownUrl: String,
-    createdBy: Object
+    tags: [String],
+    author: String,
+    description: String,
+    type: String,
+    relatedSkills: [],
+    createdBy: Object,
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

@@ -45,6 +45,7 @@ exports.findAll = async (req, res) => {
         .limit(limit)
         .skip(limit * (page - 1))
         .then(blogs => {
+            let response = { results: [] };
             if (blogs.length) {
                 response.results = blogs;
             }
