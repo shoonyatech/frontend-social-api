@@ -12,7 +12,7 @@ const BlogSchema = mongoose.Schema(
     createdBy: Object,
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
