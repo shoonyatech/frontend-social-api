@@ -7,6 +7,7 @@ const BlogSchema = mongoose.Schema(
     tags: [String],
     author: String,
     description: String,
+    body:String,
     type: String,
     relatedSkills: [],
     createdBy: Object,
