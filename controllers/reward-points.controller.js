@@ -2,14 +2,18 @@ const RewardPoints = require("../models/reward-points.model.js");
 
 exports.getRewardPointsForUser = async (req, res) => {
   try {
-    const username =req.user.username
-    const transactions = await RewardPoints.find({username}).sort({ transactionDate: "descending" })
+    const username = req.user.username;
+    const transactions = await RewardPoints.find({ username }).sort({
+      transactionDate: "descending",
+    });
 
     res.send(transactions);
   } catch (err) {
-    res.status(500).send(`Error getting reward points for user ${req.user.username}`);
+    res
+      .status(500)
+      .send(`Error getting reward points for user ${req.user.username}`);
   }
-}
+};
 
 exports.redeem = async (req, res) => {
   try {
@@ -19,16 +23,20 @@ exports.redeem = async (req, res) => {
       username,
       credited: 0,
       debited: redeemAmount,
-      status: 'Pending',
-      comment: 'Redeem Request',
-      transactionDate: Date.now()
+      status: "Pending",
+      comment: "Redeem Request",
+      transactionDate: Date.now(),
     });
     transaction = await transaction.save();
     res.send(transaction);
   } catch (err) {
-    res.status(500).send(`Error while redeeming reward points for user ${req.user.username}`)
+    res
+      .status(500)
+      .send(
+        `Error while redeeming reward points for user ${req.user.username}`
+      );
   }
-}
+};
 
 exports.addRewardPoints = async (username, points, reason) => {
   try {
@@ -36,9 +44,9 @@ exports.addRewardPoints = async (username, points, reason) => {
       username: username,
       credited: points,
       debited: 0,
-      status: 'Done',
+      status: "Done",
       comment: reason,
-      transactionDate: Date.now()
+      transactionDate: Date.now(),
     });
     await transaction.save();
     return true;
@@ -46,7 +54,7 @@ exports.addRewardPoints = async (username, points, reason) => {
     console.error(`Error while saving reward points for user ${username}`);
     return false;
   }
-}
+};
 
 exports.deductRewardPoints = async (username, points, reason) => {
   try {
@@ -54,17 +62,19 @@ exports.deductRewardPoints = async (username, points, reason) => {
       username: username,
       credited: 0,
       debited: points,
-      status: 'Done',
+      status: "Done",
       comment: reason,
-      transactionDate: Date.now()
+      transactionDate: Date.now(),
     });
     await transaction.save();
     return true;
   } catch (err) {
-    console.error(`Error while deducing reward points for the user ${username}`);
+    console.error(
+      `Error while deducing reward points for the user ${username}`
+    );
     return false;
   }
-}
+};
 
 // USED For testing
 // async function saveRewardPoints(username) {
