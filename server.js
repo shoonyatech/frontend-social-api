@@ -9,24 +9,9 @@ mongoose.Promise = global.Promise;
 
 const { MONGODB_URI, JWT_SECRET, PORT = 3000 } = process.env;
 let app = express();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(compression());
-
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-  socket.on('test-event', () => {
-    console.log('test-event');
-    io.emit('test-reply', 'reply');
-  });
-});
 
 mongoose
   .connect(MONGODB_URI, {
@@ -89,6 +74,6 @@ require("./routes/reward-points-write.routes.js")(app);
 require("./routes/vlog-write.routes.js")(app);
 require("./routes/tip-write.routes.js")(app);
 
-http.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
 });
