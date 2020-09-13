@@ -25,10 +25,10 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.getSubmissionsByChallengeId = async (req, res) => {
+exports.getSubmissionsByChallengeUniqueId = async (req, res) => {
   try {
     const challengeId = req.params.challengeId;
-    const challenge = await Challenge.findById(challengeId);
+    const challenge = await Challenge.findOne({ uniqueId: challengeId });
 
     if (challenge) {
       let submissions;

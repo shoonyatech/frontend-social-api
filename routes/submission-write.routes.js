@@ -10,14 +10,17 @@ module.exports = (app) => {
   //deleting a submission
   app.delete("/submission/:id", submission.delete);
 
-  app.get("/submissions/:challengeId", submission.getSubmissionsByChallengeId);
+  app.get(
+    "/submissions/:challengeId",
+    submission.getSubmissionsByChallengeUniqueId
+  );
 
   //posting a new comment
   app.post("/submissions/:id/comment", submission.addComment);
 
   //deleting a comment
-  app.delete('/submissions/:id/comment/:commentId', submission.deleteComment);
- 
+  app.delete("/submissions/:id/comment/:commentId", submission.deleteComment);
+
   //updating a comment
-  app.put('/submissions/:id/comment/:commentId', submission.updateComment);
+  app.put("/submissions/:id/comment/:commentId", submission.updateComment);
 };
