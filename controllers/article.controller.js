@@ -38,15 +38,16 @@ exports.findAll = (req, res) => {
   const page = Number(req.query.page) || 1;
 
   Article.find(finalQuery)
-    .sort({ dateFrom: "descending" })
+    .sort({ createdAt: "descending" })
     .limit(limit)
     .skip(limit * (page - 1))
-    .then((events) => {
-      res.send(events);
+    .then((articles) => {
+      res.send(articles);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving events.",
+        message:
+          err.message || "Some error occurred while retrieving articles.",
       });
     });
 };
