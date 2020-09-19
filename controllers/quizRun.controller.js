@@ -55,3 +55,30 @@ exports.findQuestionResults = (req, res) => {
       });
     });
 };
+
+// Update a quiz identified by the id in the request
+exports.update = (req, res) => {
+  QuizRun.findOneAndUpdate(
+    { uniqueId: req.params.runId },
+    { currentQuestion: req.params.questionIndex }
+  )
+    .then((quizRun) => {
+      if (!quizRun) {
+        return res.status(404).send({
+          message: "quiz run not found with id " + req.params.runId,
+        });
+      }
+      
+      res.send(quizRun);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "quiz not found with id " + req.params.id,
+        });
+      }
+      return res.status(500).send({
+        message: "Error updating quiz with id " + req.params.id,
+      });
+    });
+};
