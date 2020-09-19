@@ -34,8 +34,8 @@ exports.findAll = async (req, res) => {
 };
 
 // Find a single quiz with a id
-exports.findOne = (req, res) => {
-  QuizRun.find({ uniqueId: req.params.uniqueId})
+exports.findQuestionResults = (req, res) => {
+  QuizRun.find({ uniqueId: req.params.uniqueId, questionIndex: req.params.questionIndex})
     .then((quizRun) => {
       if (!quizRun) {
         return res.status(404).send({
