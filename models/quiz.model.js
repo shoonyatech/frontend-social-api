@@ -15,12 +15,11 @@ const QuizSchema = mongoose.Schema(
   {
     title: String,
     questions: [QuestionSchema],
-    relatedSkills: [],
-    createdBy: Object,
+    relatedSkills: []
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Quiz", QuizSchema);
 module.exports = mongoose.model("Question", QuestionSchema);
+module.exports = mongoose.model("Quiz", QuizSchema);
