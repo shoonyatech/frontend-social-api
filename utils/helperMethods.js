@@ -1,6 +1,15 @@
 const { filterTypes, jobFilterSet, skillFilterSet } = require("./constants");
 
-const getFiltersSet = type => {
+const generateUniqueId = (title) => {
+  let _t = title.toLowerCase();
+  _t = _t
+    .trim()
+    .replace(/[^\w\s]/gi, "")
+    .replace(/ /g, "-");
+  return _t;
+};
+
+const getFiltersSet = (type) => {
   switch (type) {
     case filterTypes.JOB:
       return jobFilterSet;
@@ -12,16 +21,19 @@ const getFiltersSet = type => {
 };
 
 const getAppliedFilters = (filters = "", type, filterSet) => {
-  if (!filterSet) { filterSet = getFiltersSet(type); }
+  if (!filterSet) {
+    filterSet = getFiltersSet(type);
+  }
   const selectedFilterSet = new Set(filters.split(","));
-  return filterSet.map(item => {
+  return filterSet.map((item) => {
     return {
       ...item,
-      selected: selectedFilterSet.has(item.id)
+      selected: selectedFilterSet.has(item.id),
     };
   });
 };
 
 module.exports = {
-  getAppliedFilters
+  getAppliedFilters,
+  generateUniqueId,
 };

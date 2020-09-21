@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = (app) => {
   const challenge = require("../controllers/challenge.controller.js");
 
   // Retrieve all challenges
@@ -7,5 +7,6 @@ module.exports = app => {
   // Retrieve a single challenge with id
   app.get("/challenge/:id", challenge.findById);
 
-  app.get("/challenge/byUniqueId/:id", challenge.findByUniqueId);
+  // Retrieve a single challenge with UniqueId
+  app.get("/challenge/byUniqueId/:uniqueId", challenge.findByUniqueId);
 };

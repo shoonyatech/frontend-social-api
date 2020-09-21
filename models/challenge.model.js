@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const ChallengeSchema = mongoose.Schema(
   {
     title: String,
+    uniqueId: String,
     problemStatement: String,
-    problemStatementUrl:String,
+    problemStatementUrl: String,
     tags: Array,
     startTime: Date,
     endTime: Date,
@@ -13,7 +14,7 @@ const ChallengeSchema = mongoose.Schema(
     winnerSubmissionId: String,
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
