@@ -4,6 +4,7 @@ const ChallengeSchema = mongoose.Schema(
   {
     title: String,
     problemStatement: String,
+    problemStatementUrl:String,
     tags: Array,
     startTime: Date,
     endTime: Date,
