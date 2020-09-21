@@ -6,4 +6,6 @@ module.exports = app => {
 
   // Retrieve a single job with id
   app.get("/job/:id", job.findOne);
+
+  app.get("/job/analytics/:createdAt", job.analytics);
 };

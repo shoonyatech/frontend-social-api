@@ -8,7 +8,13 @@ const { JWT_SECRET } = process.env;
 const REFERRAL_REWARD_POINTS = 100;
 
 // Create and Save a new user
-exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) => {
+exports.findSocialAuthUserinDB = async (
+  provider,
+  user,
+  req,
+  res,
+  authResponse
+) => {
   let name, profilePic, email;
 
   if (provider === "facebook") {
@@ -31,7 +37,7 @@ exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) 
 
   if (email) {
     User.find({ email: email })
-      .then(existingUser => {
+      .then((existingUser) => {
         if (existingUser == null || !existingUser.length) {
           //user not found. Create one
           return createSocialAuthUser(
@@ -53,15 +59,15 @@ exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) 
         const account = { ...authResponse, authToken, ...existingUser[0]._doc };
         res.send(account);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         return res.status(500).send({
-          message: "Error retrieving user with " + provider + " id " + user.id
+          message: "Error retrieving user with " + provider + " id " + user.id,
         });
       });
   } else {
     User.find({ socialId: user.id, provider: provider })
-      .then(existingUser => {
+      .then((existingUser) => {
         if (existingUser == null || !existingUser.length) {
           //user not found. Create one
           return createSocialAuthUser(
@@ -83,10 +89,10 @@ exports.findSocialAuthUserinDB = async (provider, user, req, res, authResponse) 
         const account = { ...authResponse, authToken, ...existingUser[0]._doc };
         res.send(account);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         return res.status(500).send({
-          message: "Error retrieving user with " + provider + " id " + user.id
+          message: "Error retrieving user with " + provider + " id " + user.id,
         });
       });
   }
@@ -133,7 +139,7 @@ async function createSocialAuthUser(
       { label: "Bitbucket", value: "" },
       { label: "Medium", value: "" },
       { label: "Website", value: "" },
-      { label: "Stack Overflow", value: "" }
+      { label: "Stack Overflow", value: "" },
     ],
     skills: [
       { name: "JS", noOfYears: 0, rating: 0 },
@@ -145,13 +151,13 @@ async function createSocialAuthUser(
       { name: "Web Components", noOfYears: 0, rating: 0 },
       { name: "Website Design", noOfYears: 0, rating: 0 },
       { name: "Android", noOfYears: 0, rating: 0 },
-      { name: "iOS", noOfYears: 0, rating: 0 }
+      { name: "iOS", noOfYears: 0, rating: 0 },
     ],
     eventIds: [],
     socialId,
     provider,
     city: null,
-    country: null
+    country: null,
   });
 
   // Save user in the database
@@ -163,21 +169,22 @@ async function createSocialAuthUser(
     res.send(account);
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while creating the user."
+      message: err.message || "Some error occurred while creating the user.",
     });
   }
 }
 
 async function updateReferral(referrer, username) {
-
   // Save referral in the database
   try {
     if (referrer != "null") {
       var referral = { username: username, createdAt: new Date() };
-      await User.updateOne({ username: referrer }, {
-        "$push":
-          { referrals: referral }
-      })
+      await User.updateOne(
+        { username: referrer },
+        {
+          $push: { referrals: referral },
+        }
+      );
       console.log(referrer);
       setRewardPointsForReferral(referrer, username);
       return true;
@@ -185,13 +192,17 @@ async function updateReferral(referrer, username) {
     return false;
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Some error occurred while creating the user."
+      message: err.message || "Some error occurred while creating the user.",
     });
   }
 }
 
 async function setRewardPointsForReferral(referrer, username) {
-  rewardPointsController.addRewardPoints(referrer, REFERRAL_REWARD_POINTS, `Credited for ${username}'s Referral`);
+  rewardPointsController.addRewardPoints(
+    referrer,
+    REFERRAL_REWARD_POINTS,
+    `Credited for ${username}'s Referral`
+  );
 }
 
 // Retrieve and return all users from the database.
@@ -202,18 +213,18 @@ exports.findAll = (req, res) => {
   if (searchText) {
     textQuery["$or"] = [
       { name: { $regex: searchText, $options: "i" } },
-      { username: { $regex: searchText, $options: "i" } }
+      { username: { $regex: searchText, $options: "i" } },
     ];
   } else if (userId) {
     textQuery = { _id: userId };
   }
   User.find(textQuery)
-    .then(users => {
+    .then((users) => {
       res.send(users);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users."
+        message: err.message || "Some error occurred while retrieving users.",
       });
     });
 };
@@ -221,22 +232,22 @@ exports.findAll = (req, res) => {
 // Find a single user with a id
 exports.findOne = (req, res) => {
   User.findById(req.params.id)
-    .then(user => {
+    .then((user) => {
       if (!user) {
         return res.status(404).send({
-          message: "user not found with id " + req.params.id
+          message: "user not found with id " + req.params.id,
         });
       }
       res.send(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with id " + req.params.id
+          message: "user not found with id " + req.params.id,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving user with id " + req.params.id
+        message: "Error retrieving user with id " + req.params.id,
       });
     });
 };
@@ -244,22 +255,22 @@ exports.findOne = (req, res) => {
 exports.me = (req, res) => {
   const username = req.user.username;
   User.findOne({ username: username })
-    .then(user => {
+    .then((user) => {
       if (!user) {
         return res.status(404).send({
-          message: "user not found with username " + username
+          message: "user not found with username " + username,
         });
       }
       res.send(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with username " + username
+          message: "user not found with username " + username,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving user with username " + username
+        message: "Error retrieving user with username " + username,
       });
     });
 };
@@ -273,18 +284,19 @@ exports.update = async (req, res) => {
 
     if (!existingUser) {
       return res.status(404).send({
-        message: "user not found with email " + username
+        message: "user not found with email " + username,
       });
     }
     const userId = existingUser.id;
 
     if (req.user.username !== req.body.username) {
       const userWithNewUsername = await User.findOne({
-        username: req.body.username
+        username: req.body.username,
       });
       if (userWithNewUsername != null && userWithNewUsername.id != userId) {
         return res.status(500).send({
-          message: "user with username " + req.body.username + " already exists"
+          message:
+            "user with username " + req.body.username + " already exists",
         });
       }
     }
@@ -292,20 +304,20 @@ exports.update = async (req, res) => {
     //create city for the user
     await cityController.createCityIfNotExists({
       name: req.body.city,
-      country: req.body.country
+      country: req.body.country,
     });
 
     try {
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
-          ...req.body
+          ...req.body,
         },
         { new: true }
       );
       if (!updatedUser) {
         return res.status(404).send({
-          message: "user not found with id " + userId
+          message: "user not found with id " + userId,
         });
       }
 
@@ -314,22 +326,22 @@ exports.update = async (req, res) => {
       console.log(err);
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with id " + userId
+          message: "user not found with id " + userId,
         });
       }
       return res.status(500).send({
-        message: "Error updating user with id " + userId
+        message: "Error updating user with id " + userId,
       });
     }
   } catch (err) {
     console.log(err);
     if (err.kind === "ObjectId") {
       return res.status(404).send({
-        message: "user not found with email " + username
+        message: "user not found with email " + username,
       });
     }
     return res.status(500).send({
-      message: "Error retrieving user with email " + username
+      message: "Error retrieving user with email " + username,
     });
   }
 };
@@ -339,42 +351,42 @@ exports.delete = (req, res) => {
   const email = req.user.email;
 
   User.findOne({ email: email })
-    .then(user => {
+    .then((user) => {
       if (!user) {
         return res.status(404).send({
-          message: "user not found with email " + email
+          message: "user not found with email " + email,
         });
       }
       const userId = user.id;
 
       User.findByIdAndRemove(userId)
-        .then(user => {
+        .then((user) => {
           if (!user) {
             return res.status(404).send({
-              message: "user not found with id " + userId
+              message: "user not found with id " + userId,
             });
           }
           res.send({ message: "user deleted successfully!" });
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.kind === "ObjectId" || err.name === "NotFound") {
             return res.status(404).send({
-              message: "user not found with id " + userId
+              message: "user not found with id " + userId,
             });
           }
           return res.status(500).send({
-            message: "Could not delete user with id " + userId
+            message: "Could not delete user with id " + userId,
           });
         });
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with email " + email
+          message: "user not found with email " + email,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving user with email " + email
+        message: "Error retrieving user with email " + email,
       });
     });
 };
@@ -382,22 +394,22 @@ exports.delete = (req, res) => {
 exports.findByUsername = (req, res) => {
   const username = req.params.username;
   User.findOne({ username: username })
-    .then(user => {
+    .then((user) => {
       if (!user) {
         return res.status(404).send({
-          message: "user not found with username " + username
+          message: "user not found with username " + username,
         });
       }
       res.send(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "user not found with username " + username
+          message: "user not found with username " + username,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving user with username " + username
+        message: "Error retrieving user with username " + username,
       });
     });
 };
@@ -406,62 +418,83 @@ exports.findUsersInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
   User.find({ city: cityName, country: countryCode })
-    .then(users => {
+    .then((users) => {
       res.send(users);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while saving users."
+        message: err.message || "Some error occurred while saving users.",
+      });
+    });
+};
+exports.analytics = (req, res) => {
+  const createdAt = req.params.createdAt;
+  User.find({ createdAt: createdAt })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "user not found with createdAt " + createdAt,
+        });
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "user not found with createdAt " + createdAt,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving user with username " + username,
+      });
+    });
+};
+// Update user preferences of logged in user
+exports.updatePreferences = async (req, res) => {
+  User.update(
+    { username: req.user.username },
+    { $set: { userPreferences: req.body.userPreferences } }
+  )
+    .then((users) => {
+      User.findOne({ username: req.user.username }).then((user) => {
+        res.send(user);
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while saving user preferences.",
       });
     });
 };
 
-
-// Update user preferences of logged in user
-exports.updatePreferences = async (req, res) => {
-  User.update({ username: req.user.username }, { $set: { userPreferences: req.body.userPreferences } })
-    .then(users => {
-      User.findOne({ username: req.user.username })
-        .then(user => {
-          res.send(user);
-        })
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while saving user preferences."
-      });
-    });
-
-}
-
-
 // Update user referrals of logged in user
 exports.getAllReferrals = async (req, res) => {
   User.findOne({ username: req.user.username })
-    .then(user => {
+    .then((user) => {
       var users = [];
 
       if (user.referrals.length > 0) {
         user.referrals.forEach(async (element) => {
-
           result = await User.findOne(
             { username: element.username },
-            { _id: 0, name: 1, username: 1, profilePic: 1 })
-          users.push(result)
+            { _id: 0, name: 1, username: 1, profilePic: 1 }
+          );
+          users.push(result);
 
           if (users.length === user.referrals.length) {
             res.send(users);
           }
         });
-      }
-      else {
+      } else {
         //if no referrals
         res.send(users);
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while getting user referrals."
+        message:
+          err.message || "Some error occurred while getting user referrals.",
       });
     });
-}
+};

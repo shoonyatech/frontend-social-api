@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = (app) => {
   const profile = require("../controllers/profile.controller.js");
 
   // retrieve user with a given username
@@ -8,4 +8,6 @@ module.exports = app => {
   app.get("/user/from/:cityName/:countryCode", profile.findUsersInCity);
 
   app.get("/users", profile.findAll);
+  //retrieve user with a given date
+  app.get("/users/analytics/:createdAt", profile.analytics);
 };
