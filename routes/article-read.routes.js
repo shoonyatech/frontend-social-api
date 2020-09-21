@@ -6,4 +6,6 @@ module.exports = app => {
 
   // Retrieve a single article with id
   app.get("/article/:id", article.findOne);
+
+  app.get("/article/analytics/:createdAt", article.analytics);
 };

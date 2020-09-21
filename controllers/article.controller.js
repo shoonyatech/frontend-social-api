@@ -52,6 +52,29 @@ exports.findAll = (req, res) => {
     });
 };
 
+exports.analytics = (req, res) => {
+  const createdAt = req.params.createdAt;
+  Article.find({ createdAt: createdAt })
+    .then((article) => {
+      if (!article) {
+        return res.status(404).send({
+          message: "article not found with createdAt " + createdAt,
+        });
+      }
+      res.send(article);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "article not found with createdAt " + createdAt,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving article with articlename " + title,
+      });
+    });
+};
+
 // Find a single article with a id
 exports.findOne = (req, res) => {
   Article.findById(req.params.id)
