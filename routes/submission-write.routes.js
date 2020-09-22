@@ -10,7 +10,10 @@ module.exports = (app) => {
   //deleting a submission
   app.delete("/submission/:id", submission.delete);
 
-  app.get("/submissions/:uniqueId", submission.getSubmissionsByChallengeId);
+  app.get(
+    "/submissions/:challengeId",
+    submission.getSubmissionsByChallengeUniqueId
+  );
 
   //posting a new comment
   app.post("/submissions/:id/comment", submission.addComment);

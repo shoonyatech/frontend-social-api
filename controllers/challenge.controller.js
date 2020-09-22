@@ -48,18 +48,6 @@ exports.findByUniqueId = async (req, res) => {
   }
 };
 
-exports.findByUniqueId = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const challenge = await Challenge.findOne({uniqueId: id});
-    res.send(challenge);
-  } catch (err) {
-    res.status(500).send(err || 'error occurred while getting challenge')
-  }
-}
-
-
-
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;
