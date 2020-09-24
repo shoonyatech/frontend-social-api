@@ -25,6 +25,34 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.analytics = (req, res) => {
+  const createdAt = req.params.createdAt;
+  Submission.find({
+    createdAt: {
+      $gte: `${createdAt} 00:00:00.507Z`,
+      $lt: `${createdAt} 23:59:59.507Z`,
+    },
+  })
+    .then((submission) => {
+      if (!submission) {
+        return res.status(404).send({
+          message: "submission not found with createdAt " + createdAt,
+        });
+      }
+      res.send(submission);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "submission not found with createdAt " + createdAt,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving submission with submissionname " + title,
+      });
+    });
+};
+
 exports.getSubmissionsByChallengeUniqueId = async (req, res) => {
   try {
     const challengeId = req.params.challengeId;

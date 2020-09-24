@@ -427,9 +427,15 @@ exports.findUsersInCity = (req, res) => {
       });
     });
 };
+
 exports.analytics = (req, res) => {
   const createdAt = req.params.createdAt;
-  User.find({ createdAt: createdAt })
+  User.find({
+    createdAt: {
+      $gte: `${createdAt} 00:00:00.507Z`,
+      $lt: `${createdAt} 23:59:59.507Z`,
+    },
+  })
     .then((user) => {
       if (!user) {
         return res.status(404).send({
@@ -449,6 +455,7 @@ exports.analytics = (req, res) => {
       });
     });
 };
+
 // Update user preferences of logged in user
 exports.updatePreferences = async (req, res) => {
   User.update(

@@ -4,12 +4,11 @@ const CityEvent = require("../models/event.model.js");
 const EventRegistration = require("../models/event-registration.model.js");
 const cityController = require("./city.controller");
 const rewardPointsController = require("./reward-points.controller.js");
-
 const ADD_EVENT_REWARD_POINTS = 50;
 
 // Create and Save a new event
 exports.create = async (req, res) => {
-  const {_id, ...rest} = req.body;
+  const { _id, ...rest } = req.body;
   const uniqueId = await generateUniqueId(req.body.title);
 
   const event = new CityEvent({ ...rest, createdBy: req.user, uniqueId });
@@ -24,12 +23,45 @@ exports.create = async (req, res) => {
   event
     .save()
     .then((data) => {
-      rewardPointsController.addRewardPoints(req.user.username, ADD_EVENT_REWARD_POINTS, `For creating a new event`);
+      rewardPointsController.addRewardPoints(
+        req.user.username,
+        ADD_EVENT_REWARD_POINTS,
+        `For creating a new event`
+      );
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while creating the event.",
+      });
+    });
+};
+
+// Retrieve and return all events created on particular date from the database.
+exports.analytics = (req, res) => {
+  const createdAt = req.params.createdAt;
+  CityEvent.find({
+    createdAt: {
+      $gte: `${createdAt} 00:00:00.507Z`,
+      $lt: `${createdAt} 23:59:59.507Z`,
+    },
+  })
+    .then((event) => {
+      if (!event) {
+        return res.status(404).send({
+          message: "event not found with createdAt " + createdAt,
+        });
+      }
+      res.send(event);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "event not found with createdAt " + createdAt,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving event with eventname " + title,
       });
     });
 };
@@ -43,8 +75,8 @@ exports.findAll = (req, res) => {
     finalQuery = { $and: andQuery };
   }
 
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
 
   CityEvent.find(finalQuery)
     .sort({ dateFrom: "descending" })
@@ -63,26 +95,28 @@ exports.findAll = (req, res) => {
 exports.findByUniqueId = async (req, res) => {
   try {
     const id = req.params.id;
-    const event = await CityEvent.findOne({uniqueId: id});
+    const event = await CityEvent.findOne({ uniqueId: id });
     res.send(event);
   } catch (err) {
-    res.status(500).send(err || 'error occurred while getting event');
+    res.status(500).send(err || "error occurred while getting event");
   }
-}
+};
 
 async function generateUniqueId(title, type) {
-
   let _t = title.toLowerCase();
-  _t = _t.trim().replace(/[^\w\s]/gi, '').replace(/ /g,"-");
+  _t = _t
+    .trim()
+    .replace(/[^\w\s]/gi, "")
+    .replace(/ /g, "-");
 
   const events = await searchByRegex(_t);
-  return events.length ? (_t + `-${events.length}`) : _t;
+  return events.length ? _t + `-${events.length}` : _t;
 }
 
 async function searchByRegex(text) {
   try {
     var regexp = new RegExp(`^${text}[0-9]*`);
-    const events = await CityEvent.find({ uniqueId: regexp});
+    const events = await CityEvent.find({ uniqueId: regexp });
     return events;
   } catch (err) {
     return [];
@@ -109,10 +143,14 @@ exports.findAllInCity = (req, res) => {
   const cityName = req.params.cityName;
   const countryCode = req.params.countryCode;
 
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
 
-  CityEvent.find({ city: cityName, country: countryCode, isPrivate: { $ne: true } })
+  CityEvent.find({
+    city: cityName,
+    country: countryCode,
+    isPrivate: { $ne: true },
+  })
     .sort({ dateFrom: "ascending" })
     .limit(limit)
     .skip(limit * (page - 1))
@@ -135,8 +173,8 @@ exports.findAllUpcoming = (req, res) => {
   }
   filter["isPrivate"] = { $ne: true };
 
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
 
   CityEvent.find(filter)
     .sort({ dateFrom: "ascending" })
@@ -183,7 +221,7 @@ exports.update = async (req, res) => {
     country: req.body.country,
   });
 
-  const oldEvent = await CityEvent.findOne({_id: req.params.id});
+  const oldEvent = await CityEvent.findOne({ _id: req.params.id });
   CityEvent.findByIdAndUpdate(
     req.params.id,
     {
@@ -236,17 +274,18 @@ exports.delete = (req, res) => {
 };
 
 exports.registerUser = async (req, res) => {
-  const eventRegistration = new EventRegistration({ ...req.body, createdBy: req.user });
+  const eventRegistration = new EventRegistration({
+    ...req.body,
+    createdBy: req.user,
+  });
 
   // Save eventRegistration in the database
   EventRegistration.find()
     .then((users) => {
       if (users.length == 0)
-        eventRegistration
-          .save()
-          .then((data) => {
-            res.send({ message: "Registered sucessfully." });
-          })
+        eventRegistration.save().then((data) => {
+          res.send({ message: "Registered sucessfully." });
+        });
       else {
         res.send({ message: "You've already registered for this event." });
       }
@@ -258,14 +297,13 @@ exports.registerUser = async (req, res) => {
     });
 };
 
-
 // Retrieve and return all events created by the loggedIn user
 exports.findMyEvent = (req, res) => {
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
 
   let andQuery = getQuery(req.query);
-  andQuery.push({ 'createdBy.username': { $eq: req.user.username } })
+  andQuery.push({ "createdBy.username": { $eq: req.user.username } });
 
   let finalQuery = {};
   if (andQuery.length) {
@@ -288,20 +326,19 @@ exports.findMyEvent = (req, res) => {
 
 // Retrieve and return all online events not created by the loggedIn user
 exports.findUpcomingOnlineEvents = (req, res) => {
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
-  const username = req.query.username
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
+  const username = req.query.username;
 
   let andQuery = getQuery(req.query);
-  andQuery.push({ dateFrom: { $gte: new Date() } })
-  andQuery.push({ isOnline: { $eq: true } })
+  andQuery.push({ dateFrom: { $gte: new Date() } });
+  andQuery.push({ isOnline: { $eq: true } });
 
   /** Added not equal to true as some records don't have isPrivate field */
-  andQuery.push({ isPrivate: { $ne: true } })
+  andQuery.push({ isPrivate: { $ne: true } });
 
   /** If user is loggedIn */
-  if (username)
-    andQuery.push({ 'createdBy.username': { $ne: username } })
+  if (username) andQuery.push({ "createdBy.username": { $ne: username } });
 
   let finalQuery = {};
   if (andQuery.length) {
@@ -323,22 +360,21 @@ exports.findUpcomingOnlineEvents = (req, res) => {
 
 // Retrieve and return all offilne events not created by the loggedIn user
 exports.findUpcomingOfflineEvents = (req, res) => {
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
-  const username = req.query.username
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
+  const username = req.query.username;
 
   let andQuery = getQuery(req.query);
-  andQuery.push({ dateFrom: { $gte: new Date() } })
+  andQuery.push({ dateFrom: { $gte: new Date() } });
 
   /** Added not equal to true as some records don't have isOnline field */
-  andQuery.push({ isOnline: { $ne: true } })
+  andQuery.push({ isOnline: { $ne: true } });
 
   /** Added not equal to true as some records don't have isPrivate field  */
-  andQuery.push({ isPrivate: { $ne: true } })
+  andQuery.push({ isPrivate: { $ne: true } });
 
   /** If user is loggedIn */
-  if (username)
-    andQuery.push({ 'createdBy.username': { $ne: username } })
+  if (username) andQuery.push({ "createdBy.username": { $ne: username } });
 
   let finalQuery = {};
   if (andQuery.length) {
@@ -357,23 +393,21 @@ exports.findUpcomingOfflineEvents = (req, res) => {
       });
     });
 };
-
 
 // Retrieve and return all past events not created by the loggedIn user
 exports.findPastEvents = (req, res) => {
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
-  const username = req.query.username
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
+  const username = req.query.username;
 
   let andQuery = getQuery(req.query);
-  andQuery.push({ dateFrom: { $lt: new Date() } })
+  andQuery.push({ dateFrom: { $lt: new Date() } });
 
   /** Added not equal to true as some records don't have isPrivate field  */
-  andQuery.push({ isPrivate: { $ne: true } })
+  andQuery.push({ isPrivate: { $ne: true } });
 
   /** If user is loggedIn */
-  if (username)
-    andQuery.push({ 'createdBy.username': { $ne: username } })
+  if (username) andQuery.push({ "createdBy.username": { $ne: username } });
 
   let finalQuery = {};
   if (andQuery.length) {
@@ -393,14 +427,8 @@ exports.findPastEvents = (req, res) => {
     });
 };
 
-
 function getQuery(query) {
-  const {
-    searchText,
-    relatedSkills,
-    city,
-    country,
-  } = query;
+  const { searchText, relatedSkills, city, country } = query;
 
   let skillsQuery = {};
   let textQuery = {};
@@ -455,7 +483,7 @@ exports.backfillEventWithUniqueId = async (req, res) => {
           uniqueId,
         },
         { new: true }
-      )
+      );
     } catch (ex) {
       console.error(ex);
       failedIds.push(x.id);
@@ -464,4 +492,4 @@ exports.backfillEventWithUniqueId = async (req, res) => {
 
   await Promise.all(promises);
   res.send(failedIds);
-}
+};

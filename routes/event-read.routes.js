@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = (app) => {
   const event = require("../controllers/event.controller.js");
 
   // Retrieve all event
@@ -26,4 +26,6 @@ module.exports = app => {
 
   //Retrieve all past events not created by the loggedIn user
   app.get("/event/get/past", event.findPastEvents);
+
+  app.get("/event/analytics/:createdAt", event.analytics);
 };

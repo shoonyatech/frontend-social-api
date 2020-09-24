@@ -5,14 +5,18 @@ const rewardPointsController = require("./reward-points.controller.js");
 const TIP_REWARD_POINTS = 50;
 exports.create = async (req, res) => {
   try {
-    const tip = new Tip({...req.body, createdBy: req.user});
+    const tip = new Tip({ ...req.body, createdBy: req.user });
     const data = await tip.save();
-    rewardPointsController.addRewardPoints(req.user.username, TIP_REWARD_POINTS, `For creating a Tech Tip`);
+    rewardPointsController.addRewardPoints(
+      req.user.username,
+      TIP_REWARD_POINTS,
+      `For creating a Tech Tip`
+    );
     res.send(data);
-  } catch(err) {
-    res.status(500).send(err || 'error occurred while creating tip')
+  } catch (err) {
+    res.status(500).send(err || "error occurred while creating tip");
   }
-}
+};
 
 exports.findAll = async (req, res) => {
   const andQuery = getQuery(req.query);
@@ -22,19 +26,19 @@ exports.findAll = async (req, res) => {
     finalQuery = { $and: andQuery };
   }
 
-  const limit = Number(req.query.limit) || 100
-  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 100;
+  const page = Number(req.query.page) || 1;
 
   try {
-   const tips = await Tip.find(finalQuery)
-    .sort({ createdAt: "descending" })
-    .limit(limit)
-    .skip(limit * (page - 1));
-   res.send(tips);
+    const tips = await Tip.find(finalQuery)
+      .sort({ createdAt: "descending" })
+      .limit(limit)
+      .skip(limit * (page - 1));
+    res.send(tips);
   } catch (err) {
-    res.status(500).send(err || 'error occurred while getting tips');
+    res.status(500).send(err || "error occurred while getting tips");
   }
-}
+};
 
 function getQuery(query) {
   const tags = query.tags;
@@ -50,52 +54,83 @@ function getQuery(query) {
   }
   return andQuery;
 }
+exports.analytics = (req, res) => {
+  const createdAt = req.params.createdAt;
+  Tip.find({
+    createdAt: {
+      $gte: `${createdAt} 00:00:00.507Z`,
+      $lt: `${createdAt} 23:59:59.507Z`,
+    },
+  })
+    .then((tip) => {
+      if (!tip) {
+        return res.status(404).send({
+          message: "tip not found with createdAt " + createdAt,
+        });
+      }
+      res.send(tip);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "tip not found with createdAt " + createdAt,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving tip with tipname " + title,
+      });
+    });
+};
 
 exports.getAllTags = async (req, res) => {
   try {
     const tips = await Tip.find({});
     let tags = tips.reduce((acc, val) => {
-     return acc.concat(val.tags);
+      return acc.concat(val.tags);
     }, []);
     res.send(Array.from(new Set(tags)));
-   } catch (err) {
-     res.status(500).send(err || 'error occurred while getting tags');
-   }
-}
+  } catch (err) {
+    res.status(500).send(err || "error occurred while getting tags");
+  }
+};
 
 exports.findById = async (req, res) => {
   try {
     const id = req.params.id;
-    const tip = await Tip.findOne({_id: id});
+    const tip = await Tip.findOne({ _id: id });
     res.send(tip);
   } catch (err) {
-    res.status(500).send(err || 'error occurred while getting tip');
+    res.status(500).send(err || "error occurred while getting tip");
   }
-}
+};
 
 exports.update = async (req, res) => {
   try {
     const id = req.params.id;
-    const tip = await Tip.findByIdAndUpdate(id, {...req.body}, {new: true});
+    const tip = await Tip.findByIdAndUpdate(id, { ...req.body }, { new: true });
     if (!tip) {
-      res.status(404).send('no tip exists with' + id);
+      res.status(404).send("no tip exists with" + id);
     }
     res.send(200);
   } catch (err) {
-    res.status(500).send(err || 'error occurred while updating tip');
+    res.status(500).send(err || "error occurred while updating tip");
   }
-}
+};
 
 exports.delete = async (req, res) => {
   try {
     const id = req.params.id;
     const tip = await Tip.findByIdAndRemove(id);
     if (!tip) {
-      res.status(404).send('no tip exists with' + id);
+      res.status(404).send("no tip exists with" + id);
     }
-    rewardPointsController.deductRewardPoints(req.user.username, TIP_REWARD_POINTS, `For deleting the Tech Tip`);
-    res.send('tip deleted successfully');
+    rewardPointsController.deductRewardPoints(
+      req.user.username,
+      TIP_REWARD_POINTS,
+      `For deleting the Tech Tip`
+    );
+    res.send("tip deleted successfully");
   } catch (err) {
-    res.status(500).send(err || 'error occurred while deleting tip');
+    res.status(500).send(err || "error occurred while deleting tip");
   }
-}
+};
