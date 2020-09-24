@@ -54,7 +54,12 @@ exports.findAll = (req, res) => {
 
 exports.analytics = (req, res) => {
   const createdAt = req.params.createdAt;
-  Article.find({ createdAt: createdAt })
+  Article.find({
+    createdAt: {
+      $gte: `${createdAt} 00:00:00.507Z`,
+      $lt: `${createdAt} 23:59:59.507Z`,
+    },
+  })
     .then((article) => {
       if (!article) {
         return res.status(404).send({
