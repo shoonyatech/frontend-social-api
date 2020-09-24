@@ -24,9 +24,15 @@ exports.create = async (req, res) => {
       });
     });
 };
+
 exports.analytics = (req, res) => {
   const createdAt = req.params.createdAt;
-  Job.find({ createdAt: createdAt })
+  Job.find({
+    createdAt: {
+      $gte: `${createdAt} 00:00:00.507Z`,
+      $lt: `${createdAt} 23:59:59.507Z`,
+    },
+  })
     .then((job) => {
       if (!job) {
         return res.status(404).send({
@@ -46,6 +52,7 @@ exports.analytics = (req, res) => {
       });
     });
 };
+
 // Retrieve and return all jobs from the database.
 exports.findAll = (req, res) => {
   const {

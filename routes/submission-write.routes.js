@@ -15,6 +15,8 @@ module.exports = (app) => {
     submission.getSubmissionsByChallengeUniqueId
   );
 
+  app.get("/submission/analytics/:createdAt", submission.analytics);
+
   //posting a new comment
   app.post("/submissions/:id/comment", submission.addComment);
 
