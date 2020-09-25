@@ -15,6 +15,7 @@ module.exports = (app) => {
     submission.getSubmissionsByChallengeUniqueId
   );
 
+  //Fetch submissions by createdAt Date
   app.get("/submission/analytics/:createdAt", submission.analytics);
 
   //posting a new comment

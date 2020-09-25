@@ -15,33 +15,38 @@ exports.create = (req, res) => {
 };
 
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  Blog.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((blog) => {
-      if (!blog) {
-        return res.status(404).send({
-          message: "blog not found with createdAt " + createdAt,
-        });
-      }
-      res.send(blog);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    Blog.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "blog not found with createdAt " + createdAt,
+      .then((blog) => {
+        if (!blog) {
+          return res.status(404).send({
+            message: "blog not found with createdAt " + createdAt,
+          });
+        }
+        res.send(blog);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "blog not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving blog with blogname " + title,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving blog with blogname " + title,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving user with username " + req.user.username,
     });
+  }
 };
-
 // Retrieve and return all blogs from the database.
 exports.findAll = async (req, res) => {
   const { searchText, skills = "" } = req.query;

@@ -26,31 +26,37 @@ exports.create = async (req, res) => {
 };
 
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  Submission.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((submission) => {
-      if (!submission) {
-        return res.status(404).send({
-          message: "submission not found with createdAt " + createdAt,
-        });
-      }
-      res.send(submission);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    Submission.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "submission not found with createdAt " + createdAt,
+      .then((submission) => {
+        if (!submission) {
+          return res.status(404).send({
+            message: "submission not found with createdAt " + createdAt,
+          });
+        }
+        res.send(submission);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "submission not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving submission with submissionname " + title,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving submission with submissionname " + title,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving user with username " + req.user.username,
     });
+  }
 };
 
 exports.getSubmissionsByChallengeUniqueId = async (req, res) => {

@@ -53,7 +53,11 @@ exports.findSocialAuthUserinDB = async (
         }
 
         const authToken = jwt.sign(
-          { email, username: existingUser[0].username },
+          {
+            email,
+            username: existingUser[0].username,
+            admin: existingUser[0].admin,
+          },
           JWT_SECRET
         );
         const account = { ...authResponse, authToken, ...existingUser[0]._doc };
@@ -83,7 +87,11 @@ exports.findSocialAuthUserinDB = async (
         }
 
         const authToken = jwt.sign(
-          { email, username: existingUser[0].username },
+          {
+            email,
+            username: existingUser[0].username,
+            admin: existingUser[0].admin,
+          },
           JWT_SECRET
         );
         const account = { ...authResponse, authToken, ...existingUser[0]._doc };
@@ -124,7 +132,7 @@ async function createSocialAuthUser(
   authResponse
 ) {
   const username = await createUniqueUsername(name);
-  const authToken = jwt.sign({ email, username }, JWT_SECRET);
+  const authToken = jwt.sign({ email, username, admin }, JWT_SECRET);
 
   const user = new User({
     name,
@@ -429,31 +437,37 @@ exports.findUsersInCity = (req, res) => {
 };
 
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  User.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send({
-          message: "user not found with createdAt " + createdAt,
-        });
-      }
-      res.send(user);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    User.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "user not found with createdAt " + createdAt,
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send({
+            message: "user not found with createdAt " + createdAt,
+          });
+        }
+        res.send(user);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "user not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving user with username " + username,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving user with username " + username,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving user with username " + req.user.username,
     });
+  }
 };
 
 // Update user preferences of logged in user

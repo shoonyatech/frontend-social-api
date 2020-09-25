@@ -6,6 +6,4 @@ module.exports = (app) => {
 
   // Retrieve a single blog with id
   app.get("/blog/:id", blog.findOne);
-
-  app.get("/blog/analytics/:createdAt", blog.analytics);
 };

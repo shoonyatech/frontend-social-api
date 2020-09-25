@@ -15,4 +15,6 @@ module.exports = app => {
 
   // retrieve current user profile
   app.get("/profile/referrals", profile.getAllReferrals);
+  
+  app.get("/users/analytics/:createdAt", profile.analytics);
 };

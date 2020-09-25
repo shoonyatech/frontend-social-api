@@ -14,6 +14,7 @@ const UserSchema = mongoose.Schema(
     role: String, // <empty>/admin
     city: String,
     country: String,
+    admin:Boolean,
     socialId: String,
     provider: String,
     referrals: [],

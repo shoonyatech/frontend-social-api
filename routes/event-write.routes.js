@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = (app) => {
   const event = require("../controllers/event.controller.js");
 
   // Create a new event
@@ -12,9 +12,12 @@ module.exports = app => {
 
   //Register users for the event
   app.post("/event/register", event.registerUser);
-  
+
   //Register users for the event
   app.get("/event/get/myevent", event.findMyEvent);
+
+  //Fetch events with createdAt Date
+  app.get("/event/analytics/:createdAt", event.analytics);
 
   // app.post("/event/backfill", event.backfillEventWithUniqueId);
 };
