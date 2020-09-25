@@ -6,6 +6,4 @@ module.exports = (app) => {
   app.get("/tip/:id", tip.findById);
 
   app.get("/tips/tags", tip.getAllTags);
-
-  app.get("/tip/analytics/:createdAt", tip.analytics);
 };

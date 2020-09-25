@@ -9,5 +9,6 @@ module.exports = (app) => {
 
   app.get("/users", profile.findAll);
   //retrieve user with a given date
-  app.get("/users/analytics/:createdAt", profile.analytics);
+
+
 };

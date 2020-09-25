@@ -26,6 +26,4 @@ module.exports = (app) => {
 
   //Retrieve all past events not created by the loggedIn user
   app.get("/event/get/past", event.findPastEvents);
-
-  app.get("/event/analytics/:createdAt", event.analytics);
 };

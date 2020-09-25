@@ -26,31 +26,37 @@ exports.create = async (req, res) => {
 };
 
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  Job.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((job) => {
-      if (!job) {
-        return res.status(404).send({
-          message: "job not found with createdAt " + createdAt,
-        });
-      }
-      res.send(job);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    Job.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "job not found with createdAt " + createdAt,
+      .then((job) => {
+        if (!job) {
+          return res.status(404).send({
+            message: "job not found with createdAt " + createdAt,
+          });
+        }
+        res.send(job);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "job not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving job with jobname " + title,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving job with jobname " + title,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving job with username " + req.user.username,
     });
+  }
 };
 
 // Retrieve and return all jobs from the database.

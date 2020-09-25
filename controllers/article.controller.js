@@ -53,31 +53,37 @@ exports.findAll = (req, res) => {
 };
 
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  Article.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((article) => {
-      if (!article) {
-        return res.status(404).send({
-          message: "article not found with createdAt " + createdAt,
-        });
-      }
-      res.send(article);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    Article.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "article not found with createdAt " + createdAt,
+      .then((article) => {
+        if (!article) {
+          return res.status(404).send({
+            message: "article not found with createdAt " + createdAt,
+          });
+        }
+        res.send(article);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "article not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving article with articlename " + title,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving article with articlename " + title,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving article with username " + req.user.username,
     });
+  }
 };
 
 // Find a single article with a id

@@ -39,31 +39,37 @@ exports.create = async (req, res) => {
 
 // Retrieve and return all events created on particular date from the database.
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  CityEvent.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((event) => {
-      if (!event) {
-        return res.status(404).send({
-          message: "event not found with createdAt " + createdAt,
-        });
-      }
-      res.send(event);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    CityEvent.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "event not found with createdAt " + createdAt,
+      .then((event) => {
+        if (!event) {
+          return res.status(404).send({
+            message: "event not found with createdAt " + createdAt,
+          });
+        }
+        res.send(event);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "event not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving event with eventname " + title,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving event with eventname " + title,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving user with username " + req.user.username,
     });
+  }
 };
 
 // Retrieve and return all events from the database.

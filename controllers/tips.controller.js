@@ -55,31 +55,37 @@ function getQuery(query) {
   return andQuery;
 }
 exports.analytics = (req, res) => {
-  const createdAt = req.params.createdAt;
-  Tip.find({
-    createdAt: {
-      $gte: `${createdAt} 00:00:00.507Z`,
-      $lt: `${createdAt} 23:59:59.507Z`,
-    },
-  })
-    .then((tip) => {
-      if (!tip) {
-        return res.status(404).send({
-          message: "tip not found with createdAt " + createdAt,
-        });
-      }
-      res.send(tip);
+  if (req.user.admin) {
+    const createdAt = req.params.createdAt;
+    Tip.find({
+      createdAt: {
+        $gte: `${createdAt} 00:00:00.000Z`,
+        $lt: `${createdAt} 23:59:59.999Z`,
+      },
     })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "tip not found with createdAt " + createdAt,
+      .then((tip) => {
+        if (!tip) {
+          return res.status(404).send({
+            message: "tip not found with createdAt " + createdAt,
+          });
+        }
+        res.send(tip);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "tip not found with createdAt " + createdAt,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving tip with tipname " + title,
         });
-      }
-      return res.status(500).send({
-        message: "Error retrieving tip with tipname " + title,
       });
+  } else {
+    return res.status(403).send({
+      message: "Error retrieving user with username " + req.user.username,
     });
+  }
 };
 
 exports.getAllTags = async (req, res) => {
