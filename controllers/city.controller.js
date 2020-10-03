@@ -28,7 +28,6 @@ exports.createCityIfNotExists = async (cityDetails) => {
   });
 
   if (existingCity.length) {
-    console.log(existingCity);
     return existingCity[0];
   }
 
