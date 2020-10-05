@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const NewsletterSubscriptionSchema = mongoose.Schema(
   {
     email: String,
+    unSubscribe: Boolean,
   },
   {
     timestamps: true,

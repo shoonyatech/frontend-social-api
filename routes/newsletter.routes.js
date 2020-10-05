@@ -6,4 +6,7 @@ module.exports = (app) => {
 
   // Retrieve all newsletter/subscribe
   app.get("/newsletter/subscribe", newsletter.findAllSubscription);
+
+  //unsubscribe from newsletter
+  app.put("/newsletter/unsubscribe/:email", newsletter.unSubscribe);
 };
