@@ -17,7 +17,7 @@ mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false 
+    useFindAndModify: false,
   })
   .then(() => {
     console.log("Successfully connected to the database");
@@ -49,6 +49,7 @@ require("./routes/user-page-read.routes.js")(app);
 require("./routes/blog-read.routes.js")(app);
 require("./routes/quizRun-read.routes.js")(app);
 require("./routes/quiz-read.routes.js")(app);
+require("./routes/freelancing-read.routes.js")(app);
 require("./routes/challenge-read.routes.js")(app);
 require("./routes/submission-read.routes.js")(app);
 require("./routes/vlog-read.routes.js")(app);
@@ -70,6 +71,7 @@ require("./routes/user-page-write.routes.js")(app);
 require("./routes/user-activity.routes.js")(app);
 require("./routes/meeting-write.routes.js")(app);
 require("./routes/course-write.routes.js")(app);
+require("./routes/freelancing-write.routes.js")(app);
 require("./routes/blog-write.routes.js")(app);
 require("./routes/quiz-write.routes.js")(app);
 require("./routes/quizRun-write.routes.js")(app);
