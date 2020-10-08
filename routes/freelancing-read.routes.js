@@ -5,5 +5,9 @@ module.exports = (app) => {
   app.get("/freelance", freelance.findAll);
 
   // Retrieve a single freelance with id
-  app.get("/freelance/:id", freelance.findOne);
+  app.get("/freelance/:username", freelance.findOne);
+
+  app.get("/freelancer/skills", freelance.getAllSkills);
+
+  app.get("/freelancers/category", freelance.getAllCategory);
 };

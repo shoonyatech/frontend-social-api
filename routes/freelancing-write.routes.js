@@ -5,7 +5,7 @@ module.exports = (app) => {
   app.post("/freelance", freelance.create);
 
   // Update a freelance with id
-  app.put("/freelance/:id", freelance.update);
+  app.put("/freelance/:username", freelance.update);
 
   // Delete a freelance with id
   app.delete("/freelance/:id", freelance.delete);

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const cityController = require("./city.controller");
 const rewardPointsController = require("./reward-points.controller.js");
+const Freelance = require("../models/freelancing.model.js");
 
 const { JWT_SECRET } = process.env;
 
@@ -323,6 +324,18 @@ exports.update = async (req, res) => {
         },
         { new: true }
       );
+      const skill = [];
+      for (let i = 0; i < updatedUser.skills.length; i++) {
+        let name = updatedUser.skills[i].name;
+        skill.push(name);
+      }
+      Freelance.findOne({ username: req.body.username }).then((user) => {
+        Freelance.updateOne(
+          { username: user.username },
+          { relatedSkills: skill }
+        ).then(() => {});
+      });
+
       if (!updatedUser) {
         return res.status(404).send({
           message: "user not found with id " + userId,

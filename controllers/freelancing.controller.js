@@ -21,13 +21,58 @@ exports.create = (req, res) => {
     });
 };
 
-exports.delete = (req, res) => {};
-exports.update = (req, res) => {};
+exports.delete = (req, res) => {
+  Freelance.findByIdAndRemove(req.params.id)
+    .then((freelancer) => {
+      if (!freelancer) {
+        return res.status(404).send({
+          message: "freelancer not found with id " + req.params.id,
+        });
+      }
+      res.send({ message: "freelancer deleted successfully!" });
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId" || err.name === "NotFound") {
+        return res.status(404).send({
+          message: "freelancer not found with id " + req.params.id,
+        });
+      }
+      return res.status(500).send({
+        message: "Could not delete freelancer with id " + req.params.id,
+      });
+    });
+};
+exports.update = (req, res) => {
+  Freelance.findOneAndUpdate(
+    { username: req.params.username },
+    {
+      ...req.body,
+    },
+    { new: true }
+  )
+    .then((freelancer) => {
+      if (!freelancer) {
+        return res.status(404).send({
+          message: "freelancer not found with id " + req.params.id,
+        });
+      }
+      res.send(freelancer);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "freelancer not found with id " + req.params.id,
+        });
+      }
+      return res.status(500).send({
+        message: "Error updating freelancer with id " + req.params.id,
+      });
+    });
+};
 
 // Retrieve and return all freelancers from the database.
 exports.findAll = (req, res) => {
   let andQuery = getQuery(req.query);
-
   let finalQuery = {};
   if (andQuery.length) {
     finalQuery = { $and: andQuery };
@@ -49,14 +94,13 @@ exports.findAll = (req, res) => {
       });
     });
 };
-
 // Find a single freelance with a id
 exports.findOne = (req, res) => {
-  Freelance.findById(req.params.id)
+  Freelance.findOne({ username: req.params.username })
     .then((freelance) => {
       if (!freelance) {
         return res.status(404).send({
-          message: "freelance not found with id " + req.params.id,
+          message: "freelance not found with username " + req.params.username,
         });
       }
       res.send(freelance);
@@ -64,30 +108,44 @@ exports.findOne = (req, res) => {
     .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "freelance not found with id " + req.params.id,
+          message: "freelance not found with username " + req.params.username,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving freelance with id " + req.params.id,
+        message:
+          "Error retrieving freelance with username " + req.params.username,
       });
     });
 };
+exports.getAllSkills = async (req, res) => {
+  try {
+    const skill = await Freelance.find({});
+    let skills = skill.reduce((acc, val) => {
+      return acc.concat(val.relatedSkills);
+    }, []);
+    res.send(Array.from(new Set(skills)));
+  } catch (err) {
+    res.status(500).send(err || "error occurred while getting skills");
+  }
+};
+exports.getAllCategory = async (req, res) => {
+  try {
+    const skill = await Freelance.find({});
+    let skills = skill.reduce((acc, val) => {
+      return acc.concat(val.category);
+    }, []);
+    res.send(Array.from(new Set(skills)));
+  } catch (err) {
+    res.status(500).send(err || "error occurred while getting skills");
+  }
+};
 
 function getQuery(query) {
-  const { searchText, relatedSkills } = query;
+  const { relatedSkills, category } = query;
 
   let skillsQuery = {};
-  let textQuery = {};
+  let categoriesQuery = {};
   let andQuery = [];
-
-  if (searchText) {
-    textQuery["$or"] = [
-      { name: { $regex: searchText, $options: "i" } },
-      { description: { $regex: searchText, $options: "i" } },
-      { title: { $regex: searchText, $options: "i" } },
-    ];
-    andQuery.push(textQuery);
-  }
 
   if (relatedSkills) {
     let skills = relatedSkills.split(",");
@@ -96,6 +154,12 @@ function getQuery(query) {
       andQuery.push(skillsQuery);
     }
   }
-
+  if (category) {
+    let categories = category.split(",");
+    if (categories.length) {
+      categoriesQuery["$or"] = [{ category: { $in: categories } }];
+      andQuery.push(categoriesQuery);
+    }
+  }
   return andQuery;
 }
