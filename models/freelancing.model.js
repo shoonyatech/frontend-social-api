@@ -4,6 +4,8 @@ const FreelanceSchema = mongoose.Schema(
   {
     username: String,
     aboutMe: String,
+    category: String,
+    relatedSkills: [],
     createdBy: Object,
   },
   {
