@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const FreelanceSchema = mongoose.Schema(
   {
     username: String,
+    name: String,
     aboutMe: String,
+    city: String,
+    country: String,
     category: String,
     relatedSkills: [],
     createdBy: Object,

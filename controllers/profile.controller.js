@@ -332,7 +332,13 @@ exports.update = async (req, res) => {
       Freelance.findOne({ username: req.body.username }).then((user) => {
         Freelance.updateOne(
           { username: user.username },
-          { relatedSkills: skill }
+          {
+            name: updatedUser.name,
+            city: updatedUser.city,
+            country: updatedUser.country,
+            relatedSkills: skill,
+            category: updatedUser.category,
+          }
         ).then(() => {});
       });
 
