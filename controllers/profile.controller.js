@@ -324,11 +324,8 @@ exports.update = async (req, res) => {
         },
         { new: true }
       );
-      const skill = [];
-      for (let i = 0; i < updatedUser.skills.length; i++) {
-        let name = updatedUser.skills[i].name;
-        skill.push(name);
-      }
+      let skill = [];
+      skill = updatedUser.skills.map((skill) => skill.name);
       Freelance.findOne({ username: req.body.username }).then((user) => {
         Freelance.updateOne(
           { username: user.username },
