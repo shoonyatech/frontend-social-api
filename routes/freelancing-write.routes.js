@@ -8,5 +8,5 @@ module.exports = (app) => {
   app.put("/freelance/:username", freelance.update);
 
   // Delete a freelance with id
-  app.delete("/freelance/:id", freelance.delete);
+  app.delete("/freelance/:username", freelance.delete);
 };

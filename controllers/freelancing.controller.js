@@ -22,23 +22,19 @@ exports.create = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-  Freelance.findByIdAndRemove(req.params.id)
+  Freelance.findOneAndDelete({ username: req.params.username })
     .then((freelancer) => {
       if (!freelancer) {
         return res.status(404).send({
-          message: "freelancer not found with id " + req.params.id,
+          message: "freelancer not found with username " + req.params.username,
         });
       }
       res.send({ message: "freelancer deleted successfully!" });
     })
     .catch((err) => {
-      if (err.kind === "ObjectId" || err.name === "NotFound") {
-        return res.status(404).send({
-          message: "freelancer not found with id " + req.params.id,
-        });
-      }
       return res.status(500).send({
-        message: "Could not delete freelancer with id " + req.params.id,
+        message:
+          "Could not delete freelancer with username " + req.params.username,
       });
     });
 };
