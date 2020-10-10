@@ -7,6 +7,8 @@ module.exports = (app) => {
   // Retrieve a single freelance with id
   app.get("/freelance-project/:id", freelanceProjects.findOne);
 
+  app.get("/freelance-projects/:username", freelanceProjects.findByUsername);
+
   app.get("/freelances-project/skills", freelanceProjects.getAllSkills);
   app.get("/freelances-project/jobType", freelanceProjects.getAllJobType);
   app.get(

@@ -9,6 +9,4 @@ module.exports = (app) => {
 
   app.get("/users", profile.findAll);
   //retrieve user with a given date
-
-
 };
