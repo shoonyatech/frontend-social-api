@@ -115,6 +115,23 @@ exports.findOne = (req, res) => {
       });
     });
 };
+exports.findByUsername = (req, res) => {
+  FreelanceProject.find({ "createdBy.username": req.params.username })
+    .then((freelance) => {
+      if (!freelance) {
+        return res.status(404).send({
+          message: "freelance not found with username " + req.params.username,
+        });
+      }
+      res.send(freelance);
+    })
+    .catch((err) => {
+      return res.status(500).send({
+        message:
+          "Error retrieving freelance with username " + req.params.username,
+      });
+    });
+};
 exports.getAllSkills = async (req, res) => {
   try {
     const skill = await FreelanceProject.find({});
