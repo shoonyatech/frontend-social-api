@@ -16,24 +16,28 @@ exports.findSocialAuthUserinDB = async (
   res,
   authResponse
 ) => {
-  let name, profilePic, email;
+  let name, profilePic, email, admin;
 
   if (provider === "facebook") {
     name = user.name;
     profilePic = user.picture.data.url;
     email = user.email;
+    admin = user.admin || false;
   } else if (provider === "github") {
     name = user.name || user.login;
     profilePic = user.avatar_url;
     email = user.email;
+    admin = user.admin || false;
   } else if (provider === "twitter") {
     name = user.name;
     profilePic = user.profile_image_url_https;
     email = null;
+    admin = user.admin || false;
   } else if (provider === "google") {
     name = user.name;
     profilePic = user.picture;
     email = user.email;
+    admin = user.admin || false;
   }
 
   if (email) {
@@ -45,6 +49,7 @@ exports.findSocialAuthUserinDB = async (
             name,
             profilePic,
             email,
+            admin,
             provider,
             user.id,
             req,
@@ -57,7 +62,7 @@ exports.findSocialAuthUserinDB = async (
           {
             email,
             username: existingUser[0].username,
-            admin: existingUser[0].admin,
+            admin: existingUser[0].admin || admin,
           },
           JWT_SECRET
         );
@@ -79,6 +84,7 @@ exports.findSocialAuthUserinDB = async (
             name,
             profilePic,
             email,
+            admin,
             provider,
             user.id,
             req,
@@ -91,7 +97,7 @@ exports.findSocialAuthUserinDB = async (
           {
             email,
             username: existingUser[0].username,
-            admin: existingUser[0].admin,
+            admin: existingUser[0].admin || admin,
           },
           JWT_SECRET
         );
@@ -126,6 +132,7 @@ async function createSocialAuthUser(
   name,
   profilePic,
   email,
+  admin,
   provider,
   socialId,
   req,
