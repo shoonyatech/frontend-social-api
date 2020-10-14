@@ -41,6 +41,7 @@ exports.findAll = (req, res) => {
   const { citySearchText, country } = req.query;
 
   let orQuery = [];
+  let andQuery = [];
   let cityName = {};
   if (citySearchText && citySearchText.length) {
     cityName["$or"] = [
@@ -51,12 +52,15 @@ exports.findAll = (req, res) => {
   }
 
   if (country && country.length) {
-    orQuery.push({ country: country });
+    andQuery.push({ country: country });
   }
 
   let finalQuery = {};
   if (orQuery.length) {
     finalQuery = { $or: orQuery };
+  }
+  if (andQuery.length) {
+    finalQuery = Object.assign(finalQuery, { $and: andQuery });
   }
 
   const limit = Number(req.query.limit) || 100;

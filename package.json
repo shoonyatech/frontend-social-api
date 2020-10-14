@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -30,5 +32,10 @@
     "oauth-signature": "^1.5.0",
     "unix-timestamp": "^0.2.0",
     "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "jest": "^26.5.3",
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
   }
 }
