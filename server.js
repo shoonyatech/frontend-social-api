@@ -50,6 +50,7 @@ require("./routes/blog-read.routes.js")(app);
 require("./routes/quizRun-read.routes.js")(app);
 require("./routes/quiz-read.routes.js")(app);
 require("./routes/freelanceJobApply-read.routes.js")(app);
+require("./routes/quizRunSubmission-read.routes.js")(app);
 require("./routes/freelancing-read.routes.js")(app);
 require("./routes/freelancerProjects-read.routes.js")(app);
 require("./routes/challenge-read.routes.js")(app);
@@ -79,6 +80,7 @@ require("./routes/freelancerProjects-write.routes.js")(app);
 require("./routes/blog-write.routes.js")(app);
 require("./routes/quiz-write.routes.js")(app);
 require("./routes/quizRun-write.routes.js")(app);
+require("./routes/quizRunSubmission-write.routes.js")(app);
 require("./routes/challenge-write.routes.js")(app);
 require("./routes/submission-write.routes.js")(app);
 require("./routes/reward-points-write.routes.js")(app);
@@ -89,5 +91,4 @@ app.listen(PORT, () => {
   console.log("Server is listening on port " + PORT);
 });
 
-
-module.exports = app
+module.exports = app;

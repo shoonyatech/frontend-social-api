@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const QuestionSchema = mongoose.Schema(
   {
+    questionNo: Number,
     questionUrl: String,
     options: [],
     answer: String,
@@ -15,7 +16,7 @@ const QuizSchema = mongoose.Schema(
   {
     title: String,
     questions: [QuestionSchema],
-    relatedSkills: []
+    relatedSkills: [],
   },
   {
     timestamps: true,
