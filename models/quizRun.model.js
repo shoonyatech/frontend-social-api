@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 const QuizRunSchema = mongoose.Schema(
   {
     quizId: String,
-    uniqueId: Number,
+    runId: Number,
+    isActive: Boolean,
+    currentQuestion: Number,
   },
   {
     timestamps: true,
