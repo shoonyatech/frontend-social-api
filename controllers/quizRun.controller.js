@@ -43,7 +43,7 @@ exports.findOne = (req, res) => {
     .then((quizrun) => {
       if (!quizrun) {
         return res.status(404).send({
-          message: "quizrun not found with username " + req.params.username,
+          message: "quizrun not found with quizId " + req.params.quizId,
         });
       }
       res.send(quizrun);
@@ -51,12 +51,11 @@ exports.findOne = (req, res) => {
     .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "quizrun not found with username " + req.params.username,
+          message: "quizrun not found with quizId " + req.params.quizId,
         });
       }
       return res.status(500).send({
-        message:
-          "Error retrieving quizrun with username " + req.params.username,
+        message: "Error retrieving quizrun with quizId " + req.params.quizId,
       });
     });
 };

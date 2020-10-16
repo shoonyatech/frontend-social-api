@@ -3,8 +3,9 @@ module.exports = (app) => {
 
   // // Retrieve all quizRun
   app.get("/quiz-run", quizRun.findAll);
-  app.get("/quiz-run/:quizId", quizRun.findOne);
 
   // // Retrieve a single quizRun with id
+  app.get("/quiz-run/:quizId", quizRun.findOne);
+
   app.get("/quiz-run/:runId/:questionIndex", quizRun.findQuestionResults);
 };
