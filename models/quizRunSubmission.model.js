@@ -7,6 +7,7 @@ const QuizRunSubmissionSchema = mongoose.Schema(
     questionNo: Number,
     selectedOption: String,
     username: String,
+    points: Number,
   },
   {
     timestamps: true,

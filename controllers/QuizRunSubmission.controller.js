@@ -1,4 +1,5 @@
 const QuizRunSubmission = require("../models/QuizRunSubmission.model.js");
+const Quiz = require("../models/quiz.model.js");
 
 exports.create = (req, res) => {
   const quizRunSubmission = new QuizRunSubmission({
@@ -10,6 +11,7 @@ exports.create = (req, res) => {
     quizId: req.body.quizId,
     runId: req.body.runId,
     questionNo: req.body.questionNo,
+    points: req.body.points,
   })
     .then((response) => {
       if (response == null) {
@@ -40,46 +42,166 @@ exports.create = (req, res) => {
 };
 
 exports.findSelectedOptionsQuestionResults = (req, res) => {
-  const users = {
-    A: [],
-    B: [],
-    C: [],
-    D: [],
-  };
-  QuizRunSubmission.find({
-    quizId: req.params.quizId,
-    runId: req.params.runId,
-    questionNo: req.params.questionIndex,
-    selectedOption: "A",
-  })
-    .then((quizRun) => {
-      users.A.push(quizRun.length);
-      QuizRunSubmission.find({
-        runId: req.params.runId,
-        questionNo: req.params.questionIndex,
-        selectedOption: "B",
-      }).then((quizRun) => {
-        users.B.push(quizRun.length);
-        QuizRunSubmission.find({
-          runId: req.params.runId,
-          questionNo: req.params.questionIndex,
-          selectedOption: "C",
-        }).then((quizRun) => {
-          users.C.push(quizRun.length);
+  const AllKey = [];
+  const Options = [];
+  const users = [];
+  var i = 0;
+  Quiz.find({ _id: req.params.quizId })
+    .then((response) => {
+      if (!response) {
+        return res.status(404).send({
+          message: "quiz not found with quizId " + req.params.quizI,
+        });
+      }
+      response.map((re) => {
+        re.questions.map((resp) => {
+          if (resp.questionNo == req.params.questionIndex) {
+            Options.push(resp.options);
+          }
+        });
+        Options.map((option) => {
+          option.map((key) => {
+            AllKey.push(key.key);
+          });
+        });
+
+        AllKey.map((selected) => {
           QuizRunSubmission.find({
+            quizId: req.params.quizId,
             runId: req.params.runId,
             questionNo: req.params.questionIndex,
-            selectedOption: "D",
-          }).then((quizRun) => {
-            users.D.push(quizRun.length);
-            res.send(users);
-          });
+            selectedOption: selected,
+          })
+            .then((response) => {
+              if (!response) {
+                return res.status(404).send({
+                  message: "quiz not found with ",
+                });
+              }
+              users.push({ key: selected, length: response.length });
+              i = i + 1;
+              if (i === AllKey.length) {
+                users.sort((a, b) =>
+                  a.key > b.key ? 1 : b.key > a.key ? -1 : 0
+                );
+                res.send(users);
+              }
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message:
+                  err.message ||
+                  "Some error occurred while retrieving the options.",
+              });
+            });
         });
       });
     })
     .catch((err) => {
-      return res.status(500).send({
-        message: "Error retrieving quiz with runId " + req.params.runId,
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "quiz not found with quizId " + req.params.quizI,
+        });
+      }
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving the options.",
+      });
+    });
+};
+
+exports.findOne = (req, res) => {
+  const result = {
+    username: "",
+    points: "",
+  };
+  var sum = 0;
+  const allPoints = [];
+  QuizRunSubmission.find({
+    quizId: req.params.quizId,
+    runId: req.params.runId,
+    username: req.params.username,
+  })
+    .then((resp) => {
+      if (!resp.length) {
+        return res.status(404).send({
+          message: "result not found",
+        });
+      }
+      resp.map((re) => {
+        re.points;
+        allPoints.push(re.points);
+      });
+      allPoints.map((point) => {
+        sum = sum + point;
+      });
+      result.username = req.params.username;
+      result.points = sum;
+      res.send(result);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving the result.",
+      });
+    });
+};
+
+exports.findAll = (req, res) => {
+  var uniqueArray = [];
+  const Options = [];
+  const users = [];
+  var sum = 0;
+  QuizRunSubmission.find({
+    quizId: req.params.quizId,
+    runId: req.params.runId,
+  })
+    .then((response) => {
+      if (!response) {
+        return res.status(404).send({
+          message: "quiz not found with quizId " + req.params.quizI,
+        });
+      }
+      response.map((re) => {
+        Options.push(re.username);
+      });
+      uniqueArray = Options.filter(function (elem, pos) {
+        return Options.indexOf(elem) == pos;
+      });
+      uniqueArray.map((re, index) => {
+        QuizRunSubmission.find({
+          quizId: req.params.quizId,
+          runId: req.params.runId,
+          username: re,
+        })
+          .then((response) => {
+            sum = 0;
+            response.map((user, userIndex) => {
+              sum = sum + user.points;
+              if (userIndex + 1 == response.length) {
+                users.push({ username: user.username, points: sum });
+              }
+            });
+            if (index + 1 == uniqueArray.length) {
+              users.sort((a, b) =>
+                a.points < b.points ? 1 : b.points < a.points ? -1 : 0
+              );
+              res.send(users.slice(0, 3));
+            }
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message:
+                err.message ||
+                "Some error occurred while retrieving the results.",
+            });
+          });
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving the results.",
       });
     });
 };
