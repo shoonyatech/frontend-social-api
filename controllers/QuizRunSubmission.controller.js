@@ -2,48 +2,67 @@ const QuizRunSubmission = require("../models/QuizRunSubmission.model.js");
 const Quiz = require("../models/quiz.model.js");
 
 exports.create = (req, res) => {
-  const quizRunSubmission = new QuizRunSubmission({
-    ...req.body,
-    createdBy: req.user,
-  });
-  QuizRunSubmission.findOne({
-    username: req.body.username,
-    quizId: req.body.quizId,
-    runId: req.body.runId,
-    questionNo: req.body.questionNo,
-    points: req.body.points,
-  })
+  Quiz.findById(req.body.quizId)
     .then((response) => {
-      if (response == null) {
-        quizRunSubmission
-          .save()
-          .then((data) => {
-            res.send(data);
-          })
-          .catch((err) => {
-            res.status(500).send({
-              message:
-                err.message ||
-                "Some error occurred while submiting the answer.",
+      let point = 0;
+      response.questions.filter((question) => {
+        if (question.questionNo == req.body.questionNo) {
+          if (question.answer === req.body.selectedOption) {
+            answer = question.answer;
+            point = 100;
+          } else {
+            point = 0;
+          }
+        }
+      });
+      const quizRunSubmission = new QuizRunSubmission({
+        ...req.body,
+        points: point,
+        createdBy: req.user,
+      });
+      QuizRunSubmission.findOne({
+        username: req.body.username,
+        quizId: req.body.quizId,
+        runId: req.body.runId,
+        questionNo: req.body.questionNo,
+      })
+        .then((response) => {
+          if (response == null) {
+            quizRunSubmission
+              .save()
+              .then((data) => {
+                res.send(data);
+              })
+              .catch((err) => {
+                res.status(500).send({
+                  message:
+                    err.message ||
+                    "Some error occurred while submiting the answer.",
+                });
+              });
+          } else {
+            return res.status(404).send({
+              message: req.body.username + " has already posted the answer",
             });
+          }
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while adding the submission.",
           });
-      } else {
-        return res.status(404).send({
-          message: req.body.username + " has already posted the answer",
         });
-      }
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while adding the submission.",
+        message: err.message || "Some error occurred while find quiz .",
       });
     });
 };
 
 exports.findSelectedOptionsQuestionResults = (req, res) => {
-  const AllKey = [];
-  const Options = [];
+  const allKey = [];
+  const options = [];
   const users = [];
   var i = 0;
   Quiz.find({ _id: req.params.quizId })
@@ -56,16 +75,16 @@ exports.findSelectedOptionsQuestionResults = (req, res) => {
       response.map((re) => {
         re.questions.map((resp) => {
           if (resp.questionNo == req.params.questionIndex) {
-            Options.push(resp.options);
+            options.push(resp.options);
           }
         });
-        Options.map((option) => {
+        options.map((option) => {
           option.map((key) => {
-            AllKey.push(key.key);
+            allKey.push(key.key);
           });
         });
 
-        AllKey.map((selected) => {
+        allKey.map((selected) => {
           QuizRunSubmission.find({
             quizId: req.params.quizId,
             runId: req.params.runId,
@@ -80,7 +99,7 @@ exports.findSelectedOptionsQuestionResults = (req, res) => {
               }
               users.push({ key: selected, length: response.length });
               i = i + 1;
-              if (i === AllKey.length) {
+              if (i === allKey.length) {
                 users.sort((a, b) =>
                   a.key > b.key ? 1 : b.key > a.key ? -1 : 0
                 );
@@ -202,6 +221,23 @@ exports.findAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while retrieving the results.",
+      });
+    });
+};
+
+exports.getAnswer = (req, res) => {
+  Quiz.findById(req.params.quizId)
+    .then((response) => {
+      response.questions.filter((question) => {
+        if (question.questionNo == req.params.questionIndex) {
+          res.send(question.answer);
+        }
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving the answer.",
       });
     });
 };
