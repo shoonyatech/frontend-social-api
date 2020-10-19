@@ -10,4 +10,9 @@ module.exports = (app) => {
     quizRunSubmission.findOne
   );
   app.get("/quiz-run/results/:quizId/:runId", quizRunSubmission.findAll);
+
+  app.get(
+    "/quiz-run/answer/:quizId/:questionIndex",
+    quizRunSubmission.getAnswer
+  );
 };
