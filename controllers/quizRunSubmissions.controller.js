@@ -1,4 +1,4 @@
-const QuizRunSubmission = require("../models/QuizRunSubmission.model.js");
+const QuizRunSubmission = require("../models/quizRunSubmission.model.js");
 const Quiz = require("../models/quiz.model.js");
 
 exports.create = (req, res) => {
