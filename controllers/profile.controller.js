@@ -542,3 +542,31 @@ exports.getAllReferrals = async (req, res) => {
       });
     });
 };
+
+exports.updateProfilePic = (req, res) => {
+  User.findByIdAndUpdate(
+    req.body.userId,
+    {
+      profilePic: req.body.imageUrl,
+    },
+    { new: true }
+  )
+    .then((profilePic) => {
+      if (!profilePic) {
+        return res.status(404).send({
+          message: "profile not found with id " + req.body.userId,
+        });
+      }
+      res.send(profilePic);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "profile not found with id " + req.body.userId,
+        });
+      }
+      return res.status(500).send({
+        message: "Error updating profilePic with id " + req.body.userId,
+      });
+    });
+};
