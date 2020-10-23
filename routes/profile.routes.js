@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = (app) => {
   const profile = require("../controllers/profile.controller.js");
 
   // retrieve current user profile
@@ -15,6 +15,8 @@ module.exports = app => {
 
   // retrieve current user profile
   app.get("/profile/referrals", profile.getAllReferrals);
-  
+
   app.get("/users/analytics/:createdAt", profile.analytics);
+
+  app.put("/profile/profilePic", profile.updateProfilePic);
 };
