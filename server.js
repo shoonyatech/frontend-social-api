@@ -56,6 +56,7 @@ require("./routes/freelancerProjects-read.routes.js")(app);
 require("./routes/challenge-read.routes.js")(app);
 require("./routes/submission-read.routes.js")(app);
 require("./routes/vlog-read.routes.js")(app);
+require("./routes/user-activity-read.routes.js")(app);
 require("./routes/tip-read.routes.js")(app);
 require("./routes/feedback.routes.js")(app);
 
@@ -71,7 +72,7 @@ require("./routes/comment-write.routes.js")(app);
 require("./routes/vote-write.routes.js")(app);
 require("./routes/vote-read.routes.js")(app);
 require("./routes/user-page-write.routes.js")(app);
-require("./routes/user-activity.routes.js")(app);
+require("./routes/user-activity-write.routes.js")(app);
 require("./routes/meeting-write.routes.js")(app);
 require("./routes/course-write.routes.js")(app);
 require("./routes/freelancing-write.routes.js")(app);
