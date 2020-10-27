@@ -9,7 +9,8 @@ exports.create = (req, res) => {
         if (question.questionNo == req.body.questionNo) {
           if (question.answer === req.body.selectedOption) {
             answer = question.answer;
-            point = Math.round((req.body.timer / question.duration) * 100);
+            point =
+              Math.round((req.body.timer / question.duration) * 100) + 200;
           } else {
             point = 0;
           }
