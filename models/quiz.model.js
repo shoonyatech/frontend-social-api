@@ -16,7 +16,9 @@ const QuizSchema = mongoose.Schema(
   {
     title: String,
     questions: [QuestionSchema],
+    moderators: [],
     relatedSkills: [],
+    createdBy: Object,
   },
   {
     timestamps: true,
