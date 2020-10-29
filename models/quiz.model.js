@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const QuestionSchema = mongoose.Schema(
   {
     questionNo: Number,
-    questionUrl: String,
+    questionText: String,
+    questionImage: String,
     options: [],
     answer: String,
     duration: Number,
