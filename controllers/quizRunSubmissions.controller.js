@@ -225,6 +225,63 @@ exports.findAll = (req, res) => {
       });
     });
 };
+exports.findAllByQuestion = (req, res) => {
+  var uniqueArray = [];
+  const Options = [];
+  const users = [];
+  var sum = 0;
+  QuizRunSubmission.find({
+    quizId: req.params.quizId,
+    runId: req.params.runId,
+    questionNo: req.params.questionNo,
+  })
+    .then((response) => {
+      if (!response) {
+        return res.status(404).send({
+          message: "quiz not found with quizId " + req.params.quizI,
+        });
+      }
+      response.map((re) => {
+        Options.push(re.username);
+      });
+      uniqueArray = Options.filter(function (elem, pos) {
+        return Options.indexOf(elem) == pos;
+      });
+      uniqueArray.map((re, index) => {
+        QuizRunSubmission.find({
+          quizId: req.params.quizId,
+          runId: req.params.runId,
+          username: re,
+        })
+          .then((response) => {
+            response.map((user, userIndex) => {
+              if (userIndex + 1 == response.length) {
+                users.push({ username: user.username, points: user.points });
+              }
+            });
+            if (index + 1 == uniqueArray.length) {
+              users.sort((a, b) =>
+                a.points < b.points ? 1 : b.points < a.points ? -1 : 0
+              );
+              res.send(users.slice(0, 5));
+            }
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message:
+                err.message ||
+                "Some error occurred while retrieving the results.",
+            });
+          });
+      });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving the results.",
+      });
+    });
+};
 
 exports.getAnswer = (req, res) => {
   Quiz.findById(req.params.quizId)
