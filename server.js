@@ -7,14 +7,14 @@ var compression = require("compression");
 require("dotenv").config();
 mongoose.Promise = global.Promise;
 
-const { MONGODB_URI, JWT_SECRET, PORT = 3000 } = process.env;
+const { DB_URI, JWT_SECRET, PORT = 3000 } = process.env;
 let app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(compression());
 
 mongoose
-  .connect(MONGODB_URI, {
+  .connect(DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
