@@ -9,21 +9,22 @@ const UserSchema = mongoose.Schema(
     email: String,
     social: [],
     skills: [],
+    programmingSkills: [],
     eventIds: [String], // ids of event
     fbId: String,
     role: String, // <empty>/admin
     city: String,
     country: String,
-    admin:Boolean,
+    admin: Boolean,
     socialId: String,
     provider: String,
     referrals: [],
     userPreferences: {
-      cookieConsent: Boolean
-    }
+      cookieConsent: Boolean,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
