@@ -10,6 +10,7 @@ const UserSchema = mongoose.Schema(
     social: [],
     skills: [],
     programmingSkills: [],
+    experienceTimeline: [],
     eventIds: [String], // ids of event
     fbId: String,
     role: String, // <empty>/admin
