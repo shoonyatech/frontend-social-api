@@ -171,6 +171,25 @@ async function createSocialAuthUser(
       { label: "Mobile Platforms", values: [{ skill: "", level: 1 }] },
       { label: "Protocols", values: [{ skill: "", level: 1 }] },
     ],
+    experienceTimeline: [
+      { start: "2014", end: "2020" },
+      {
+        skills: [
+          {
+            skill: "JavaScript",
+            timeline: [
+              { year: 2014, expertise: 0, tags: [""] },
+              { year: 2015, expertise: 0, tags: [""] },
+              { year: 2016, expertise: 0, tags: [""] },
+              { year: 2017, expertise: 0, tags: [""] },
+              { year: 2018, expertise: 0, tags: [""] },
+              { year: 2019, expertise: 0, tags: [""] },
+              { year: 2020, expertise: 0, tags: [""] },
+            ],
+          },
+        ],
+      },
+    ],
     social: [
       { label: "Github", value: "" },
       { label: "Twitter", value: "" },
