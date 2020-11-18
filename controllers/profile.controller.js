@@ -176,7 +176,7 @@ async function createSocialAuthUser(
       {
         skills: [
           {
-            skill: "JavaScript",
+            skill: "",
             timeline: [
               { year: 2014, expertise: 0, tags: [""] },
               { year: 2015, expertise: 0, tags: [""] },
