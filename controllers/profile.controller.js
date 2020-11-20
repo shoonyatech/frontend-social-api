@@ -172,20 +172,12 @@ async function createSocialAuthUser(
       { label: "Protocols", values: [{ skill: "", level: 1 }] },
     ],
     experienceTimeline: [
-      { start: "2014", end: "2020" },
+      { start: "", end: "" },
       {
         skills: [
           {
             skill: "",
-            timeline: [
-              { year: 2014, expertise: 0, tags: [""] },
-              { year: 2015, expertise: 0, tags: [""] },
-              { year: 2016, expertise: 0, tags: [""] },
-              { year: 2017, expertise: 0, tags: [""] },
-              { year: 2018, expertise: 0, tags: [""] },
-              { year: 2019, expertise: 0, tags: [""] },
-              { year: 2020, expertise: 0, tags: [""] },
-            ],
+            timeline: [],
           },
         ],
       },
@@ -220,6 +212,18 @@ async function createSocialAuthUser(
 
   // Save user in the database
   try {
+    var d = new Date();
+    d = d.getFullYear();
+    user.experienceTimeline[0].end = d;
+    user.experienceTimeline[0].start = d - 7;
+    for (let year = d - 7; year <= d; year++) {
+      const timeline = {
+        year: year,
+        expertise: 0,
+        tags: [""],
+      };
+      user.experienceTimeline[1].skills[0].timeline.push(timeline);
+    }
     const userModel = await user.save();
     const account = { ...authResponse, authToken, ...userModel._doc };
 
