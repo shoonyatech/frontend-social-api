@@ -212,11 +212,11 @@ async function createSocialAuthUser(
 
   // Save user in the database
   try {
-    var d = new Date();
-    d = d.getFullYear();
-    user.experienceTimeline[0].end = d;
-    user.experienceTimeline[0].start = d - 7;
-    for (let year = d - 7; year <= d; year++) {
+    var currentYear = new Date();
+    currentYear = currentYear.getFullYear();
+    user.experienceTimeline[0].end = currentYear;
+    user.experienceTimeline[0].start = currentYear - 7;
+    for (let year = currentYear - 7; year <= currentYear; year++) {
       const timeline = {
         year: year,
         expertise: 0,
